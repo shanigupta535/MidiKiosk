@@ -1,764 +1,2075 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MediKiosk — AI Health Kiosk Prototype</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0a2c52" />
+<title>MediKiosk | AI-Assisted OPD Registration — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Noto+Serif:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
 <style>
-/* ============ THEME ============ */
+/* ═══════════════════════════════════════════════════════════════
+   1. DESIGN TOKENS
+   ═══════════════════════════════════════════════════════════════ */
 :root{
-  --bg:#eaf2f7;
-  --ink:#0a1a2b;
-  --muted:#5d7286;
-  --line:#d8e5ee;
-  --teal:#0e7c86;
-  --teal2:#12a3a8;
-  --indigo:#3b4cca;
-  --amber:#f59e0b;
-  --red:#e5484d;
-  --green:#12a150;
-  --card:#ffffff;
-  --r:26px;
-  --shadow:0 20px 50px -22px rgba(10,26,43,.35);
-  --shadow-sm:0 8px 22px -12px rgba(10,26,43,.28);
+  --navy-900:#05203c;
+  --navy-800:#0a2c52;
+  --navy-700:#0f3d6e;
+  --navy-600:#15518c;
+  --blue:#1c6fb5;
+  --blue-soft:#eaf3fb;
+  --blue-line:#cfe2f3;
+  --saffron:#ff8f1f;
+  --saffron-600:#d97500;
+  --saffron-soft:#fff4e5;
+  --green:#0f8a3c;
+  --green-600:#0b6b2e;
+  --green-soft:#e8f6ed;
+  --green-line:#bfe3cc;
+  --red:#c62828;
+  --red-soft:#fdecec;
+  --red-line:#f2c4c4;
+  --amber:#8a5700;
+  --amber-soft:#fff6e6;
+  --amber-line:#f0d9a8;
+
+  --bg:#eef2f7;
+  --surface:#ffffff;
+  --surface-2:#f7f9fc;
+  --surface-3:#eef3f9;
+  --line:#d7e0ea;
+  --line-2:#bccbdb;
+  --ink:#0b1b2b;
+  --ink-2:#33475c;
+  --muted:#657a90;
+
+  --r-xs:4px;
+  --r-sm:7px;
+  --r:10px;
+  --r-lg:14px;
+  --r-xl:20px;
+
+  --sh-1:0 1px 2px rgba(6,32,61,.06);
+  --sh-2:0 1px 3px rgba(6,32,61,.05), 0 12px 28px -20px rgba(6,32,61,.30);
+  --sh-3:0 26px 60px -30px rgba(6,32,61,.50);
+
+  --font:'Noto Sans','Noto Sans Devanagari',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --font-serif:'Noto Serif','Noto Sans Devanagari',Georgia,serif;
+  --font-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+
+  --container:1320px;
+  --gutter:22px;
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
+
+/* ═══════════════════════════════════════════════════════════════
+   2. RESET & BASE
+   ═══════════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{
+  font-size:16px;
+  scroll-behavior:smooth;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+html,body{overflow-x:hidden;max-width:100vw}
 body{
-  font-family:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Devanagari",sans-serif;
-  background:var(--bg);color:var(--ink);overflow:hidden;
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--ink);
+  font-size:.9375rem;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  min-height:100vh;
 }
-body::before{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(900px 620px at 8% -12%, rgba(18,163,168,.22), transparent 62%),
-    radial-gradient(820px 600px at 96% -6%, rgba(59,76,202,.16), transparent 60%),
-    radial-gradient(760px 520px at 50% 112%, rgba(245,158,11,.12), transparent 60%);
-}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none;text-align:inherit}
+a{color:inherit;text-decoration:none}
+img,svg,table{max-width:100%;display:block}
+ul,ol{list-style:none}
+h1,h2,h3,h4,h5,p,li,td,th,button,span{overflow-wrap:anywhere;word-break:break-word}
+::selection{background:var(--saffron);color:#fff}
+:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;border-radius:3px}
+
+/* language visibility */
 body.lang-en .hi{display:none !important}
 body.lang-hi .en{display:none !important}
 
-.app{position:relative;z-index:1;height:100%;display:flex;flex-direction:column}
-
-/* ============ HUD ============ */
-.hud{
-  display:flex;align-items:center;gap:18px;
-  padding:14px 26px;border-bottom:1px solid rgba(216,229,238,.9);
-  background:rgba(255,255,255,.72);backdrop-filter:blur(14px);
-  flex:0 0 auto;
+/* high contrast */
+body.hc{
+  --bg:#fff;--surface:#fff;--surface-2:#fff;--surface-3:#fff;
+  --line:#000;--line-2:#000;--ink:#000;--ink-2:#000;--muted:#1a1a1a;
+  --sh-1:none;--sh-2:none;--sh-3:none;
+  --navy-900:#000;--navy-800:#000;--navy-700:#000;--navy-600:#000;--blue:#000;
 }
-.brand{display:flex;align-items:center;gap:12px;min-width:230px}
-.logo{
-  width:44px;height:44px;border-radius:14px;display:grid;place-items:center;
-  background:linear-gradient(140deg,var(--teal2),var(--teal));color:#fff;
-  font-size:22px;font-weight:800;box-shadow:0 10px 22px -10px rgba(14,124,134,.9);
+body.hc .panel,body.hc .card,body.hc .tile,body.hc .sub-card{border-width:2px}
+
+/* utilities */
+.wrap{width:100%;max-width:var(--container);margin:0 auto;padding:0 var(--gutter)}
+.muted-sm{font-size:.8125rem;color:var(--muted);line-height:1.6}
+.mono{font-family:var(--font-mono)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ═══════════════════════════════════════════════════════════════
+   3. GOV SHELL
+   ═══════════════════════════════════════════════════════════════ */
+.tricolor{height:4px;background:linear-gradient(90deg,#ff9933 0 33.33%,#fff 33.33% 66.66%,#138808 66.66% 100%)}
+
+.gov-strip{background:var(--navy-900);color:#c9d9ea;font-size:.75rem;font-weight:600}
+.gov-strip .wrap{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:14px;min-height:40px;flex-wrap:wrap;
 }
-.brand-name{font-weight:800;font-size:17px;letter-spacing:-.02em}
-.brand-sub{font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.02em}
-
-.progress{display:flex;gap:6px;flex:1;justify-content:center}
-.pseg{width:44px;height:7px;border-radius:99px;background:#dbe7f0;transition:.4s}
-.pseg.done{background:linear-gradient(90deg,var(--teal2),var(--teal))}
-.pseg.now{background:var(--indigo);box-shadow:0 0 0 4px rgba(59,76,202,.16)}
-
-.hud-actions{display:flex;gap:9px;align-items:center}
-.chip-btn{
-  border:1px solid var(--line);background:#fff;color:var(--ink);
-  padding:9px 15px;border-radius:99px;font:inherit;font-size:13px;font-weight:700;
-  cursor:pointer;transition:.2s;white-space:nowrap;
+.gs-left,.gs-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.gs-flag{font-size:.95rem;line-height:1}
+.gs-sep{width:1px;height:13px;background:#2b4a6d}
+.gs-link{
+  color:#c9d9ea;font-size:.75rem;font-weight:600;
+  padding:5px 9px;border-radius:4px;transition:.18s;
+  display:inline-flex;align-items:center;gap:5px;
 }
-.chip-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm);border-color:#bcd4e2}
-.chip-btn.accent{background:linear-gradient(140deg,var(--teal2),var(--teal));color:#fff;border-color:transparent}
-.chip-btn.accent.on{background:linear-gradient(140deg,#e5484d,#b4232a)}
+.gs-link:hover{background:#14375e;color:#fff}
+.gs-link.primary{background:var(--saffron-600);color:#fff;font-weight:800}
+.gs-link.primary:hover{background:var(--saffron)}
 
-/* ============ STAGE / SCREENS ============ */
-.stage{flex:1;overflow-y:auto;overflow-x:hidden;position:relative}
-.screen{display:none;min-height:100%;padding:34px 40px 46px;animation:pop .5s cubic-bezier(.2,.8,.25,1)}
-.screen.active{display:flex;flex-direction:column}
-@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.99)}to{opacity:1;transform:none}}
-
-.scr-head{text-align:center;margin-bottom:26px}
-.scr-title{font-size:clamp(24px,3.2vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1.15}
-.scr-sub{color:var(--muted);font-size:15px;font-weight:600;margin-top:8px}
-
-/* ============ WELCOME ============ */
-#s-welcome{justify-content:center;align-items:center;text-align:center;gap:6px}
-.pill{
-  display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);
-  padding:8px 18px;border-radius:99px;font-size:13px;font-weight:700;color:var(--teal);
-  box-shadow:var(--shadow-sm);margin-bottom:18px;
+.fs-ctrl{display:flex;border:1px solid #2b4a6d;border-radius:5px;overflow:hidden}
+.fs-ctrl button{
+  color:#c9d9ea;font-size:.72rem;font-weight:800;
+  padding:5px 10px;border-right:1px solid #2b4a6d;transition:.18s;
 }
-.hero-title{font-size:clamp(32px,5vw,58px);font-weight:800;letter-spacing:-.04em;line-height:1.08}
-.hero-title .gr{background:linear-gradient(100deg,var(--teal),var(--indigo));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero-sub{color:var(--muted);font-size:clamp(14px,1.5vw,17px);font-weight:600;max-width:640px;margin:14px auto 0;line-height:1.6}
+.fs-ctrl button:last-child{border-right:none}
+.fs-ctrl button:hover{background:#14375e;color:#fff}
 
-.lang-cards{display:flex;gap:22px;margin:34px 0 28px;flex-wrap:wrap;justify-content:center}
+.gov-header{background:var(--surface);border-bottom:1px solid var(--line)}
+.hdr-inner{display:flex;align-items:center;gap:18px;padding:16px 0}
+.emblem{
+  width:60px;height:60px;flex:0 0 auto;border-radius:50%;
+  background:radial-gradient(circle at 50% 42%,#fff 0 38%,#eef3f9 39% 100%);
+  border:2px solid var(--navy-800);
+  display:grid;place-items:center;
+  box-shadow:0 2px 10px rgba(6,32,61,.14);
+}
+.emblem svg{width:36px;height:36px}
+.hdr-text{flex:1;min-width:0}
+.hdr-text h1{
+  font-family:var(--font-serif);
+  font-size:1.35rem;font-weight:700;color:var(--navy-800);
+  letter-spacing:-.015em;line-height:1.2;
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+}
+.hdr-text h1 .hdr-hi{
+  font-family:var(--font);font-size:.92rem;font-weight:700;
+  color:var(--blue);opacity:.92;
+}
+.hdr-text p{
+  font-size:.76rem;color:var(--muted);font-weight:600;margin-top:3px;
+  line-height:1.5;
+}
+.hdr-right{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:flex-end}
+.badge-row{display:flex;gap:6px;flex-wrap:wrap}
+.ver-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:.68rem;font-weight:800;letter-spacing:.03em;
+  padding:4px 10px;border-radius:4px;
+  border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink-2);
+  text-transform:uppercase;white-space:nowrap;
+}
+.ver-badge.ok{border-color:var(--green-line);background:var(--green-soft);color:var(--green-600)}
+.ver-badge.info{border-color:var(--blue-line);background:var(--blue-soft);color:var(--navy-600)}
+.helpline{text-align:right;border-left:2px solid var(--line);padding-left:16px}
+.helpline b{display:block;font-size:.98rem;color:var(--navy-800);font-weight:800;letter-spacing:.01em;font-family:var(--font-serif)}
+.helpline span{font-size:.66rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+
+.gov-nav{background:var(--navy-800);border-bottom:3px solid var(--saffron);position:relative;z-index:10}
+.gov-nav .wrap{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.gov-nav .wrap::-webkit-scrollbar{display:none}
+.nav-item{
+  color:#c6d8ea;font-size:.83rem;font-weight:700;
+  padding:14px 22px;white-space:nowrap;
+  border-bottom:3px solid transparent;margin-bottom:-3px;
+  transition:.18s;flex:0 0 auto;
+}
+.nav-item:hover{background:#0e3760;color:#fff}
+.nav-item.active{background:var(--navy-700);color:#fff;border-bottom-color:var(--saffron)}
+
+/* stepper */
+.stepper-bar{
+  background:var(--surface);border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:40;box-shadow:var(--sh-1);
+}
+.stepper-bar.hide{display:none}
+.stepper{
+  display:flex;align-items:center;gap:0;
+  padding:14px 0;overflow-x:auto;scrollbar-width:none;
+}
+.stepper::-webkit-scrollbar{display:none}
+.step{display:flex;align-items:center;gap:10px;flex:1;min-width:130px;padding-right:14px;position:relative}
+.step:last-child{flex:0 0 auto;padding-right:0}
+.step .num{
+  width:28px;height:28px;flex:0 0 auto;border-radius:50%;
+  display:grid;place-items:center;font-size:.74rem;font-weight:800;
+  background:var(--surface-3);color:var(--muted);
+  border:1.5px solid var(--line-2);transition:.3s;
+}
+.step .lbl{font-size:.74rem;font-weight:700;color:var(--muted);white-space:nowrap;transition:.3s}
+.step .line{flex:1;height:1.5px;background:var(--line-2);margin:0 10px;min-width:14px}
+.step.done .num{background:var(--green);border-color:var(--green);color:#fff}
+.step.done .lbl{color:var(--green-600)}
+.step.done .line{background:var(--green)}
+.step.now .num{background:var(--navy-800);border-color:var(--navy-800);color:#fff;box-shadow:0 0 0 5px rgba(10,44,82,.12)}
+.step.now .lbl{color:var(--navy-800);font-weight:800}
+
+/* breadcrumb */
+.crumb{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  font-size:.76rem;font-weight:600;color:var(--muted);
+  padding:12px 0 0;
+}
+.crumb b{color:var(--ink-2);font-weight:800}
+.crumb i{font-style:normal;opacity:.45}
+
+/* ═══════════════════════════════════════════════════════════════
+   4. STAGE & SCREENS
+   ═══════════════════════════════════════════════════════════════ */
+.stage{padding-bottom:52px;min-height:60vh}
+.screen{display:none;animation:fadeUp .4s cubic-bezier(.2,.75,.3,1)}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ═══════════════════════════════════════════════════════════════
+   5. PANEL COMPONENTS
+   ═══════════════════════════════════════════════════════════════ */
+.panel{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-lg);box-shadow:var(--sh-2);overflow:hidden;
+}
+.panel-head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:14px;flex-wrap:wrap;
+  padding:15px 22px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#fff,#f7f9fc);
+}
+.panel-title{
+  font-size:.94rem;font-weight:800;color:var(--navy-800);
+  display:flex;align-items:center;gap:10px;letter-spacing:-.01em;
+}
+.panel-title::before{content:"";width:4px;height:17px;border-radius:2px;background:var(--saffron)}
+.panel-body{padding:24px 22px}
+.step-chip{
+  font-size:.68rem;font-weight:800;letter-spacing:.07em;
+  text-transform:uppercase;background:var(--blue-soft);color:var(--navy-600);
+  padding:5px 12px;border-radius:99px;border:1px solid var(--blue-line);
+  white-space:nowrap;
+}
+.count-chip{
+  font-size:.72rem;font-weight:800;background:var(--navy-800);color:#fff;
+  padding:4px 11px;border-radius:99px;font-family:var(--font-mono);
+}
+
+.notice{
+  display:flex;gap:13px;align-items:flex-start;
+  background:var(--amber-soft);border:1px solid var(--amber-line);
+  border-left:4px solid var(--saffron);
+  border-radius:var(--r);padding:13px 17px;margin:18px 0 20px;
+}
+.notice-ico{font-size:1rem;line-height:1.5;flex:0 0 auto}
+.notice p{font-size:.81rem;color:#6d4a00;line-height:1.58}
+.notice b{color:#4d3400;font-weight:800}
+
+/* buttons */
+.btn{
+  border-radius:var(--r-sm);padding:13px 26px;
+  font-size:.86rem;font-weight:800;letter-spacing:.01em;
+  background:linear-gradient(140deg,var(--navy-600),var(--navy-800));
+  color:#fff;box-shadow:0 10px 22px -14px rgba(10,44,82,.9);
+  transition:.22s;display:inline-flex;align-items:center;gap:9px;
+  justify-content:center;white-space:nowrap;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 16px 30px -14px rgba(10,44,82,.95)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.4;pointer-events:none;box-shadow:none}
+.btn.ghost{background:var(--surface);color:var(--ink-2);border:1.5px solid var(--line-2);box-shadow:none}
+.btn.ghost:hover{border-color:var(--navy-600);color:var(--navy-800)}
+.btn.green{background:linear-gradient(140deg,#17a34a,var(--green-600));box-shadow:0 10px 22px -14px rgba(15,138,60,.9)}
+.btn.green:hover{box-shadow:0 16px 30px -14px rgba(15,138,60,.95)}
+.btn.wide{width:100%}
+
+.row-end{
+  display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap;
+  margin-top:22px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   6. SCREEN 1 — WELCOME
+   ═══════════════════════════════════════════════════════════════ */
+.welcome-grid{
+  display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+  gap:22px;align-items:start;
+}
+.hero-panel .panel-body{padding:32px 30px}
+.tag-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.7rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--green-600);background:var(--green-soft);
+  border:1px solid var(--green-line);padding:6px 14px;border-radius:99px;
+}
+.tag-chip::before{
+  content:"";width:7px;height:7px;border-radius:50%;
+  background:var(--green);animation:blink 1.8s infinite;
+}
+@keyframes blink{50%{opacity:.28}}
+
+.hero-h{
+  font-family:var(--font-serif);
+  font-size:clamp(1.55rem,2.8vw,2.35rem);
+  font-weight:700;line-height:1.24;
+  letter-spacing:-.022em;color:var(--navy-900);
+  margin:18px 0 14px;max-width:22ch;
+}
+.hero-p{
+  font-size:.94rem;color:var(--ink-2);line-height:1.72;
+  max-width:62ch;
+}
+
+.stat-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  margin:26px 0;border:1px solid var(--line);
+  border-radius:var(--r);overflow:hidden;background:var(--surface-2);
+}
+.stat{
+  padding:16px 18px;border-right:1px solid var(--line);
+  text-align:center;
+}
+.stat:last-child{border-right:none}
+.stat b{
+  display:block;font-family:var(--font-serif);
+  font-size:1.4rem;color:var(--navy-800);font-weight:700;
+  line-height:1.2;
+}
+.stat span{
+  font-size:.7rem;color:var(--muted);font-weight:700;
+  letter-spacing:.02em;margin-top:4px;display:block;
+}
+
+.feat-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.feat-list li{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:13px;border:1px solid var(--line);
+  border-radius:var(--r);background:var(--surface-2);
+  transition:.22s;
+}
+.feat-list li:hover{
+  border-color:var(--line-2);transform:translateY(-2px);
+  box-shadow:var(--sh-1);background:var(--surface);
+}
+.feat-list i{font-style:normal;font-size:1.2rem;line-height:1.3;flex:0 0 auto}
+.feat-list b{display:block;font-size:.83rem;font-weight:800;color:var(--ink);margin-bottom:2px}
+.feat-list span{font-size:.73rem;color:var(--muted);font-weight:600;line-height:1.5}
+
+.lang-list{display:flex;flex-direction:column;gap:12px;margin:16px 0 22px}
 .lang-card{
-  width:230px;padding:26px 20px;border-radius:var(--r);border:2px solid #fff;background:#fff;
-  cursor:pointer;transition:.28s cubic-bezier(.2,.8,.25,1);box-shadow:var(--shadow);
-  display:flex;flex-direction:column;align-items:center;gap:8px;font:inherit;color:inherit;
+  display:flex;align-items:center;gap:15px;
+  padding:16px 18px;border:2px solid var(--line);
+  border-radius:var(--r);background:var(--surface);
+  transition:.24s cubic-bezier(.2,.8,.25,1);width:100%;
+  text-align:left;
 }
-.lang-card:hover{transform:translateY(-8px) scale(1.03);border-color:var(--teal2)}
-.lang-card.sel{border-color:var(--teal2);background:linear-gradient(180deg,#f0fbfb,#fff);box-shadow:0 22px 44px -18px rgba(18,163,168,.6)}
-.lang-card .flag{font-size:44px;line-height:1}
-.lang-card .lang-name{font-size:25px;font-weight:800;letter-spacing:-.02em}
-.lang-card .lang-note{font-size:12.5px;color:var(--muted);font-weight:600}
-
-.mic-hero{
-  display:inline-flex;align-items:center;gap:14px;padding:15px 30px;border-radius:99px;
-  border:none;cursor:pointer;font:inherit;font-size:17px;font-weight:800;color:#fff;
-  background:linear-gradient(140deg,var(--teal2),var(--teal));
-  box-shadow:0 18px 40px -16px rgba(14,124,134,.85);transition:.25s;position:relative;
+.lang-card:hover{
+  border-color:var(--navy-600);transform:translateX(3px);
+  box-shadow:var(--sh-1);
 }
-.mic-hero:hover{transform:translateY(-3px) scale(1.02)}
-.mic-ring{position:absolute;inset:0;border-radius:99px;border:2px solid var(--teal2);animation:ring 2s infinite}
-@keyframes ring{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.35);opacity:0}}
+.lang-card.sel{border-color:var(--navy-700);background:var(--blue-soft)}
+.lc-flag{
+  width:46px;height:46px;flex:0 0 auto;border-radius:10px;
+  display:grid;place-items:center;
+  background:var(--navy-800);color:#fff;
+  font-weight:800;font-size:1.1rem;font-family:var(--font-serif);
+  transition:.24s;
+}
+.lang-card.sel .lc-flag{background:var(--saffron-600)}
+.lc-main{flex:1;min-width:0}
+.lc-main b{display:block;font-size:1.02rem;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.lc-main small{font-size:.75rem;color:var(--muted);font-weight:600;display:block;margin-top:2px}
+.lc-check{font-size:1.05rem;font-weight:800;color:var(--green);opacity:0;transition:.24s}
+.lang-card.sel .lc-check{opacity:1}
 
-.feat-strip{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:34px}
-.feat{background:rgba(255,255,255,.8);border:1px solid var(--line);padding:9px 16px;border-radius:99px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.mic-cta{
+  width:100%;display:flex;align-items:center;gap:15px;
+  padding:17px 22px;border-radius:var(--r);
+  background:linear-gradient(135deg,var(--navy-700),var(--navy-800));
+  color:#fff;box-shadow:0 14px 30px -18px rgba(10,44,82,.9);
+  transition:.24s;position:relative;overflow:hidden;
+}
+.mic-cta:hover{transform:translateY(-3px);box-shadow:0 20px 38px -18px rgba(10,44,82,.95)}
+.mic-cta::after{
+  content:"";position:absolute;inset:0;border-radius:var(--r);
+  border:2px solid rgba(255,255,255,.35);animation:ringOut 2.4s infinite;
+}
+@keyframes ringOut{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.09);opacity:0}}
+.mic-ico{font-size:1.7rem;line-height:1}
+.mic-cta b{display:block;font-size:1rem;font-weight:800;text-align:left}
+.mic-cta small{font-size:.77rem;opacity:.85;font-weight:600;display:block;margin-top:2px;text-align:left}
 
-/* ============ CHECK-IN ============ */
-.tiles3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1000px;margin:20px auto 0;width:100%}
+.trust-row{
+  display:flex;gap:7px;flex-wrap:wrap;
+  margin-top:18px;padding-top:18px;
+  border-top:1px dashed var(--line-2);
+}
+.trust-row span{
+  font-size:.68rem;font-weight:800;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--muted);
+  border:1px solid var(--line);background:var(--surface-2);
+  padding:5px 11px;border-radius:4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   7. SCREEN 2 — CHECK-IN
+   ═══════════════════════════════════════════════════════════════ */
+.tiles3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .tile{
-  background:#fff;border:2px solid #fff;border-radius:var(--r);padding:38px 22px;cursor:pointer;
-  font:inherit;color:inherit;text-align:center;transition:.28s cubic-bezier(.2,.8,.25,1);
-  box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:var(--surface);border:2px solid var(--line);
+  border-radius:var(--r);padding:32px 20px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  transition:.24s cubic-bezier(.2,.8,.25,1);
+  position:relative;overflow:hidden;
 }
-.tile:hover{transform:translateY(-8px);border-color:var(--teal2)}
-.tile .ico{font-size:52px;line-height:1}
-.tile .tt{font-size:20px;font-weight:800}
-.tile .ts{font-size:12.5px;color:var(--muted);font-weight:600}
-.tile.busy{opacity:.55;pointer-events:none}
+.tile::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--saffron);transform:scaleX(0);transition:.3s;
+}
+.tile:hover{
+  transform:translateY(-5px);border-color:var(--navy-600);
+  box-shadow:var(--sh-2);
+}
+.tile:hover::before{transform:scaleX(1)}
+.tile .ico{font-size:2.4rem;line-height:1}
+.tile .tt{font-size:1.02rem;font-weight:800;color:var(--navy-800);letter-spacing:-.01em;text-align:center}
+.tile .ts{font-size:.75rem;color:var(--muted);font-weight:600;text-align:center}
+.tile.busy{opacity:.5;pointer-events:none}
+.tile.busy .ico{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* ============ SYMPTOMS ============ */
-.sym-wrap{display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:30px;max-width:1180px;margin:0 auto;width:100%}
+/* ═══════════════════════════════════════════════════════════════
+   8. SCREEN 3 — SYMPTOMS
+   ═══════════════════════════════════════════════════════════════ */
+.sym-grid{
+  display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);
+  gap:22px;align-items:start;
+}
 .body-card{
-  background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:18px;
-  display:grid;place-items:center;border:2px solid #fff;
+  background:var(--surface-2);border:1px solid var(--line);
+  border-radius:var(--r);padding:16px;position:relative;
 }
-.body{width:100%;max-height:430px}
-.body .base{fill:#e7eff5}
-.body .region{transition:.25s;cursor:pointer}
-.body circle.region,.body rect.region{fill:#dbe7f0}
-.body line.region{stroke:#dbe7f0;stroke-width:22;stroke-linecap:round;fill:none}
-.body .region:hover{filter:brightness(.96)}
-.body circle.region.on,.body rect.region.on{fill:var(--teal2)}
-.body line.region.on{stroke:var(--teal2)}
-.body .region.on{filter:drop-shadow(0 8px 16px rgba(18,163,168,.55))}
+.body-card .hint-badge{
+  position:absolute;top:12px;left:12px;
+  font-size:.66rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--navy-600);
+  background:var(--blue-soft);border:1px solid var(--blue-line);
+  padding:5px 10px;border-radius:99px;
+}
+.body{width:100%;max-height:420px;margin:0 auto}
+.body .base{fill:#dde7f0}
+.body .region{transition:.26s;cursor:pointer}
+.body circle.region,.body rect.region{fill:#cbd9e6}
+.body line.region{stroke:#cbd9e6;stroke-width:22;stroke-linecap:round;fill:none}
+.body circle.region:hover,.body rect.region:hover{fill:#a9c3da}
+.body line.region:hover{stroke:#a9c3da}
+.body circle.region.on,.body rect.region.on{fill:var(--navy-600)}
+.body line.region.on{stroke:var(--navy-600)}
+.body .region.on{filter:drop-shadow(0 6px 14px rgba(21,81,140,.45))}
 
-.panel{display:flex;flex-direction:column;gap:16px}
-.card{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:22px;border:2px solid #fff}
-.card h4{font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-weight:800}
-.chips{display:flex;flex-wrap:wrap;gap:10px}
+.panel-stack{display:flex;flex-direction:column;gap:16px}
+.sub-card{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);padding:20px;
+}
+.sub-card h4{
+  font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);font-weight:800;margin-bottom:14px;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;flex-wrap:wrap;
+}
+.chips{display:flex;flex-wrap:wrap;gap:9px}
 .chip{
-  border:2px solid var(--line);background:#fff;padding:11px 18px;border-radius:99px;
-  font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:.2s;color:var(--ink);
+  border:1.5px solid var(--line-2);background:var(--surface);
+  padding:10px 16px;border-radius:99px;
+  font-size:.81rem;font-weight:700;transition:.2s;color:var(--ink-2);
+  display:inline-flex;align-items:center;gap:6px;
 }
-.chip:hover{border-color:var(--teal2);transform:translateY(-2px)}
-.chip.on{background:linear-gradient(140deg,var(--teal2),var(--teal));color:#fff;border-color:transparent;box-shadow:0 10px 22px -12px rgba(14,124,134,.9)}
+.chip:hover{border-color:var(--navy-600);color:var(--navy-800);transform:translateY(-2px)}
+.chip.on{
+  background:var(--navy-700);color:#fff;border-color:var(--navy-700);
+  box-shadow:0 6px 16px -8px rgba(15,61,110,.8);
+}
 
-.voice-box{display:flex;gap:14px;align-items:center}
+.voice-box{display:flex;gap:13px;align-items:stretch}
 .mic-btn{
-  width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;font-size:26px;flex:0 0 auto;
-  background:linear-gradient(140deg,var(--teal2),var(--teal));color:#fff;
-  box-shadow:0 14px 30px -14px rgba(14,124,134,.95);transition:.2s;
+  width:60px;flex:0 0 auto;border-radius:var(--r);font-size:1.4rem;color:#fff;
+  background:linear-gradient(140deg,var(--navy-600),var(--navy-800));
+  box-shadow:0 10px 22px -12px rgba(10,44,82,.9);transition:.2s;
+  display:flex;align-items:center;justify-content:center;
 }
-.mic-btn:hover{transform:scale(1.06)}
-.mic-btn.rec{background:linear-gradient(140deg,#e5484d,#b4232a);animation:pulse 1s infinite}
-@keyframes pulse{50%{box-shadow:0 0 0 14px rgba(229,72,77,.14)}}
+.mic-btn:hover{transform:scale(1.04)}
+.mic-btn.rec{background:linear-gradient(140deg,#e04a4a,var(--red));animation:pulseRed 1s infinite}
+@keyframes pulseRed{50%{box-shadow:0 0 0 14px rgba(198,40,40,.13)}}
 .transcript{
-  flex:1;min-height:64px;border-radius:18px;background:#f4f9fc;border:2px dashed #cfe1ec;
-  padding:14px 16px;font-size:15px;font-weight:600;color:var(--ink);display:flex;align-items:center;line-height:1.5;
+  flex:1;min-height:60px;border-radius:var(--r);
+  background:var(--surface-2);border:1.5px dashed var(--line-2);
+  padding:14px 16px;font-size:.86rem;font-weight:600;
+  color:var(--ink);display:flex;align-items:center;line-height:1.6;
 }
 .transcript.empty{color:#93a8b8;font-weight:600}
-.wave{display:flex;gap:4px;align-items:flex-end;height:26px}
-.wave span{width:5px;border-radius:99px;background:var(--teal2);animation:wv .9s infinite ease-in-out}
-.wave span:nth-child(1){height:40%;animation-delay:0s}
-.wave span:nth-child(2){height:85%;animation-delay:.12s}
-.wave span:nth-child(3){height:55%;animation-delay:.24s}
-.wave span:nth-child(4){height:100%;animation-delay:.36s}
-.wave span:nth-child(5){height:45%;animation-delay:.48s}
-@keyframes wv{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
 
-.btn{
-  border:none;border-radius:99px;padding:16px 34px;font:inherit;font-size:16px;font-weight:800;
-  cursor:pointer;transition:.22s;background:linear-gradient(140deg,var(--teal2),var(--teal));color:#fff;
-  box-shadow:0 16px 34px -16px rgba(14,124,134,.9);
+.wave{display:inline-flex;gap:3px;align-items:flex-end;height:22px}
+.wave span{width:4px;border-radius:99px;background:var(--navy-600);animation:wv .95s infinite ease-in-out}
+.wave span:nth-child(1){height:38%;animation-delay:0s}
+.wave span:nth-child(2){height:82%;animation-delay:.1s}
+.wave span:nth-child(3){height:52%;animation-delay:.2s}
+.wave span:nth-child(4){height:100%;animation-delay:.3s}
+.wave span:nth-child(5){height:44%;animation-delay:.4s}
+@keyframes wv{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+
+/* ═══════════════════════════════════════════════════════════════
+   9. SCREEN 4 — AI CHAT
+   ═══════════════════════════════════════════════════════════════ */
+.chat-grid{
+  display:grid;grid-template-columns:minmax(0,1fr) 300px;
+  gap:22px;align-items:start;
 }
-.btn:hover{transform:translateY(-3px)}
-.btn:disabled{opacity:.4;pointer-events:none;box-shadow:none}
-.btn.ghost{background:#fff;color:var(--muted);border:2px solid var(--line);box-shadow:none}
-.btn.dark{background:linear-gradient(140deg,#2b3450,#151c2e)}
-.btn.wide{width:100%}
-.row-end{display:flex;justify-content:flex-end;gap:12px;margin-top:auto;padding-top:18px}
-
-/* ============ CHAT ============ */
-#s-chat{align-items:center;justify-content:center;text-align:center;gap:0}
-.bot{position:relative;width:104px;height:104px;display:grid;place-items:center;margin-bottom:6px}
+.chat-stage{
+  padding:38px 26px;text-align:center;min-height:460px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.bot{position:relative;width:96px;height:96px;display:grid;place-items:center;margin-bottom:16px}
 .bot-core{
-  width:86px;height:86px;border-radius:50%;display:grid;place-items:center;font-size:38px;
-  background:linear-gradient(140deg,var(--teal2),var(--teal));color:#fff;
-  box-shadow:0 20px 46px -18px rgba(14,124,134,.95);z-index:2;
+  width:80px;height:80px;border-radius:50%;
+  display:grid;place-items:center;font-size:2rem;
+  background:linear-gradient(140deg,var(--navy-600),var(--navy-800));
+  color:#fff;box-shadow:0 16px 34px -16px rgba(10,44,82,.95);
+  z-index:2;transition:.3s;
 }
-.bot-core.speaking{animation:bot 1.1s infinite}
-@keyframes bot{50%{transform:scale(1.06)}}
-.bot-ring{position:absolute;inset:0;border-radius:50%;border:2px solid var(--teal2);opacity:.6;animation:ring 2.2s infinite}
-.bot-ring:nth-child(2){animation-delay:1.1s}
+.bot-core.speaking{animation:botPulse 1.1s infinite}
+@keyframes botPulse{50%{transform:scale(1.07)}}
+.bot-ring{
+  position:absolute;inset:0;border-radius:50%;
+  border:2px solid var(--navy-600);opacity:.5;
+  animation:ringOut2 2.4s infinite;
+}
+.bot-ring:nth-child(2){animation-delay:1.2s}
+@keyframes ringOut2{0%{transform:scale(.85);opacity:.55}100%{transform:scale(1.3);opacity:0}}
 
-.q-count{font-size:12.5px;font-weight:800;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
-.q-text{font-size:clamp(22px,3.4vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1.25;max-width:820px}
-.q-voice{display:inline-flex;align-items:center;gap:10px;margin-top:16px;color:var(--teal);font-weight:800;font-size:14px}
-.q-voice .wave span{background:var(--teal)}
+.q-count{
+  font-size:.68rem;font-weight:800;letter-spacing:.13em;
+  color:var(--muted);text-transform:uppercase;margin-bottom:12px;
+}
+.q-text{
+  font-family:var(--font-serif);
+  font-size:clamp(1.3rem,2.6vw,1.95rem);
+  font-weight:700;line-height:1.35;letter-spacing:-.02em;
+  color:var(--navy-900);max-width:26ch;
+}
+.q-voice{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-top:16px;color:var(--navy-600);
+  font-weight:800;font-size:.77rem;
+}
 
-.answers{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin-top:38px}
+.answers{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:34px}
 .ans{
-  min-width:190px;padding:24px 30px;border-radius:22px;border:2px solid #fff;background:#fff;
-  font:inherit;font-size:19px;font-weight:800;cursor:pointer;transition:.24s;box-shadow:var(--shadow);
-  display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink);
+  min-width:155px;padding:18px 24px;border-radius:var(--r);
+  border:2px solid var(--line);background:var(--surface);
+  font-size:.96rem;font-weight:800;
+  transition:.24s cubic-bezier(.2,.8,.25,1);
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:var(--navy-800);
 }
-.ans:hover{transform:translateY(-6px);border-color:var(--teal2)}
-.ans small{font-size:12px;color:var(--muted);font-weight:700}
-.ans.big{font-size:22px;padding:28px 40px}
-.ans.no:hover{border-color:var(--red)}
+.ans:hover{transform:translateY(-5px);border-color:var(--navy-600);box-shadow:var(--sh-2)}
+.ans small{font-size:.68rem;color:var(--muted);font-weight:700}
+.ans.big{font-size:1.06rem;padding:22px 32px;min-width:180px}
+.ans.no:hover{border-color:var(--red);color:var(--red)}
+.ans.pick{background:var(--navy-700);color:#fff;border-color:var(--navy-700)}
+.ans.pick small{color:rgba(255,255,255,.75)}
 
-.thinking{margin-top:30px;color:var(--muted);font-weight:700;font-size:14px;display:flex;gap:10px;align-items:center;justify-content:center}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--teal2);animation:bnc 1s infinite}
-.dot:nth-child(2){animation-delay:.15s}.dot:nth-child(3){animation-delay:.3s}
-@keyframes bnc{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-7px);opacity:1}}
+.thinking{
+  margin-top:26px;color:var(--muted);font-weight:700;font-size:.81rem;
+  display:flex;gap:10px;align-items:center;justify-content:center;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--navy-600);animation:bnc 1s infinite}
+.dot:nth-child(2){animation-delay:.15s}
+.dot:nth-child(3){animation-delay:.3s}
+@keyframes bnc{0%,100%{transform:translateY(0);opacity:.35}50%{transform:translateY(-7px);opacity:1}}
 
-/* ============ SCANNER ============ */
-.scan-wrap{max-width:760px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:20px}
+.draft-rail{position:sticky;top:76px}
+.draft-item{
+  display:flex;justify-content:space-between;gap:14px;
+  padding:12px 0;border-bottom:1px dashed var(--line);font-size:.81rem;
+}
+.draft-item:last-child{border-bottom:none}
+.draft-item .k{color:var(--muted);font-weight:700;flex:0 0 auto}
+.draft-item .v{font-weight:800;color:var(--ink);text-align:right;max-width:62%}
+.draft-item .v.empty{color:#a9bbc9;font-weight:700}
+.draft-item .v.filled{color:var(--green-600)}
+.draft-item .v.filled::before{content:"✓ ";font-weight:800}
+
+/* ═══════════════════════════════════════════════════════════════
+   10. SCREEN 5 — SCANNER
+   ═══════════════════════════════════════════════════════════════ */
+.scan-grid{
+  display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+  gap:22px;align-items:start;
+}
 .scan-frame{
-  position:relative;border-radius:var(--r);background:#0f1b2b;aspect-ratio:16/9;overflow:hidden;
-  display:grid;place-items:center;box-shadow:var(--shadow);border:3px dashed #2c3d55;
+  position:relative;border-radius:var(--r);background:#0c1a2b;
+  aspect-ratio:16/10;overflow:hidden;
+  display:grid;place-items:center;border:2px dashed #2c405a;
 }
-.scan-frame .doc{font-size:74px;opacity:.35}
-.scan-frame .hint{position:absolute;bottom:20px;color:#7e93ab;font-weight:700;font-size:13px;letter-spacing:.05em}
+.scan-frame .doc{font-size:4.4rem;opacity:.3;line-height:1}
+.scan-frame .hint{
+  position:absolute;bottom:18px;color:#7e93ab;font-weight:800;
+  font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+}
 .scan-line{
   position:absolute;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,transparent,#12a3a8,transparent);
-  box-shadow:0 0 24px #12a3a8;animation:scanmove 1.9s linear infinite;
+  background:linear-gradient(90deg,transparent,#38b6ff,transparent);
+  box-shadow:0 0 22px #38b6ff;
+  animation:scanmove 1.9s linear infinite;
 }
-@keyframes scanmove{0%{top:8%}100%{top:92%}}
-.corner{position:absolute;width:34px;height:34px;border:3px solid var(--teal2);border-radius:6px}
+@keyframes scanmove{0%{top:7%}100%{top:93%}}
+.corner{position:absolute;width:32px;height:32px;border:3px solid #38b6ff;border-radius:5px}
 .corner.tl{top:16px;left:16px;border-right:none;border-bottom:none}
 .corner.tr{top:16px;right:16px;border-left:none;border-bottom:none}
 .corner.bl{bottom:16px;left:16px;border-right:none;border-top:none}
 .corner.br{bottom:16px;right:16px;border-left:none;border-top:none}
 
-.bar{height:10px;border-radius:99px;background:#dbe7f0;overflow:hidden}
-.bar > i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--teal2),var(--teal));transition:width .4s}
-.bar.amber > i{background:linear-gradient(90deg,#fbbf24,var(--amber))}
-.bar.red > i{background:linear-gradient(90deg,#f87171,var(--red))}
-.steps-log{display:flex;flex-direction:column;gap:9px;margin-top:6px}
-.steps-log div{font-size:14px;font-weight:700;color:var(--muted);opacity:0;transform:translateX(-8px);transition:.4s;display:flex;gap:9px;align-items:center}
-.steps-log div.on{opacity:1;transform:none;color:var(--green)}
+.bar{height:9px;border-radius:99px;background:var(--surface-3);overflow:hidden;border:1px solid var(--line)}
+.bar > i{
+  display:block;height:100%;width:0;border-radius:99px;
+  background:linear-gradient(90deg,var(--navy-600),var(--blue));
+  transition:width .35s ease;
+}
+.bar.green > i{background:linear-gradient(90deg,#17a34a,var(--green-600))}
+.bar.red > i{background:linear-gradient(90deg,#e04a4a,var(--red))}
 
-/* ============ SUMMARY ============ */
-.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:940px;margin:0 auto;width:100%}
-.sum-card{background:#fff;border-radius:var(--r);padding:22px;box-shadow:var(--shadow);border:2px solid #fff}
+.steps-log{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.steps-log div{
+  font-size:.81rem;font-weight:700;color:var(--muted);
+  opacity:.35;transform:translateX(-6px);transition:.4s;
+  display:flex;gap:10px;align-items:center;
+}
+.steps-log div.on{opacity:1;transform:none;color:var(--green-600)}
+
+/* ═══════════════════════════════════════════════════════════════
+   11. SCREEN 6 — SUMMARY
+   ═══════════════════════════════════════════════════════════════ */
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.sum-card{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);padding:20px;box-shadow:var(--sh-1);
+}
 .sum-card.span2{grid-column:span 2}
-.sum-card h4{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:12px}
-.big-val{font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.3}
-.kv{font-size:14.5px;font-weight:600;color:var(--muted);margin-top:6px}
-.taglist{display:flex;flex-wrap:wrap;gap:9px}
-.tag{background:#eef7f8;color:var(--teal);padding:8px 15px;border-radius:99px;font-size:13.5px;font-weight:800}
-.tag.warn{background:#fff4e5;color:#b45309}
-.tag.red{background:#fdecec;color:#b4232a}
+.sum-card h4{
+  font-size:.69rem;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);font-weight:800;margin-bottom:12px;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;flex-wrap:wrap;
+}
+.big-val{
+  font-family:var(--font-serif);font-size:1.4rem;font-weight:700;
+  letter-spacing:-.02em;color:var(--navy-900);line-height:1.3;
+}
+.kv{font-size:.81rem;font-weight:600;color:var(--muted);margin-top:6px;line-height:1.55}
+.taglist{display:flex;flex-wrap:wrap;gap:8px}
+.tag{
+  background:var(--blue-soft);color:var(--navy-600);
+  padding:8px 15px;border-radius:99px;
+  font-size:.77rem;font-weight:800;border:1px solid var(--blue-line);
+}
+.tag.warn{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-line)}
+.tag.red{background:var(--red-soft);color:var(--red);border-color:var(--red-line)}
+.tag.ok{background:var(--green-soft);color:var(--green-600);border-color:var(--green-line)}
+
+.confidence{display:flex;align-items:center;gap:12px}
+.confidence .bar{flex:1}
+.confidence b{font-size:.81rem;color:var(--green-600);font-weight:800;font-family:var(--font-mono)}
 
 .flags{
-  grid-column:span 2;display:flex;gap:14px;align-items:center;
-  background:linear-gradient(120deg,#fff5f5,#fff);border:2px solid #f9c9c9;border-radius:var(--r);padding:18px 22px;
-  box-shadow:0 16px 40px -22px rgba(229,72,77,.7);
+  grid-column:span 2;display:flex;gap:15px;align-items:flex-start;
+  background:linear-gradient(120deg,var(--red-soft),#fff);
+  border:1px solid var(--red-line);border-left:4px solid var(--red);
+  border-radius:var(--r);padding:17px 22px;
 }
-.flags .fi{font-size:30px}
-.flags b{display:block;font-size:15px;color:#b4232a;font-weight:800;letter-spacing:.02em}
-.flags p{font-size:13.5px;color:#8a3a3f;font-weight:600;margin-top:3px}
+.flags .fi{font-size:1.7rem;line-height:1;flex:0 0 auto}
+.flags b{
+  display:block;font-size:.83rem;color:#8f1f1f;
+  font-weight:800;letter-spacing:.03em;text-transform:uppercase;
+}
+.flags p{font-size:.79rem;color:#7a3a3a;font-weight:600;margin-top:4px;line-height:1.6}
 
-/* ============ TOKEN ============ */
-#s-token{align-items:center;justify-content:center;text-align:center}
+/* ═══════════════════════════════════════════════════════════════
+   12. SCREEN 7 — TOKEN
+   ═══════════════════════════════════════════════════════════════ */
+.token-wrap{
+  display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);
+  gap:22px;align-items:start;
+}
 .token-card{
-  background:#fff;border-radius:38px;padding:52px 64px;box-shadow:var(--shadow);border:2px solid #fff;
-  display:flex;flex-direction:column;align-items:center;gap:8px;animation:pop .6s;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-lg);box-shadow:var(--sh-2);
+  padding:38px 34px;
+  display:flex;flex-direction:column;align-items:center;
+  gap:6px;text-align:center;position:relative;overflow:hidden;
 }
-.check{width:70px;height:70px;border-radius:50%;background:linear-gradient(140deg,#22c55e,#12a150);color:#fff;display:grid;place-items:center;font-size:34px;box-shadow:0 16px 34px -14px rgba(18,161,80,.9)}
-.token-label{font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-top:14px}
+.token-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--saffron),#fff,var(--green));
+}
+.check{
+  width:64px;height:64px;border-radius:50%;
+  background:var(--green-soft);border:2px solid var(--green);
+  color:var(--green-600);display:grid;place-items:center;
+  font-size:1.8rem;margin-bottom:10px;
+  animation:popIn .5s cubic-bezier(.2,1.5,.4,1);
+}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.token-label{
+  font-size:.69rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);font-weight:800;
+}
 .token-no{
-  font-size:clamp(64px,13vw,120px);font-weight:800;letter-spacing:-.05em;line-height:1;
-  background:linear-gradient(120deg,var(--teal),var(--indigo));-webkit-background-clip:text;background-clip:text;color:transparent;
+  font-family:var(--font-serif);
+  font-size:clamp(3.4rem,9vw,5.2rem);
+  font-weight:700;letter-spacing:-.04em;line-height:1;
+  color:var(--navy-800);margin:8px 0;
 }
-.token-meta{font-size:16px;font-weight:700;color:var(--muted);margin-top:6px}
-.token-note{margin-top:18px;background:#eef7f8;color:var(--teal);padding:11px 20px;border-radius:99px;font-size:13.5px;font-weight:800}
+.token-meta{font-size:.86rem;font-weight:700;color:var(--ink-2)}
+.token-note{
+  margin-top:16px;background:var(--green-soft);color:var(--green-600);
+  border:1px solid var(--green-line);
+  padding:10px 20px;border-radius:99px;
+  font-size:.77rem;font-weight:800;
+}
+.qr{width:128px;height:128px;margin-top:20px;border:1px solid var(--line);border-radius:10px;padding:9px;background:#fff}
 
-/* ============ DOCTOR DASHBOARD ============ */
-body.doctor-mode{background:#070d18}
-body.doctor-mode::before{background:radial-gradient(900px 600px at 15% 0%, rgba(18,163,168,.14), transparent 60%),radial-gradient(900px 600px at 85% 100%, rgba(59,76,202,.18), transparent 60%)}
-body.doctor-mode .hud{background:rgba(11,19,33,.85);border-color:#1b2740;color:#dbe7f5}
-body.doctor-mode .brand-name{color:#eaf2ff}
-body.doctor-mode .brand-sub{color:#6d84a3}
-body.doctor-mode .chip-btn{background:#131f36;border-color:#22314e;color:#c8d8ec}
-body.doctor-mode .chip-btn:hover{border-color:#3a5480}
-body.doctor-mode .pseg{background:#1b2740}
-body.doctor-mode .pseg.now{background:var(--teal2);box-shadow:0 0 0 4px rgba(18,163,168,.18)}
+.info-row{
+  display:flex;justify-content:space-between;gap:12px;
+  padding:12px 0;border-bottom:1px dashed var(--line);font-size:.83rem;
+}
+.info-row:last-child{border-bottom:none}
+.info-row .k{color:var(--muted);font-weight:700}
+.info-row .v{font-weight:800;color:var(--ink);text-align:right}
 
-#s-doctor{color:#dbe7f5;padding:24px 30px 30px}
-.doc-shell{display:grid;grid-template-columns:290px 1fr;gap:20px;flex:1;min-height:0;max-width:1500px;margin:0 auto;width:100%}
-.doc-queue{background:#0d1728;border:1px solid #1b2740;border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
-.dq-head{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#6d84a3;font-weight:800;margin-bottom:6px}
-.dq-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 15px;border-radius:16px;border:1px solid #1b2740;background:#111c30;cursor:pointer;transition:.2s}
-.dq-item:hover{border-color:#2f4467}
-.dq-item.active{background:linear-gradient(120deg,rgba(18,163,168,.22),rgba(59,76,202,.18));border-color:var(--teal2)}
-.dq-item .nm{font-size:14px;font-weight:800}
-.dq-item .sub{font-size:11.5px;color:#6d84a3;font-weight:700;margin-top:2px}
-.dq-item .tk{font-size:13px;font-weight:800;color:var(--teal2)}
+/* ═══════════════════════════════════════════════════════════════
+   13. SCREEN 8 — DOCTOR DASHBOARD
+   ═══════════════════════════════════════════════════════════════ */
+.doc-layout{
+  display:grid;grid-template-columns:290px minmax(0,1fr);
+  gap:20px;align-items:start;
+}
+.doc-queue{position:sticky;top:76px}
+.q-search{padding:14px 16px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.q-search input{
+  width:100%;padding:10px 13px;border:1.5px solid var(--line-2);
+  border-radius:var(--r-sm);font-size:.81rem;background:var(--surface);
+  transition:.2s;font-weight:600;
+}
+.q-search input:focus{outline:none;border-color:var(--navy-600);box-shadow:0 0 0 3px rgba(21,81,140,.12)}
+.q-list{max-height:540px;overflow-y:auto;scrollbar-width:thin}
+.q-item{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;width:100%;padding:13px 16px;
+  border-bottom:1px solid var(--line);text-align:left;
+  transition:.2s;position:relative;
+}
+.q-item:hover{background:var(--surface-2)}
+.q-item.active{background:var(--blue-soft)}
+.q-item.active::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:var(--navy-700);
+}
+.q-item .nm{font-size:.85rem;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.q-item .sub{font-size:.71rem;color:var(--muted);font-weight:600;margin-top:3px}
+.q-item .tk{
+  font-size:.75rem;font-weight:800;color:var(--navy-700);
+  background:var(--surface);border:1px solid var(--line-2);
+  padding:4px 10px;border-radius:5px;font-family:var(--font-mono);
+  flex:0 0 auto;
+}
+.q-item.active .tk{background:var(--navy-700);color:#fff;border-color:var(--navy-700)}
+.q-empty{padding:32px 18px;text-align:center;color:var(--muted);font-size:.81rem;font-weight:600}
 
-.doc-main{display:flex;flex-direction:column;gap:16px;min-height:0;overflow-y:auto;padding-right:4px}
-.doc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;background:#0d1728;border:1px solid #1b2740;border-radius:24px;padding:22px 24px}
-.doc-top h2{font-size:28px;font-weight:800;letter-spacing:-.03em;color:#f2f8ff}
-.doc-top p{font-size:13.5px;color:#7d93b0;font-weight:700;margin-top:5px}
-.doc-token{background:linear-gradient(140deg,var(--teal2),var(--teal));color:#fff;font-size:24px;font-weight:800;padding:12px 24px;border-radius:18px;letter-spacing:.02em}
+.doc-main{display:flex;flex-direction:column;gap:16px;min-width:0}
 
-.doc-flags{display:flex;gap:14px;align-items:center;background:linear-gradient(120deg,rgba(229,72,77,.16),rgba(229,72,77,.05));border:1px solid rgba(229,72,77,.4);border-radius:20px;padding:16px 20px}
-.doc-flags .fi{font-size:26px}
-.doc-flags b{display:block;font-size:14px;color:#ff9a9e;font-weight:800;letter-spacing:.02em}
-.doc-flags p{font-size:13px;color:#c98d92;font-weight:600;margin-top:3px}
+.doc-head{
+  display:flex;justify-content:space-between;
+  align-items:flex-start;gap:18px;flex-wrap:wrap;
+  padding:22px;
+}
+.doc-id{display:flex;gap:15px;align-items:flex-start;min-width:0}
+.avatar{
+  width:56px;height:56px;border-radius:50%;flex:0 0 auto;
+  display:grid;place-items:center;
+  background:var(--navy-700);color:#fff;
+  font-weight:800;font-size:1.15rem;font-family:var(--font-serif);
+}
+.doc-id h2{
+  font-family:var(--font-serif);font-size:1.4rem;font-weight:700;
+  color:var(--navy-900);letter-spacing:-.022em;line-height:1.2;
+}
+.doc-id .meta{
+  font-size:.77rem;color:var(--muted);font-weight:600;
+  margin-top:5px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+}
+.doc-id .meta i{font-style:normal;color:var(--line-2)}
+.doc-token-box{
+  text-align:right;display:flex;flex-direction:column;
+  align-items:flex-end;gap:8px;
+}
+.doc-token{
+  font-family:var(--font-serif);font-size:1.6rem;font-weight:700;
+  color:#fff;background:linear-gradient(140deg,var(--navy-600),var(--navy-800));
+  padding:10px 22px;border-radius:var(--r-sm);letter-spacing:.01em;
+}
+.status-pill{
+  font-size:.67rem;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;padding:5px 12px;border-radius:99px;
+  background:var(--amber-soft);color:var(--amber);
+  border:1px solid var(--amber-line);
+}
 
-.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.dcard{background:#0d1728;border:1px solid #1b2740;border-radius:20px;padding:18px 20px}
-.dcard h4{font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:#6d84a3;font-weight:800;margin-bottom:11px;display:flex;justify-content:space-between;align-items:center}
-.dcard .val{font-size:16px;font-weight:700;color:#e6eefb;line-height:1.55}
-.dcard ul{list-style:none;display:flex;flex-direction:column;gap:8px}
-.dcard li{font-size:15px;font-weight:700;color:#cfe0f4;display:flex;gap:10px;align-items:center}
-.dcard li::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal2);flex:0 0 auto}
-.dcard .ai-badge{font-size:10px;background:rgba(18,163,168,.16);color:var(--teal2);padding:4px 10px;border-radius:99px;letter-spacing:.06em}
-[contenteditable="true"]{outline:2px dashed rgba(18,163,168,.55);outline-offset:5px;border-radius:8px;background:rgba(18,163,168,.06)}
+.vitals-strip{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  border-top:1px solid var(--line);background:var(--surface-2);
+}
+.vital{padding:14px 12px;border-right:1px solid var(--line);text-align:center}
+.vital:last-child{border-right:none}
+.vital b{display:block;font-size:1rem;font-weight:800;color:var(--navy-800);letter-spacing:-.01em;font-family:var(--font-mono)}
+.vital span{font-size:.66rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;display:block}
+.vital.abn b{color:var(--red)}
 
-.doc-actions{display:flex;gap:12px;justify-content:flex-end;padding:6px 0 4px;flex-wrap:wrap}
-.dbtn{border:none;border-radius:99px;padding:14px 28px;font:inherit;font-size:15px;font-weight:800;cursor:pointer;transition:.2s}
-.dbtn.ghost{background:#131f36;color:#c8d8ec;border:1px solid #22314e}
-.dbtn.ghost:hover{border-color:#3a5480;transform:translateY(-2px)}
-.dbtn.go{background:linear-gradient(140deg,#22c55e,#12a150);color:#fff;box-shadow:0 16px 34px -16px rgba(18,161,80,.9)}
-.dbtn.go:hover{transform:translateY(-3px)}
-.dbtn:disabled{opacity:.45;pointer-events:none}
+.alert-banner{
+  display:flex;gap:15px;align-items:flex-start;
+  background:var(--red-soft);border:1px solid var(--red-line);
+  border-left:4px solid var(--red);border-radius:var(--r);padding:16px 20px;
+}
+.alert-banner .fi{font-size:1.6rem;line-height:1;flex:0 0 auto}
+.alert-banner b{
+  display:block;font-size:.79rem;color:#8f1f1f;font-weight:800;
+  letter-spacing:.04em;text-transform:uppercase;
+}
+.alert-banner p{font-size:.78rem;color:#7a3a3a;font-weight:600;margin-top:3px;line-height:1.55}
 
-.approved-banner{display:none;align-items:center;gap:14px;background:linear-gradient(120deg,rgba(18,161,80,.18),rgba(18,161,80,.05));border:1px solid rgba(18,161,80,.45);border-radius:20px;padding:16px 20px;color:#7ee2a8;font-weight:800;font-size:14.5px}
+.doc-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dcard{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh-1);
+}
+.dcard.span2{grid-column:span 2}
+.dcard h4{
+  font-size:.67rem;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);font-weight:800;margin-bottom:12px;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;flex-wrap:wrap;
+}
+.ai-badge{
+  font-size:.6rem;letter-spacing:.07em;background:var(--blue-soft);
+  color:var(--navy-600);padding:3px 9px;border-radius:99px;
+  border:1px solid var(--blue-line);font-weight:800;
+}
+.dcard .val{font-size:.87rem;font-weight:600;color:var(--ink);line-height:1.7}
+.dcard ul{display:flex;flex-direction:column;gap:8px}
+.dcard li{
+  font-size:.83rem;font-weight:700;color:var(--ink-2);
+  display:flex;gap:10px;align-items:flex-start;
+}
+.dcard li::before{
+  content:"";width:6px;height:6px;border-radius:50%;
+  background:var(--navy-600);flex:0 0 auto;margin-top:8px;
+}
+[contenteditable="true"]{
+  outline:2px dashed var(--navy-600);outline-offset:5px;
+  border-radius:5px;background:var(--blue-soft);padding:3px 5px;
+}
+
+.tbl{width:100%;border-collapse:collapse;font-size:.81rem}
+.tbl th{
+  text-align:left;font-size:.65rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted);font-weight:800;
+  padding:9px 11px;border-bottom:1.5px solid var(--line-2);
+  background:var(--surface-2);
+}
+.tbl td{padding:11px;border-bottom:1px solid var(--line);font-weight:600;color:var(--ink-2)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td b{color:var(--ink);font-weight:800}
+.tbl .conf{color:var(--green-600);font-weight:800;font-family:var(--font-mono)}
+
+.approved-banner{
+  display:none;align-items:center;gap:13px;
+  background:var(--green-soft);border:1px solid var(--green-line);
+  border-left:4px solid var(--green);border-radius:var(--r);
+  padding:15px 20px;color:var(--green-600);
+  font-weight:800;font-size:.83rem;
+  animation:fadeUp .4s;
+}
 .approved-banner.on{display:flex}
 
-/* ============ TOAST ============ */
+.action-bar{
+  display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;
+  padding:15px 20px;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--sh-1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   14. FOOTER
+   ═══════════════════════════════════════════════════════════════ */
+.gov-footer{
+  background:var(--navy-900);color:#a9c0d6;
+  margin-top:38px;border-top:4px solid var(--saffron);
+}
+.foot-grid{
+  display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;
+  gap:28px;padding:38px 22px 28px;
+}
+.foot-col h5{
+  font-size:.73rem;letter-spacing:.11em;text-transform:uppercase;
+  color:#fff;font-weight:800;margin-bottom:14px;
+}
+.foot-col p{font-size:.77rem;line-height:1.78;color:#93aec8;max-width:40ch}
+.foot-col ul{display:flex;flex-direction:column;gap:9px}
+.foot-col a{font-size:.77rem;color:#a9c0d6;font-weight:600;transition:.18s}
+.foot-col a:hover{color:#fff;text-decoration:underline}
+.foot-bottom{
+  border-top:1px solid #14375e;padding:16px 22px;
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-size:.71rem;color:#7f9cb8;font-weight:600;
+}
+.foot-bottom b{color:#c9d9ea;font-weight:700}
+
+/* ═══════════════════════════════════════════════════════════════
+   15. TOAST
+   ═══════════════════════════════════════════════════════════════ */
 .toast{
-  position:fixed;bottom:26px;left:50%;transform:translate(-50%,120%);
-  background:#0a1a2b;color:#fff;padding:14px 26px;border-radius:99px;font-weight:800;font-size:14px;
-  box-shadow:var(--shadow);transition:.4s cubic-bezier(.2,.8,.25,1);z-index:99;
+  position:fixed;bottom:26px;left:50%;
+  transform:translate(-50%,140%);
+  background:var(--navy-900);color:#fff;
+  padding:13px 26px;border-radius:var(--r-sm);
+  font-weight:800;font-size:.82rem;
+  box-shadow:var(--sh-3);transition:.42s cubic-bezier(.2,.9,.3,1);
+  z-index:200;border-left:4px solid var(--saffron);
+  max-width:calc(100vw - 32px);text-align:center;
 }
 .toast.on{transform:translate(-50%,0)}
 
-/* ============ RESPONSIVE ============ */
-@media(max-width:1050px){
-  .sym-wrap{grid-template-columns:1fr}
-  .doc-shell{grid-template-columns:1fr}
-  .doc-queue{flex-direction:row;overflow-x:auto;max-height:100px}
-  .dq-item{min-width:190px}
+/* ═══════════════════════════════════════════════════════════════
+   16. RESPONSIVE — LAPTOP / DESKTOP / TABLET / MOBILE
+   ═══════════════════════════════════════════════════════════════ */
+
+/* — Fluid type scaling — */
+html{font-size:clamp(14.5px, 0.25vw + 13.8px, 16.5px)}
+
+/* — Large desktop (≥1600px) — */
+@media(min-width:1600px){
+  :root{--container:1480px;--gutter:26px}
+  .hero-h{font-size:2.6rem}
+  .q-text{font-size:2.05rem}
+  .emblem{width:66px;height:66px}
+  .emblem svg{width:40px;height:40px}
+  .hdr-text h1{font-size:1.48rem}
 }
-@media(max-width:820px){
-  .screen{padding:22px 18px 34px}
-  .hud{padding:10px 14px;gap:10px;flex-wrap:wrap}
-  .progress{order:3;width:100%;flex:1 1 100%}
-  .brand{min-width:auto}
-  .tiles3{grid-template-columns:1fr}
-  .sum-grid,.doc-grid{grid-template-columns:1fr}
-  .sum-card.span2,.flags,.doc-flags{grid-column:span 1}
-  .token-card{padding:34px 26px}
-  .lang-card{width:44%}
+
+/* — Standard desktop (1440–1599) — */
+@media(min-width:1440px) and (max-width:1599px){
+  :root{--container:1360px}
+}
+
+/* — Laptop (1024–1439) — */
+@media(min-width:1024px) and (max-width:1439px){
+  :root{--container:1180px;--gutter:20px}
+  .welcome-grid{grid-template-columns:1.3fr 1fr;gap:18px}
+  .doc-layout{grid-template-columns:260px minmax(0,1fr);gap:16px}
+  .chat-grid{grid-template-columns:minmax(0,1fr) 290px;gap:18px}
+  .hero-panel .panel-body{padding:28px 26px}
+}
+
+/* — Small laptop / large tablet (900–1023) — */
+@media(min-width:900px) and (max-width:1023px){
+  :root{--container:100%;--gutter:18px}
+  .welcome-grid{grid-template-columns:1fr;gap:16px}
+  .sym-grid{grid-template-columns:280px minmax(0,1fr);gap:16px}
+  .scan-grid{grid-template-columns:1fr 1fr;gap:16px}
+  .token-wrap{grid-template-columns:1.2fr 1fr;gap:16px}
+  .chat-grid{grid-template-columns:1fr;gap:16px}
+  .draft-rail{position:static}
+  .doc-layout{grid-template-columns:1fr;gap:16px}
+  .doc-queue{position:static}
+  .q-list{
+    display:flex;overflow-x:auto;overflow-y:hidden;
+    max-height:none;-webkit-overflow-scrolling:touch;
+    scroll-snap-type:x mandatory;
+  }
+  .q-item{
+    min-width:210px;flex:0 0 auto;border-right:1px solid var(--line);
+    border-bottom:none;scroll-snap-align:start;
+  }
+  .vitals-strip{grid-template-columns:repeat(3,1fr)}
+  .vital:nth-child(3n){border-right:none}
+  .vital:nth-child(n+4){border-top:1px solid var(--line)}
+  .badge-row{display:none}
+}
+
+/* — Tablet portrait (768–899) — */
+@media(min-width:768px) and (max-width:899px){
+  :root{--container:100%;--gutter:16px}
+  .welcome-grid,.sym-grid,.scan-grid,.token-wrap,.chat-grid{
+    grid-template-columns:1fr;gap:16px;
+  }
+  .doc-layout{grid-template-columns:1fr;gap:16px}
+  .doc-queue,.draft-rail{position:static}
+  .q-list{
+    display:flex;overflow-x:auto;overflow-y:hidden;
+    max-height:none;-webkit-overflow-scrolling:touch;
+  }
+  .q-item{min-width:210px;flex:0 0 auto;border-right:1px solid var(--line);border-bottom:none}
+  .feat-list{grid-template-columns:1fr 1fr}
+  .vitals-strip{grid-template-columns:repeat(3,1fr)}
+  .vital:nth-child(3n){border-right:none}
+  .vital:nth-child(n+4){border-top:1px solid var(--line)}
+  .doc-cols{grid-template-columns:1fr}
+  .dcard.span2{grid-column:span 1}
+  .sum-grid{grid-template-columns:1fr}
+  .sum-card.span2,.flags{grid-column:span 1}
+  .badge-row{display:none}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:22px}
+}
+
+/* ═════════════ MOBILE (≤767px) ═════════════ */
+@media(max-width:767px){
+  :root{--gutter:12px;--container:100%}
+  html{font-size:15px}
+  body{font-size:.9rem}
+
+  /* — Top strip — */
+  .gov-strip .wrap{min-height:auto;padding:8px 12px;gap:8px;justify-content:center}
+  .gs-left{font-size:.68rem;text-align:center;line-height:1.4;flex:1 1 100%}
+  .gs-left .gs-sep{display:none}
+  .gs-right{gap:5px;justify-content:center;flex-wrap:wrap;flex:1 1 100%}
+  .gs-link{font-size:.68rem;padding:5px 9px}
+  .fs-ctrl button{padding:4px 8px;font-size:.66rem}
+
+  /* — Header — */
+  .hdr-inner{padding:12px 0;gap:11px;flex-wrap:nowrap}
+  .emblem{width:42px;height:42px}
+  .emblem svg{width:24px;height:24px}
+  .hdr-text h1{font-size:1.04rem;gap:7px}
+  .hdr-text h1 .hdr-hi{font-size:.78rem}
+  .hdr-text p{
+    font-size:.66rem;line-height:1.4;margin-top:2px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  .hdr-right{display:none}
+
+  /* — Nav — */
+  .nav-item{padding:12px 16px;font-size:.78rem}
+  .gov-nav .wrap{padding:0 8px}
+
+  /* — Stepper: compact — */
+  .stepper{padding:10px 0}
+  .step{min-width:auto;flex:1;padding-right:0;justify-content:center}
+  .step .num{width:24px;height:24px;font-size:.68rem}
+  .step .lbl{display:none}
+  .step .line{flex:1;margin:0 3px;min-width:6px}
+
+  /* — Breadcrumb — */
+  .crumb{font-size:.71rem;padding:10px 0 0}
+
+  /* — Panels — */
+  .panel-head{padding:13px 15px;gap:9px}
+  .panel-title{font-size:.87rem}
+  .panel-title::before{height:14px}
+  .panel-body{padding:18px 15px}
+  .step-chip{font-size:.62rem;padding:4px 10px}
+
+  /* — Notice — */
+  .notice{padding:12px 14px;gap:10px;margin:14px 0 16px}
+  .notice-ico{font-size:1rem}
+  .notice p{font-size:.75rem;line-height:1.6}
+
+  /* — Welcome — */
+  .hero-panel .panel-body{padding:22px 17px}
+  .hero-h{font-size:1.5rem;margin:14px 0 10px}
+  .hero-p{font-size:.83rem;line-height:1.68}
+  .stat-row{grid-template-columns:1fr;margin:20px 0}
+  .stat{padding:13px 15px;border-right:none;border-bottom:1px solid var(--line)}
+  .stat:last-child{border-bottom:none}
+  .stat b{font-size:1.2rem}
+  .feat-list{grid-template-columns:1fr;gap:10px}
+  .feat-list li{padding:11px 12px}
+  .feat-list b{font-size:.79rem}
+  .feat-list span{font-size:.69rem}
+  .lang-list{gap:10px;margin:14px 0 18px}
+  .lang-card{padding:14px 14px;gap:12px}
+  .lc-flag{width:38px;height:38px;font-size:.98rem}
+  .lc-main b{font-size:.94rem}
+  .lc-main small{font-size:.69rem}
+  .mic-cta{padding:14px 17px;gap:12px}
+  .mic-ico{font-size:1.4rem}
+  .mic-cta b{font-size:.88rem}
+  .mic-cta small{font-size:.69rem}
+  .trust-row{gap:5px;margin-top:14px;padding-top:14px}
+  .trust-row span{font-size:.61rem;padding:4px 9px}
+
+  /* — Check-in tiles: horizontal layout — */
+  .tiles3{grid-template-columns:1fr;gap:11px}
+  .tile{
+    display:grid;grid-template-columns:auto 1fr;
+    grid-template-rows:auto auto;
+    column-gap:15px;row-gap:2px;align-items:center;
+    padding:17px;text-align:left;
+  }
+  .tile .ico{grid-row:1 / span 2;font-size:1.9rem;line-height:1}
+  .tile .tt{grid-column:2;font-size:.92rem;text-align:left;align-self:end}
+  .tile .ts{grid-column:2;font-size:.69rem;text-align:left;align-self:start}
+  .tile::before{height:2px}
+
+  /* — Symptoms — */
+  .sym-grid{grid-template-columns:1fr;gap:14px}
+  .body-card{padding:11px}
+  .body{max-height:310px}
+  .sub-card{padding:15px 14px}
+  .sub-card h4{font-size:.66rem;margin-bottom:12px;gap:7px}
+  .chip{font-size:.75rem;padding:9px 13px;gap:5px}
+  .voice-box{flex-direction:column;gap:10px}
+  .mic-btn{
+    width:100%;min-height:50px;border-radius:var(--r-sm);
+    padding:14px;font-size:.83rem;font-weight:800;
+    gap:8px;
+  }
+  .mic-btn::after{content:"Tap to speak · बोलें";font-size:.83rem;font-weight:800}
+  .transcript{min-height:58px;font-size:.81rem;padding:12px 14px;width:100%}
+  .row-end{flex-direction:column-reverse;gap:10px;margin-top:18px}
+  .row-end .btn{width:100%;padding:14px 20px;font-size:.87rem}
+
+  /* — Chat — */
+  .chat-stage{padding:22px 15px;min-height:340px}
+  .bot{width:78px;height:78px;margin-bottom:11px}
+  .bot-core{width:64px;height:64px;font-size:1.6rem}
+  .q-count{font-size:.62rem;margin-bottom:10px}
+  .q-text{font-size:1.18rem;line-height:1.4}
+  .q-voice{font-size:.71rem;margin-top:12px}
+  .answers{gap:10px;margin-top:24px;width:100%}
+  .ans{
+    flex:1 1 45%;min-width:0;padding:15px 13px;
+    font-size:.83rem;border-radius:var(--r-sm);
+  }
+  .ans.big{padding:17px 15px;font-size:.87rem;min-width:0;flex:1 1 45%}
+  .ans small{font-size:.63rem}
+  .thinking{font-size:.73rem;margin-top:20px}
+  .draft-rail .panel-body{padding:6px 15px 15px}
+  .draft-item{font-size:.77rem;padding:10px 0;gap:9px}
+  .draft-item .v{max-width:56%}
+
+  /* — Scanner — */
+  .scan-grid{grid-template-columns:1fr;gap:14px}
+  .scan-frame{aspect-ratio:4/3}
+  .scan-frame .doc{font-size:3.3rem}
+  .scan-frame .hint{font-size:.6rem;bottom:13px;letter-spacing:.11em}
+  .corner{width:22px;height:22px;border-width:2.5px}
+  .corner.tl{top:10px;left:10px}.corner.tr{top:10px;right:10px}
+  .corner.bl{bottom:10px;left:10px}.corner.br{bottom:10px;right:10px}
+  #scanBtn,#skipScan{width:100%}
+
+  /* — Summary — */
+  .sum-grid{grid-template-columns:1fr;gap:13px}
+  .sum-card.span2,.flags{grid-column:span 1}
+  .sum-card{padding:16px 15px}
+  .sum-card h4{font-size:.65rem;margin-bottom:10px;gap:7px}
+  .big-val{font-size:1.15rem}
+  .kv{font-size:.75rem}
+  .tag{font-size:.71rem;padding:7px 12px}
+  .flags{padding:14px 15px;gap:12px}
+  .flags .fi{font-size:1.4rem}
+  .flags b{font-size:.75rem}
+  .flags p{font-size:.73rem;line-height:1.55}
+  .confidence{flex-wrap:wrap;gap:9px}
+  .confidence .bar{flex:1 1 100%;order:2}
+  .confidence b{order:1;font-size:.75rem}
+
+  /* — Token — */
+  .token-wrap{grid-template-columns:1fr;gap:15px}
+  .token-card{padding:26px 18px;border-radius:var(--r)}
+  .token-no{font-size:3.7rem}
+  .check{width:54px;height:54px;font-size:1.55rem}
+  .token-label{font-size:.63rem}
+  .token-meta{font-size:.79rem}
+  .token-note{font-size:.71rem;padding:9px 15px;margin-top:13px}
+  .qr{width:105px;height:105px;margin-top:15px}
+  .info-row{font-size:.77rem;padding:10px 0;gap:9px}
+  .info-row .v{max-width:56%}
+
+  /* — Doctor dashboard — */
+  .doc-layout{grid-template-columns:1fr;gap:13px}
+  .doc-queue{position:static;border-radius:var(--r)}
+  .q-search{padding:11px 13px}
+  .q-search input{font-size:.77rem;padding:9px 12px}
+  .q-list{
+    display:flex;overflow-x:auto;overflow-y:hidden;
+    max-height:none;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .q-list::-webkit-scrollbar{display:none}
+  .q-item{
+    min-width:190px;flex:0 0 auto;
+    border-right:1px solid var(--line);border-bottom:none;
+    padding:12px 14px;
+  }
+  .q-item .nm{font-size:.81rem}
+  .q-item .sub{font-size:.67rem}
+  .q-item .tk{font-size:.71rem;padding:3px 9px}
+
+  .doc-head{padding:17px 15px;flex-direction:column;align-items:flex-start;gap:14px}
+  .doc-id{width:100%;gap:12px}
+  .avatar{width:46px;height:46px;font-size:1rem}
+  .doc-id h2{font-size:1.18rem}
+  .doc-id .meta{font-size:.71rem;gap:6px}
+  .doc-id .meta i{display:none}
+  .doc-token-box{
+    width:100%;flex-direction:row;justify-content:space-between;
+    align-items:center;gap:10px;
+  }
+  .doc-token{font-size:1.25rem;padding:7px 17px}
+  .status-pill{font-size:.61rem;padding:4px 10px}
+
+  .vitals-strip{grid-template-columns:repeat(2,1fr)}
+  .vital{padding:12px 10px}
+  .vital:nth-child(2n){border-right:none}
+  .vital:nth-child(2n+1){border-right:1px solid var(--line)}
+  .vital:nth-child(n+3){border-top:1px solid var(--line)}
+  .vital b{font-size:.88rem}
+  .vital span{font-size:.61rem}
+  .vital:last-child{grid-column:span 2;border-right:none}
+
+  .alert-banner{padding:13px 15px;gap:12px}
+  .alert-banner .fi{font-size:1.35rem}
+  .alert-banner b{font-size:.73rem}
+  .alert-banner p{font-size:.73rem;line-height:1.55}
+
+  .doc-cols{grid-template-columns:1fr;gap:12px}
+  .dcard.span2{grid-column:span 1}
+  .dcard{padding:15px}
+  .dcard h4{font-size:.63rem;gap:7px}
+  .dcard .val{font-size:.81rem;line-height:1.65}
+  .dcard li{font-size:.77rem;gap:8px}
+
+  /* — Doctor table → stacked cards — */
+  .tbl thead{display:none}
+  .tbl,.tbl tbody,.tbl tr,.tbl td{display:block;width:100%}
+  .tbl tr{
+    background:var(--surface-2);border:1px solid var(--line);
+    border-radius:var(--r-sm);padding:11px 13px;margin-bottom:9px;
+  }
+  .tbl tr:last-child{margin-bottom:0}
+  .tbl td{
+    border:none;padding:4px 0;font-size:.77rem;
+    display:flex;justify-content:space-between;gap:12px;
+    align-items:baseline;
+  }
+  .tbl td::before{
+    color:var(--muted);font-weight:700;font-size:.63rem;
+    text-transform:uppercase;letter-spacing:.05em;flex:0 0 auto;
+  }
+  .tbl td:nth-child(1)::before{content:"Medicine"}
+  .tbl td:nth-child(2)::before{content:"Dose"}
+  .tbl td:nth-child(3)::before{content:"Source"}
+  .tbl td:nth-child(4)::before{content:"Confidence"}
+  .tbl td b{font-size:.83rem}
+
+  .action-bar{flex-direction:column;padding:13px;gap:10px}
+  .action-bar .btn{width:100%;padding:13px 18px;font-size:.83rem}
+
+  /* — Footer — */
+  .gov-footer{margin-top:26px}
+  .foot-grid{grid-template-columns:1fr;gap:20px;padding:24px 15px 20px}
+  .foot-col h5{font-size:.69rem;margin-bottom:11px}
+  .foot-col p{font-size:.73rem;max-width:none}
+  .foot-col a{font-size:.73rem}
+  .foot-bottom{
+    padding:13px 15px;flex-direction:column;gap:8px;
+    font-size:.65rem;text-align:center;
+  }
+
+  /* — Toast — */
+  .toast{
+    font-size:.77rem;padding:12px 20px;bottom:16px;
+    border-radius:6px;max-width:calc(100vw - 24px);
+  }
+}
+
+/* — Very small mobile (≤400px) — */
+@media(max-width:400px){
+  html{font-size:14.5px}
+  :root{--gutter:10px}
+  .hdr-text h1{font-size:.95rem}
+  .hdr-text h1 .hdr-hi{font-size:.72rem}
+  .hdr-text p{font-size:.62rem;-webkit-line-clamp:1}
+  .emblem{width:38px;height:38px}
+  .emblem svg{width:22px;height:22px}
+  .hero-h{font-size:1.3rem}
+  .q-text{font-size:1.06rem}
+  .token-no{font-size:3.05rem}
+  .ans{padding:12px 10px;font-size:.79rem}
+  .panel-body{padding:15px 13px}
+  .hero-panel .panel-body{padding:17px 15px}
+  .doc-head{padding:15px 13px}
+  .nav-item{padding:11px 12px;font-size:.73rem}
+}
+
+/* — Foldables / ultra-narrow (≤320px) — */
+@media(max-width:320px){
+  :root{--gutter:8px}
+  .hdr-text p{display:none}
+  .ans,.ans.big{flex:1 1 100%}
+  .tile{grid-template-columns:1fr;row-gap:4px}
+  .tile .ico{grid-row:auto}
+  .tile .tt,.tile .ts{grid-column:1}
+}
+
+/* — Landscape phones — */
+@media(max-height:540px) and (orientation:landscape){
+  .hdr-inner{padding:9px 0}
+  .emblem{width:38px;height:38px}
+  .emblem svg{width:20px;height:20px}
+  .hdr-text h1{font-size:.98rem}
+  .hdr-text p{display:none}
+  .nav-item{padding:10px 16px}
+  .stepper{padding:8px 0}
+  .chat-stage{min-height:250px;padding:16px}
+  .bot{width:62px;height:62px;margin-bottom:7px}
+  .bot-core{width:50px;height:50px;font-size:1.35rem}
+  .q-text{font-size:1.05rem}
+  .answers{margin-top:18px}
+  .scan-frame{aspect-ratio:2/1}
+  .token-no{font-size:2.9rem}
+  .qr{width:84px;height:84px}
+}
+
+/* — Touch device hit areas — */
+@media(hover:none) and (pointer:coarse){
+  .chip{min-height:42px;padding:11px 16px;display:inline-flex;align-items:center}
+  .ans{min-height:54px}
+  .btn{min-height:48px}
+  .nav-item{min-height:46px;display:inline-flex;align-items:center}
+  .gs-link{min-height:34px;display:inline-flex;align-items:center}
+  .q-item{min-height:54px}
+  .mic-btn{min-height:54px}
+  .lang-card{min-height:62px}
+  .tile{min-height:72px}
+}
+
+/* — Reduced motion — */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+  .scan-line,.mic-cta::after,.bot-ring,.tag-chip::before{display:none !important}
+}
+
+/* — Print — */
+@media print{
+  .gov-strip,.gov-header,.gov-nav,.stepper-bar,.gov-footer,
+  .action-bar,.toast,.crumb,.tricolor,.panel-head .step-chip{display:none !important}
+  .screen{display:none !important}
+  #s-token.active{display:block !important}
+  body{background:#fff;color:#000}
+  .token-card,.panel,.sum-card{box-shadow:none;border:1px solid #999}
+  .token-no{color:#000 !important;-webkit-text-fill-color:#000}
+  .wrap{max-width:100%;padding:0}
 }
 </style>
 </head>
 <body class="lang-en">
 
-<div class="app">
-  <!-- ================= HUD ================= -->
-  <header class="hud">
-    <div class="brand">
-      <div class="logo">✚</div>
-      <div>
-        <div class="brand-name">MediKiosk</div>
-        <div class="brand-sub">AI Health Kiosk · <span class="hi">प्रोटोटाइप</span><span class="en">Prototype</span></div>
+<!-- ═══ TRICOLOR BAR ═══ -->
+<div class="tricolor"></div>
+
+<!-- ═══ GOV STRIP ═══ -->
+<div class="gov-strip">
+  <div class="wrap">
+    <div class="gs-left">
+      <span class="gs-flag">🇮🇳</span>
+      <span>भारत सरकार | Government of India</span>
+      <span class="gs-sep"></span>
+      <span>Ministry of Health &amp; Family Welfare</span>
+    </div>
+    <div class="gs-right">
+      <button class="gs-link" id="skipBtn">Skip to content</button>
+      <div class="fs-ctrl" role="group" aria-label="Font size">
+        <button data-fs="-1" title="Decrease text size">A−</button>
+        <button data-fs="0" title="Reset text size">A</button>
+        <button data-fs="1" title="Increase text size">A+</button>
+      </div>
+      <button class="gs-link" id="hcBtn" title="High contrast">◐ Contrast</button>
+      <button class="gs-link" id="langTop" title="Switch language"><b>EN</b> / हिं</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HEADER ═══ -->
+<header class="gov-header">
+  <div class="wrap hdr-inner">
+    <div class="emblem" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="10" stroke="#0a2c52" stroke-width="1.3"/>
+        <circle cx="12" cy="12" r="2.4" fill="#0a2c52"/>
+        <g stroke="#0a2c52" stroke-width="1" stroke-linecap="round">
+          <path d="M12 2.2v3M12 18.8v3M2.2 12h3M18.8 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1"/>
+        </g>
+      </svg>
+    </div>
+    <div class="hdr-text">
+      <h1>MediKiosk <span class="hdr-hi">मेडीकियोस्क</span></h1>
+      <p>AI-Assisted OPD Registration &amp; Clinical History Capture · National Digital Health Mission · Prototype v0.9</p>
+    </div>
+    <div class="hdr-right">
+      <div class="badge-row">
+        <span class="ver-badge ok">● ABDM Ready</span>
+        <span class="ver-badge info">Ayushman Bharat</span>
+        <span class="ver-badge">ISO 27001</span>
+      </div>
+      <div class="helpline">
+        <b>1800-11-4000</b>
+        <span>Health Helpline · 24×7</span>
       </div>
     </div>
+  </div>
+</header>
 
-    <div class="progress" id="progress">
-      <div class="pseg" data-step="1"></div>
-      <div class="pseg" data-step="2"></div>
-      <div class="pseg" data-step="3"></div>
-      <div class="pseg" data-step="4"></div>
-      <div class="pseg" data-step="5"></div>
-      <div class="pseg" data-step="6"></div>
-      <div class="pseg" data-step="7"></div>
-      <div class="pseg" data-step="8"></div>
+<!-- ═══ NAV ═══ -->
+<nav class="gov-nav">
+  <div class="wrap">
+    <button class="nav-item active" data-nav="welcome">Patient Kiosk</button>
+    <button class="nav-item" data-nav="doctor">Doctor Console</button>
+    <button class="nav-item" data-nav="summary">Clinical Summary</button>
+    <button class="nav-item" data-nav="scan">Documents</button>
+  </div>
+</nav>
+
+<!-- ═══ STEPPER ═══ -->
+<div class="stepper-bar" id="stepperBar">
+  <div class="wrap">
+    <ol class="stepper" id="stepper">
+      <li class="step" data-step="1"><span class="num">1</span><span class="lbl">Language</span><span class="line"></span></li>
+      <li class="step" data-step="2"><span class="num">2</span><span class="lbl">Check-in</span><span class="line"></span></li>
+      <li class="step" data-step="3"><span class="num">3</span><span class="lbl">Symptoms</span><span class="line"></span></li>
+      <li class="step" data-step="4"><span class="num">4</span><span class="lbl">AI History</span><span class="line"></span></li>
+      <li class="step" data-step="5"><span class="num">5</span><span class="lbl">Prescription</span><span class="line"></span></li>
+      <li class="step" data-step="6"><span class="num">6</span><span class="lbl">Summary</span><span class="line"></span></li>
+      <li class="step" data-step="7"><span class="num">7</span><span class="lbl">Token</span><span class="line"></span></li>
+      <li class="step" data-step="8"><span class="num">8</span><span class="lbl">Doctor Review</span></li>
+    </ol>
+  </div>
+</div>
+
+<!-- ═══ BREADCRUMB ═══ -->
+<div class="wrap">
+  <div class="crumb" id="crumb">
+    <span>Home</span><i>/</i><span>Patient Kiosk</span><i>/</i><b>Language</b>
+  </div>
+</div>
+
+<!-- ═══ STAGE ═══ -->
+<main class="stage wrap" id="stage">
+
+  <!-- ══════════ 1. WELCOME ══════════ -->
+  <section class="screen active" id="s-welcome">
+    <div class="notice">
+      <span class="notice-ico">ℹ️</span>
+      <p><b>Prototype Notice:</b> Demonstration build for evaluation only. No real patient data is stored or transmitted. All AI outputs are simulated.</p>
     </div>
 
-    <div class="hud-actions">
-      <button class="chip-btn" id="langBtn"><span class="hi">EN</span><span class="en">हिंदी</span></button>
-      <button class="chip-btn accent" id="demoBtn">▶ <span class="hi">ऑटो डेमो</span><span class="en">Auto Demo</span></button>
-      <button class="chip-btn" id="resetBtn">↺</button>
+    <div class="welcome-grid">
+      <div class="panel hero-panel">
+        <div class="panel-body">
+          <span class="tag-chip">Live Prototype · Hackathon Build</span>
+          <h2 class="hero-h">Speak once. Your doctor reads everything before you sit down.</h2>
+          <p class="hero-p">MediKiosk registers the patient, asks structured follow-up questions in Hindi or English, reads the old prescription, and delivers a clean clinical history to the doctor — so the consultation begins at the diagnosis, not at the paperwork.</p>
+
+          <div class="stat-row">
+            <div class="stat"><b>~4 min</b><span>Avg. registration</span></div>
+            <div class="stat"><b>0 forms</b><span>Hand-filled by patient</span></div>
+            <div class="stat"><b>2 languages</b><span>Voice-first intake</span></div>
+          </div>
+
+          <ul class="feat-list">
+            <li><i>🎙️</i><div><b>Voice-first intake</b><span>Built for low-literacy users</span></div></li>
+            <li><i>🧍</i><div><b>Body-map symptom picker</b><span>Tap where it hurts</span></div></li>
+            <li><i>📄</i><div><b>Prescription OCR</b><span>Old medicines auto-detected</span></div></li>
+            <li><i>🩺</i><div><b>Doctor-reviewed, never auto-diagnosed</b><span>AI drafts · Doctor signs</span></div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Select Language</div>
+          <span class="step-chip">Step 1 / 8</span>
+        </div>
+        <div class="panel-body">
+          <p class="muted-sm">Choose the language you are most comfortable speaking. You can change this at any time.</p>
+
+          <div class="lang-list">
+            <button class="lang-card" data-lang="hi">
+              <span class="lc-flag">अ</span>
+              <span class="lc-main"><b>हिंदी</b><small>Hindi — recommended for voice input</small></span>
+              <span class="lc-check">✓</span>
+            </button>
+            <button class="lang-card sel" data-lang="en">
+              <span class="lc-flag">A</span>
+              <span class="lc-main"><b>English</b><small>अंग्रेज़ी</small></span>
+              <span class="lc-check">✓</span>
+            </button>
+          </div>
+
+          <button class="mic-cta" id="welcomeMic">
+            <span class="mic-ico">🎙️</span>
+            <span><b>Tap to speak</b><small>बोलकर शुरू करें — हम भाषा पहचान लेंगे</small></span>
+          </button>
+
+          <div class="trust-row">
+            <span>ABDM Ready</span><span>Ayushman Bharat</span><span>ISO 27001</span><span>DPDP Compliant</span>
+          </div>
+        </div>
+      </div>
     </div>
-  </header>
+  </section>
 
-  <main class="stage" id="stage">
-
-    <!-- ================= 1. WELCOME ================= -->
-    <section class="screen active" id="s-welcome">
-      <div class="pill">🏥 OPD Self-Service Kiosk &nbsp;·&nbsp; <span class="hi">पंजीकरण + इतिहास</span><span class="en">Registration + History</span></div>
-      <h1 class="hero-title">
-        <span class="hi">नमस्ते 👋<br><span class="gr">अपनी भाषा चुनें</span></span>
-        <span class="en">Welcome 👋<br><span class="gr">Choose your language</span></span>
-      </h1>
-      <p class="hero-sub hi">बोलिए — हम आपकी बीमारी की पूरी जानकारी लिखकर डॉक्टर तक पहुँचा देंगे।</p>
-      <p class="hero-sub en">Just speak — we'll write your complete medical history and send it to the doctor before you walk in.</p>
-
-      <div class="lang-cards">
-        <button class="lang-card" data-lang="hi">
-          <div class="flag">🇮🇳</div>
-          <div class="lang-name">हिंदी</div>
-          <div class="lang-note">मैं हिंदी में बात करूँगा</div>
-        </button>
-        <button class="lang-card" data-lang="en">
-          <div class="flag">🇬🇧</div>
-          <div class="lang-name">English</div>
-          <div class="lang-note">I'll continue in English</div>
-        </button>
+  <!-- ══════════ 2. CHECK-IN ══════════ -->
+  <section class="screen" id="s-checkin">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Patient Check-in</div>
+        <span class="step-chip">Step 2 / 8</span>
       </div>
+      <div class="panel-body">
+        <p class="muted-sm" style="margin-bottom:18px">Select any one identification method. If you have an ABHA / Ayushman card, scanning it is fastest.</p>
 
-      <button class="mic-hero" id="welcomeMic">
-        <span class="mic-ring"></span>
-        🎙️ <span class="hi">बोलकर शुरू करें</span><span class="en">Tap to speak</span>
-      </button>
-
-      <div class="feat-strip">
-        <div class="feat">🎙️ Voice-first</div>
-        <div class="feat">🧍 Body map</div>
-        <div class="feat">📄 Prescription OCR</div>
-        <div class="feat">🧠 AI follow-up</div>
-        <div class="feat">👨‍⚕️ Doctor approve</div>
-      </div>
-    </section>
-
-    <!-- ================= 2. CHECK-IN ================= -->
-    <section class="screen" id="s-checkin">
-      <div class="scr-head">
-        <div class="scr-title"><span class="hi">मरीज़ की पहचान</span><span class="en">Patient Check-in</span></div>
-        <div class="scr-sub"><span class="hi">कोई भी एक तरीका चुनें</span><span class="en">Pick any one method</span></div>
-      </div>
-      <div class="tiles3">
-        <button class="tile" data-checkin="qr">
-          <div class="ico">📷</div>
-          <div class="tt"><span class="hi">QR स्कैन</span><span class="en">Scan QR</span></div>
-          <div class="ts">ABHA / Ayushman Card</div>
-        </button>
-        <button class="tile" data-checkin="mobile">
-          <div class="ico">📱</div>
-          <div class="tt"><span class="hi">मोबाइल नंबर</span><span class="en">Mobile Number</span></div>
-          <div class="ts">OTP <span class="hi">सत्यापन</span><span class="en">verification</span></div>
-        </button>
-        <button class="tile" data-checkin="voice">
-          <div class="ico">🎙️</div>
-          <div class="tt"><span class="hi">बोलकर बताएं</span><span class="en">Speak</span></div>
-          <div class="ts"><span class="hi">नाम व उम्र बोलें</span><span class="en">Say your name & age</span></div>
-        </button>
-      </div>
-      <div class="row-end"><button class="btn ghost" onclick="go('welcome')">← <span class="hi">वापस</span><span class="en">Back</span></button></div>
-    </section>
-
-    <!-- ================= 3. SYMPTOM BODY MAP ================= -->
-    <section class="screen" id="s-symptoms">
-      <div class="scr-head">
-        <div class="scr-title"><span class="hi">आपको कहाँ तकलीफ़ है?</span><span class="en">Where does it hurt?</span></div>
-        <div class="scr-sub"><span class="hi">शरीर पर टैप करें या बोलिए</span><span class="en">Tap on the body or just speak</span></div>
-      </div>
-
-      <div class="sym-wrap">
-        <div class="body-card">
-          <svg class="body" viewBox="0 0 220 400" aria-label="Body map">
-            <line class="region" data-region="joints" x1="76" y1="104" x2="42" y2="212"/>
-            <line class="region" data-region="joints" x1="144" y1="104" x2="178" y2="212"/>
-            <line class="region" data-region="joints" x1="93" y1="212" x2="82" y2="362"/>
-            <line class="region" data-region="joints" x1="127" y1="212" x2="138" y2="362"/>
-            <rect class="base" x="100" y="68" width="20" height="24" rx="9"/>
-            <rect class="region" data-region="chest" x="70" y="84" width="80" height="66" rx="28"/>
-            <rect class="region" data-region="stomach" x="70" y="150" width="80" height="64" rx="26"/>
-            <circle class="region" data-region="head" cx="110" cy="46" r="30"/>
-          </svg>
+        <div class="tiles3">
+          <button class="tile" data-checkin="qr">
+            <span class="ico">📷</span>
+            <span class="tt">Scan QR Code</span>
+            <span class="ts">ABHA / Ayushman / OPD card</span>
+          </button>
+          <button class="tile" data-checkin="mobile">
+            <span class="ico">📱</span>
+            <span class="tt">Mobile Number</span>
+            <span class="ts">OTP verification</span>
+          </button>
+          <button class="tile" data-checkin="voice">
+            <span class="ico">🎙️</span>
+            <span class="tt">Speak Your Details</span>
+            <span class="ts">Name, age and village</span>
+          </button>
         </div>
 
-        <div class="panel">
-          <div class="card">
-            <h4><span class="hi">शरीर का हिस्सा</span><span class="en">Body region</span></h4>
-            <div class="chips" id="regionChips">
-              <button class="chip" data-region="head">🧠 <span class="hi">सिर</span><span class="en">Head</span></button>
-              <button class="chip" data-region="chest">🫁 <span class="hi">छाती</span><span class="en">Chest</span></button>
-              <button class="chip" data-region="stomach">🤢 <span class="hi">पेट</span><span class="en">Stomach</span></button>
-              <button class="chip" data-region="joints">🦴 <span class="hi">जोड़</span><span class="en">Joints</span></button>
-            </div>
-          </div>
-
-          <div class="card">
-            <h4><span class="hi">और कोई लक्षण?</span><span class="en">Any other symptoms?</span></h4>
-            <div class="chips" id="symChips">
-              <button class="chip" data-sym="Fever">🌡️ <span class="hi">बुखार</span><span class="en">Fever</span></button>
-              <button class="chip" data-sym="Vomiting">🤮 <span class="hi">उल्टी</span><span class="en">Vomiting</span></button>
-              <button class="chip" data-sym="Cough">😷 <span class="hi">खांसी</span><span class="en">Cough</span></button>
-              <button class="chip" data-sym="Breathlessness">💨 <span class="hi">सांस फूलना</span><span class="en">Breathlessness</span></button>
-              <button class="chip" data-sym="Dizziness">💫 <span class="hi">चक्कर</span><span class="en">Dizziness</span></button>
-              <button class="chip" data-sym="Weakness">🥴 <span class="hi">कमजोरी</span><span class="en">Weakness</span></button>
-            </div>
-          </div>
-
-          <div class="card">
-            <h4><span class="hi">अपनी बात बोलिए</span><span class="en">Tell us in your own words</span></h4>
-            <div class="voice-box">
-              <button class="mic-btn" id="micBtn">🎙️</button>
-              <div class="transcript empty" id="transcript">
-                <span class="hi">माइक दबाएँ या नीचे नमूना वाक्य भरें…</span>
-                <span class="en">Press the mic or load the sample sentence below…</span>
-              </div>
-            </div>
-            <div class="chips" style="margin-top:14px">
-              <button class="chip" id="sampleBtn">✨ <span class="hi">नमूना वाक्य</span><span class="en">Sample sentence</span></button>
-              <button class="chip" id="clearVoiceBtn">✕ <span class="hi">साफ़ करें</span><span class="en">Clear</span></button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row-end">
-        <button class="btn ghost" onclick="go('checkin')">← <span class="hi">वापस</span><span class="en">Back</span></button>
-        <button class="btn" id="symNext" disabled><span class="hi">आगे बढ़ें</span><span class="en">Continue</span> →</button>
-      </div>
-    </section>
-
-    <!-- ================= 4+5. AI CONVERSATION ================= -->
-    <section class="screen" id="s-chat">
-      <div class="bot">
-        <div class="bot-ring"></div>
-        <div class="bot-ring"></div>
-        <div class="bot-core" id="botCore">🤖</div>
-      </div>
-      <div class="q-count" id="qCount">Question 1 of 4</div>
-      <div class="q-text" id="qText">…</div>
-      <div class="q-voice" id="qVoice">
-        <div class="wave"><span></span><span></span><span></span><span></span><span></span></div>
-        <span class="hi">बोल रहा है…</span><span class="en">Speaking…</span>
-      </div>
-      <div class="answers" id="answers"></div>
-      <div class="thinking" id="thinking" style="display:none">
-        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        <span class="hi">जानकारी दर्ज हो रही है…</span><span class="en">Recording your answer…</span>
-      </div>
-    </section>
-
-    <!-- ================= 6. PRESCRIPTION SCANNER ================= -->
-    <section class="screen" id="s-scan">
-      <div class="scr-head">
-        <div class="scr-title"><span class="hi">पर्ची स्कैन करें</span><span class="en">Scan your prescription</span></div>
-        <div class="scr-sub"><span class="hi">पुरानी दवाइयाँ अपने आप पढ़ी जाएँगी</span><span class="en">Previous medicines will be auto-detected</span></div>
-      </div>
-
-      <div class="scan-wrap">
-        <div class="scan-frame" id="scanFrame">
-          <div class="corner tl"></div><div class="corner tr"></div>
-          <div class="corner bl"></div><div class="corner br"></div>
-          <div class="scan-line" id="scanLine" style="display:none"></div>
-          <div class="doc" id="scanDoc">📄</div>
-          <div class="hint" id="scanHint"><span class="hi">दस्तावेज़ यहाँ रखें</span><span class="en">PLACE DOCUMENT HERE</span></div>
-        </div>
-
-        <div class="card" id="ocrCard" style="display:none">
-          <div class="bar"><i id="ocrBar"></i></div>
-          <div class="steps-log" id="ocrLog">
-            <div data-s="1">✅ <span class="hi">दस्तावेज़ स्कैन हुआ</span><span class="en">Document scanned</span></div>
-            <div data-s="2">✅ <span class="hi">टेक्स्ट निकाला जा रहा है…</span><span class="en">Extracting text (OCR)…</span></div>
-            <div data-s="3">✅ <span class="hi">दवाइयाँ पहचानी गईं</span><span class="en">Medicines detected</span></div>
-            <div data-s="4">✅ <span class="hi">पुरानी पर्ची मिली</span><span class="en">Previous prescription found</span></div>
-          </div>
-        </div>
-
-        <div class="card" id="medsCard" style="display:none">
-          <h4><span class="hi">पाई गई दवाइयाँ</span><span class="en">Detected medicines</span></h4>
-          <div class="taglist" id="medsList"></div>
+        <div class="notice" style="margin-bottom:0;margin-top:20px">
+          <span class="notice-ico">🔒</span>
+          <p><b>Consent:</b> By continuing, the patient consents to their health information being recorded and shared with the treating doctor under the Digital Personal Data Protection Act, 2023.</p>
         </div>
 
         <div class="row-end">
-          <button class="btn ghost" id="skipScan"><span class="hi">छोड़ें</span><span class="en">Skip</span> →</button>
-          <button class="btn" id="scanBtn">📸 <span class="hi">दस्तावेज़ स्कैन करें</span><span class="en">Scan Document</span></button>
+          <button class="btn ghost" onclick="go('welcome')">← Back</button>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ================= 7. CLINICAL SUMMARY ================= -->
-    <section class="screen" id="s-summary">
-      <div class="scr-head">
-        <div class="scr-title">✅ <span class="hi">क्लिनिकल इतिहास तैयार</span><span class="en">Clinical History Generated</span></div>
-        <div class="scr-sub"><span class="hi">यह ड्राफ़्ट डॉक्टर के पास भेजा जाएगा (निदान नहीं — केवल इतिहास)</span><span class="en">This draft goes to the doctor (history only — no diagnosis)</span></div>
+  <!-- ══════════ 3. SYMPTOMS ══════════ -->
+  <section class="screen" id="s-symptoms">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Where does it hurt?</div>
+        <span class="step-chip">Step 3 / 8</span>
       </div>
-
-      <div class="sum-grid">
-        <div class="sum-card span2">
-          <h4>Chief Complaint</h4>
-          <div class="big-val" id="sumComplaint">—</div>
-          <div class="kv" id="sumDuration">—</div>
-        </div>
-
-        <div class="sum-card">
-          <h4><span class="hi">लक्षण</span><span class="en">Symptoms</span></h4>
-          <div class="taglist" id="sumSymptoms"></div>
-        </div>
-
-        <div class="sum-card">
-          <h4>Pain Score</h4>
-          <div class="big-val" id="sumPainVal">—</div>
-          <div class="bar red" style="margin-top:12px"><i id="sumPainBar"></i></div>
-        </div>
-
-        <div class="sum-card span2">
-          <h4><span class="hi">पहले से चल रही दवाइयाँ</span><span class="en">Previous Medicines</span></h4>
-          <div class="taglist" id="sumMeds"></div>
-        </div>
-
-        <div class="flags" id="sumFlags" style="display:none">
-          <div class="fi">⚠️</div>
-          <div>
-            <b>POSSIBLE WARNING SIGNS DETECTED</b>
-            <p id="sumFlagText"></p>
+      <div class="panel-body">
+        <div class="sym-grid">
+          <div class="body-card">
+            <span class="hint-badge">Tap the body</span>
+            <svg class="body" viewBox="0 0 220 400" aria-label="Interactive body map">
+              <line class="region" data-region="joints" x1="76" y1="104" x2="42" y2="212"/>
+              <line class="region" data-region="joints" x1="144" y1="104" x2="178" y2="212"/>
+              <line class="region" data-region="joints" x1="93" y1="212" x2="82" y2="362"/>
+              <line class="region" data-region="joints" x1="127" y1="212" x2="138" y2="362"/>
+              <rect class="base" x="100" y="68" width="20" height="24" rx="9"/>
+              <rect class="region" data-region="chest" x="70" y="84" width="80" height="66" rx="28"/>
+              <rect class="region" data-region="stomach" x="70" y="150" width="80" height="64" rx="26"/>
+              <circle class="region" data-region="head" cx="110" cy="46" r="30"/>
+            </svg>
           </div>
-        </div>
-      </div>
 
-      <div class="row-end">
-        <button class="btn" id="toToken"><span class="hi">टोकन बनाएँ</span><span class="en">Generate Token</span> →</button>
-      </div>
-    </section>
-
-    <!-- ================= 8. TOKEN ================= -->
-    <section class="screen" id="s-token">
-      <div class="token-card">
-        <div class="check">✓</div>
-        <div class="token-label"><span class="hi">पंजीकरण पूर्ण</span><span class="en">Registration Complete</span></div>
-        <div class="token-label" style="letter-spacing:.14em"><span class="hi">आपका टोकन</span><span class="en">Your Token</span></div>
-        <div class="token-no">B-42</div>
-        <div class="token-meta">Dr. A.K. Sharma · OPD Room 104</div>
-        <div class="token-note"><span class="hi">आपका इतिहास डॉक्टर तक भेज दिया गया है ✓</span><span class="en">Your history has been sent to the doctor ✓</span></div>
-      </div>
-      <div class="row-end" style="justify-content:center;width:100%">
-        <button class="btn dark" id="toDoctor">👨‍⚕️ <span class="hi">डॉक्टर डैशबोर्ड देखें</span><span class="en">Open Doctor Dashboard</span> →</button>
-      </div>
-    </section>
-
-    <!-- ================= 9+10. DOCTOR DASHBOARD ================= -->
-    <section class="screen" id="s-doctor">
-      <div class="doc-shell">
-        <aside class="doc-queue">
-          <div class="dq-head">OPD Queue · Room 104</div>
-          <div class="dq-item active">
-            <div><div class="nm">Ramesh Kumar</div><div class="sub">52 y · Male · 3 days</div></div>
-            <div class="tk">B-42</div>
-          </div>
-          <div class="dq-item">
-            <div><div class="nm">Sunita Devi</div><div class="sub">38 y · Female · 1 day</div></div>
-            <div class="tk">B-43</div>
-          </div>
-          <div class="dq-item">
-            <div><div class="nm">Arif Khan</div><div class="sub">61 y · Male · 1 week</div></div>
-            <div class="tk">B-44</div>
-          </div>
-          <div class="dq-item">
-            <div><div class="nm">Meena Bai</div><div class="sub">27 y · Female · 2 days</div></div>
-            <div class="tk">B-45</div>
-          </div>
-        </aside>
-
-        <main class="doc-main">
-          <div class="doc-top">
-            <div>
-              <h2>Ramesh Kumar</h2>
-              <p>52 years · Male · ABHA 12-3456-7890 · Registered via Voice Kiosk</p>
+          <div class="panel-stack">
+            <div class="sub-card">
+              <h4>Body region <span class="muted-sm" id="regionEcho">None selected</span></h4>
+              <div class="chips" id="regionChips">
+                <button class="chip" data-region="head">🧠 Head · सिर</button>
+                <button class="chip" data-region="chest">🫁 Chest · छाती</button>
+                <button class="chip" data-region="stomach">🤢 Stomach · पेट</button>
+                <button class="chip" data-region="joints">🦴 Joints · जोड़</button>
+              </div>
             </div>
-            <div class="doc-token">B-42</div>
+
+            <div class="sub-card">
+              <h4>Other symptoms <span class="muted-sm">Optional · multiple allowed</span></h4>
+              <div class="chips" id="symChips">
+                <button class="chip" data-sym="Fever">🌡️ Fever · बुखार</button>
+                <button class="chip" data-sym="Vomiting">🤮 Vomiting · उल्टी</button>
+                <button class="chip" data-sym="Cough">😷 Cough · खांसी</button>
+                <button class="chip" data-sym="Breathlessness">💨 Breathlessness · सांस</button>
+                <button class="chip" data-sym="Dizziness">💫 Dizziness · चक्कर</button>
+                <button class="chip" data-sym="Weakness">🥴 Weakness · कमजोरी</button>
+              </div>
+            </div>
+
+            <div class="sub-card">
+              <h4>Describe it in your own words</h4>
+              <div class="voice-box">
+                <button class="mic-btn" id="micBtn" title="Start voice input">🎙️</button>
+                <div class="transcript empty" id="transcript">
+                  <span class="hi">माइक दबाएँ, या नीचे “नमूना वाक्य” चुनें…</span>
+                  <span class="en">Press the mic, or load the sample sentence below…</span>
+                </div>
+              </div>
+              <div class="chips" style="margin-top:14px">
+                <button class="chip" id="sampleBtn">✨ Sample sentence</button>
+                <button class="chip" id="clearVoiceBtn">✕ Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row-end">
+          <button class="btn ghost" onclick="go('checkin')">← Back</button>
+          <button class="btn" id="symNext" disabled>Continue to AI History →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ 4. AI CHAT ══════════ -->
+  <section class="screen" id="s-chat">
+    <div class="chat-grid">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">AI Follow-up Interview</div>
+          <span class="step-chip">Step 4 / 8</span>
+        </div>
+        <div class="chat-stage">
+          <div class="bot">
+            <div class="bot-ring"></div>
+            <div class="bot-ring"></div>
+            <div class="bot-core" id="botCore">🤖</div>
+          </div>
+          <div class="q-count" id="qCount">Question 1 of 4</div>
+          <div class="q-text" id="qText">…</div>
+          <div class="q-voice" id="qVoice">
+            <div class="wave"><span></span><span></span><span></span><span></span><span></span></div>
+            <span class="hi">बोल रहा है…</span><span class="en">Speaking…</span>
+          </div>
+          <div class="answers" id="answers"></div>
+          <div class="thinking" id="thinking" style="display:none">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="hi">जानकारी दर्ज हो रही है…</span><span class="en">Recording your answer…</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel draft-rail">
+        <div class="panel-head">
+          <div class="panel-title">Live Draft</div>
+          <span class="count-chip" id="draftCount">0/6</span>
+        </div>
+        <div class="panel-body" style="padding:8px 18px 18px">
+          <div id="draftList"></div>
+          <p class="muted-sm" style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)">
+            This draft updates in real time. The doctor will review and sign it before it enters the medical record.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ 5. SCANNER ══════════ -->
+  <section class="screen" id="s-scan">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Scan Prescription / Old Reports</div>
+        <span class="step-chip">Step 5 / 8</span>
+      </div>
+      <div class="panel-body">
+        <div class="scan-grid">
+          <div>
+            <div class="scan-frame" id="scanFrame">
+              <div class="corner tl"></div><div class="corner tr"></div>
+              <div class="corner bl"></div><div class="corner br"></div>
+              <div class="scan-line" id="scanLine" style="display:none"></div>
+              <div class="doc" id="scanDoc">📄</div>
+              <div class="hint" id="scanHint">Place document here</div>
+            </div>
+
+            <div class="row-end" style="justify-content:space-between">
+              <button class="btn ghost" id="skipScan">Skip →</button>
+              <button class="btn" id="scanBtn">📸 Scan Document</button>
+            </div>
           </div>
 
-          <div class="doc-flags" id="docFlags">
+          <div class="panel-stack">
+            <div class="sub-card" id="ocrCard" style="display:none">
+              <h4>Extraction progress <span class="mono muted-sm" id="ocrPct">0%</span></h4>
+              <div class="bar"><i id="ocrBar"></i></div>
+              <div class="steps-log" id="ocrLog">
+                <div data-s="1">✅ Document scanned successfully</div>
+                <div data-s="2">✅ Extracting text (OCR engine)</div>
+                <div data-s="3">✅ Medicines detected &amp; normalised</div>
+                <div data-s="4">✅ Previous prescription matched</div>
+              </div>
+            </div>
+
+            <div class="sub-card" id="medsCard" style="display:none">
+              <h4>Detected medicines <span class="tag ok" style="padding:2px 10px;font-size:.62rem">2 found</span></h4>
+              <div class="taglist" id="medsList"></div>
+              <p class="muted-sm" style="margin-top:12px">Dosage and frequency are read from the prescription. The doctor verifies before prescribing.</p>
+            </div>
+
+            <div class="sub-card" id="scanIdle">
+              <h4>Why we ask</h4>
+              <p class="muted-sm">Old prescriptions and lab reports help the doctor avoid duplicate medication and spot drug interactions. Nothing is prescribed automatically.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ 6. SUMMARY ══════════ -->
+  <section class="screen" id="s-summary">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Clinical History — Draft</div>
+        <span class="step-chip">Step 6 / 8</span>
+      </div>
+      <div class="panel-body">
+        <div class="sum-grid">
+          <div class="sum-card span2">
+            <h4>Chief Complaint <span class="ai-badge">AI DRAFT</span></h4>
+            <div class="big-val" id="sumComplaint">—</div>
+            <div class="kv" id="sumDuration">—</div>
+          </div>
+
+          <div class="sum-card">
+            <h4>Symptoms Reported</h4>
+            <div class="taglist" id="sumSymptoms"></div>
+          </div>
+
+          <div class="sum-card">
+            <h4>Pain Score (patient-reported)</h4>
+            <div class="big-val" id="sumPainVal">—</div>
+            <div class="bar red" style="margin-top:12px"><i id="sumPainBar"></i></div>
+          </div>
+
+          <div class="sum-card span2">
+            <h4>Previous Medicines (from OCR)</h4>
+            <div class="taglist" id="sumMeds"></div>
+          </div>
+
+          <div class="sum-card span2">
+            <h4>Extraction Confidence</h4>
+            <div class="confidence">
+              <div class="bar green"><i id="sumConfBar" style="width:0"></i></div>
+              <b id="sumConfVal">0%</b>
+            </div>
+            <p class="muted-sm" style="margin-top:10px">Confidence reflects how clearly the kiosk captured each field. Low-confidence fields are highlighted for the doctor.</p>
+          </div>
+
+          <div class="flags" id="sumFlags" style="display:none">
             <div class="fi">⚠️</div>
             <div>
-              <b>RED FLAGS — REVIEW BEFORE CONSULT</b>
-              <p id="docFlagText">—</p>
+              <b>Possible warning signs detected</b>
+              <p id="sumFlagText"></p>
             </div>
           </div>
+        </div>
 
-          <div class="approved-banner" id="approvedBanner">
-            ✅ <span>History reviewed & signed by Dr. A.K. Sharma · Draft locked to EMR</span>
-          </div>
+        <div class="notice" style="margin-top:22px;margin-bottom:0">
+          <span class="notice-ico">🩺</span>
+          <p><b>No diagnosis is generated.</b> MediKiosk only collects and organises the patient's own account of their symptoms. All clinical judgement remains with the treating doctor.</p>
+        </div>
 
-          <div class="doc-grid">
-            <div class="dcard">
-              <h4>Chief Complaint <span class="ai-badge">AI DRAFT</span></h4>
-              <div class="val" id="docComplaint">—</div>
-            </div>
-            <div class="dcard">
-              <h4>Pain Score <span class="ai-badge">AI DRAFT</span></h4>
-              <div class="val" id="docPain">—</div>
-            </div>
-            <div class="dcard">
-              <h4>History of Present Illness <span class="ai-badge">AI DRAFT</span></h4>
-              <div class="val" id="docHpi">—</div>
-            </div>
-            <div class="dcard">
-              <h4>Symptoms Reported</h4>
-              <ul id="docSymptoms"></ul>
-            </div>
-            <div class="dcard" style="grid-column:span 2">
-              <h4>Previous Medicines (OCR)</h4>
-              <ul id="docMeds"></ul>
-            </div>
-          </div>
-
-          <div class="doc-actions">
-            <button class="dbtn ghost" id="editBtn">✏️ Edit Draft</button>
-            <button class="dbtn ghost" id="noteBtn">📝 Add Notes</button>
-            <button class="dbtn go" id="approveBtn">✔ Approve & Sign</button>
-          </div>
-        </main>
+        <div class="row-end">
+          <button class="btn" id="toToken">Generate Token →</button>
+        </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-  </main>
-</div>
+  <!-- ══════════ 7. TOKEN ══════════ -->
+  <section class="screen" id="s-token">
+    <div class="token-wrap">
+      <div class="token-card">
+        <div class="check">✓</div>
+        <div class="token-label">Registration Complete</div>
+        <div class="token-no">B-42</div>
+        <div class="token-label" style="margin-top:2px">Your Token Number</div>
+        <div class="token-meta" style="margin-top:8px">Dr. A.K. Sharma · OPD Room 104</div>
+        <div class="token-note">✓ Your history has been sent to the doctor</div>
+        <svg class="qr" viewBox="0 0 100 100" aria-label="Token QR code">
+          <rect width="100" height="100" fill="#fff"/>
+          <g fill="#0a2c52">
+            <rect x="6" y="6" width="22" height="22"/><rect x="72" y="6" width="22" height="22"/><rect x="6" y="72" width="22" height="22"/>
+            <rect x="11" y="11" width="12" height="12" fill="#fff"/><rect x="77" y="11" width="12" height="12" fill="#fff"/><rect x="11" y="77" width="12" height="12" fill="#fff"/>
+            <rect x="36" y="6" width="6" height="6"/><rect x="48" y="6" width="6" height="6"/><rect x="36" y="18" width="6" height="6"/><rect x="54" y="18" width="6" height="6"/>
+            <rect x="6" y="36" width="6" height="6"/><rect x="18" y="36" width="6" height="6"/><rect x="36" y="36" width="6" height="6"/><rect x="48" y="36" width="6" height="6"/><rect x="60" y="36" width="6" height="6"/><rect x="78" y="36" width="6" height="6"/><rect x="90" y="36" width="6" height="6"/>
+            <rect x="12" y="48" width="6" height="6"/><rect x="30" y="48" width="6" height="6"/><rect x="42" y="48" width="6" height="6"/><rect x="66" y="48" width="6" height="6"/><rect x="84" y="48" width="6" height="6"/>
+            <rect x="36" y="60" width="6" height="6"/><rect x="54" y="60" width="6" height="6"/><rect x="72" y="60" width="6" height="6"/>
+            <rect x="42" y="72" width="6" height="6"/><rect x="60" y="72" width="6" height="6"/><rect x="84" y="72" width="6" height="6"/>
+            <rect x="36" y="84" width="6" height="6"/><rect x="54" y="84" width="6" height="6"/><rect x="72" y="84" width="6" height="6"/><rect x="90" y="84" width="6" height="6"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Visit Details</div><span class="step-chip">Step 7 / 8</span></div>
+        <div class="panel-body">
+          <div class="info-row"><span class="k">Patient</span><span class="v">Ramesh Kumar · 52 / M</span></div>
+          <div class="info-row"><span class="k">Department</span><span class="v">General Medicine</span></div>
+          <div class="info-row"><span class="k">Doctor</span><span class="v">Dr. A.K. Sharma</span></div>
+          <div class="info-row"><span class="k">Room</span><span class="v">OPD 104 · Block B</span></div>
+          <div class="info-row"><span class="k">Queue position</span><span class="v">3rd in line</span></div>
+          <div class="info-row"><span class="k">Est. wait</span><span class="v">~12 minutes</span></div>
+          <div class="info-row"><span class="k">History status</span><span class="v" style="color:var(--green-600)">Sent to doctor ✓</span></div>
+
+          <div class="row-end" style="justify-content:stretch;margin-top:18px">
+            <button class="btn ghost wide" onclick="window.print()">🖨 Print Slip</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row-end" style="justify-content:center">
+      <button class="btn" id="toDoctor">Open Doctor Console →</button>
+    </div>
+  </section>
+
+  <!-- ══════════ 8. DOCTOR DASHBOARD ══════════ -->
+  <section class="screen" id="s-doctor">
+    <div class="doc-layout">
+      <aside class="panel doc-queue">
+        <div class="panel-head">
+          <div class="panel-title">OPD Queue</div>
+          <span class="count-chip">4</span>
+        </div>
+        <div class="q-search">
+          <input type="text" id="qSearch" placeholder="Search token or patient…" autocomplete="off"/>
+        </div>
+        <div class="q-list" id="qList">
+          <button class="q-item active" data-name="ramesh kumar">
+            <div><div class="nm">Ramesh Kumar</div><div class="sub">52 y · Male · 3 days</div></div>
+            <div class="tk">B-42</div>
+          </button>
+          <button class="q-item" data-name="sunita devi">
+            <div><div class="nm">Sunita Devi</div><div class="sub">38 y · Female · 1 day</div></div>
+            <div class="tk">B-43</div>
+          </button>
+          <button class="q-item" data-name="arif khan">
+            <div><div class="nm">Arif Khan</div><div class="sub">61 y · Male · 1 week</div></div>
+            <div class="tk">B-44</div>
+          </button>
+          <button class="q-item" data-name="meena bai">
+            <div><div class="nm">Meena Bai</div><div class="sub">27 y · Female · 2 days</div></div>
+            <div class="tk">B-45</div>
+          </button>
+          <div class="q-empty" id="qEmpty" style="display:none">No matching patients in queue.</div>
+        </div>
+      </aside>
+
+      <div class="doc-main">
+        <div class="panel">
+          <div class="doc-head">
+            <div class="doc-id">
+              <div class="avatar">RK</div>
+              <div>
+                <h2>Ramesh Kumar</h2>
+                <div class="meta">
+                  <span>52 years</span><i>·</i>
+                  <span>Male</span><i>·</i>
+                  <span>ABHA 12-3456-7890</span><i>·</i>
+                  <span>Voice Kiosk</span>
+                </div>
+              </div>
+            </div>
+            <div class="doc-token-box">
+              <div class="doc-token">B-42</div>
+              <span class="status-pill" id="statusPill">Awaiting review</span>
+            </div>
+          </div>
+
+          <div class="vitals-strip">
+            <div class="vital abn"><b>148/92</b><span>BP mmHg</span></div>
+            <div class="vital abn"><b>104</b><span>Pulse /min</span></div>
+            <div class="vital abn"><b>38.4°</b><span>Temp °C</span></div>
+            <div class="vital"><b>97%</b><span>SpO₂</span></div>
+            <div class="vital"><b>71 kg</b><span>Weight</span></div>
+          </div>
+        </div>
+
+        <div class="alert-banner">
+          <div class="fi">⚠️</div>
+          <div>
+            <b>Red flags — review before consult</b>
+            <p id="docFlagText">—</p>
+          </div>
+        </div>
+
+        <div class="approved-banner" id="approvedBanner">
+          ✅ History reviewed &amp; signed by Dr. A.K. Sharma · Draft committed to EMR
+        </div>
+
+        <div class="doc-cols">
+          <div class="dcard">
+            <h4>Chief Complaint <span class="ai-badge">AI DRAFT</span></h4>
+            <div class="val" id="docComplaint">—</div>
+          </div>
+
+          <div class="dcard">
+            <h4>Pain Score <span class="ai-badge">AI DRAFT</span></h4>
+            <div class="val" id="docPain">—</div>
+          </div>
+
+          <div class="dcard span2">
+            <h4>History of Present Illness <span class="ai-badge">AI DRAFT</span></h4>
+            <div class="val" id="docHpi">—</div>
+          </div>
+
+          <div class="dcard">
+            <h4>Symptoms Reported</h4>
+            <ul id="docSymptoms"></ul>
+          </div>
+
+          <div class="dcard">
+            <h4>Allergies &amp; Alerts</h4>
+            <ul>
+              <li>No known drug allergies</li>
+              <li>Hypertensive — on treatment</li>
+              <li>Last visit: 14 Feb 2026</li>
+            </ul>
+          </div>
+
+          <div class="dcard span2">
+            <h4>Previous Medicines — OCR Extraction</h4>
+            <table class="tbl">
+              <thead>
+                <tr><th>Medicine</th><th>Dose</th><th>Source</th><th>Confidence</th></tr>
+              </thead>
+              <tbody id="docMeds"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <button class="btn ghost" id="editBtn">✏️ Edit Draft</button>
+          <button class="btn ghost" id="noteBtn">📝 Add Notes</button>
+          <button class="btn ghost" id="referBtn">↗ Refer</button>
+          <button class="btn green" id="approveBtn">✔ Approve &amp; Sign</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="gov-footer">
+  <div class="wrap foot-grid">
+    <div class="foot-col">
+      <h5>MediKiosk</h5>
+      <p>An AI-assisted OPD registration and clinical history capture system designed for high-volume public health facilities. Prototype build for evaluation — not for clinical use.</p>
+    </div>
+    <div class="foot-col">
+      <h5>Quick Links</h5>
+      <ul>
+        <li><a href="#">Patient Kiosk</a></li>
+        <li><a href="#">Doctor Console</a></li>
+        <li><a href="#">Clinical Summary</a></li>
+        <li><a href="#">Document Upload</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Resources</h5>
+      <ul>
+        <li><a href="#">ABDM Sandbox</a></li>
+        <li><a href="#">FHIR R4 Profiles</a></li>
+        <li><a href="#">Accessibility Statement</a></li>
+        <li><a href="#">Data Protection Policy</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Support</h5>
+      <ul>
+        <li><a href="#">Health Helpline 104</a></li>
+        <li><a href="#">1800-11-4000</a></li>
+        <li><a href="#">Report an Issue</a></li>
+        <li><a href="#">Feedback</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap foot-bottom">
+    <span>© 2026 <b>MediKiosk Prototype</b> · Built for hackathon evaluation. Not an official Government of India portal.</span>
+    <span><b>Last updated:</b> 22 Sep 2026 · <b>Build:</b> v0.9.3-prototype</span>
+  </div>
+</footer>
 
 <div class="toast" id="toast">Saved</div>
 
 <script>
-/* =========================================================
+/* ══════════════════════════════════════════════════════════════
    STATE
-   ========================================================= */
+   ══════════════════════════════════════════════════════════════ */
 const state = {
-  lang: 'en',
-  region: null,
-  symptoms: new Set(),
-  transcript: '',
-  answers: {},
-  medicines: ['Pantoprazole 40mg', 'Paracetamol 650mg'],
-  approved: false
+  lang:'en',
+  region:null,
+  symptoms:new Set(),
+  transcript:'',
+  answers:{},
+  medicines:[
+    {name:'Pantoprazole', dose:'40 mg OD', conf:98},
+    {name:'Paracetamol',  dose:'650 mg TDS', conf:96}
+  ],
+  approved:false
 };
 
 const REGIONS = {
-  head:    { en:'Head',    hi:'सिर' },
-  chest:   { en:'Chest',   hi:'छाती' },
-  stomach: { en:'Stomach', hi:'पेट' },
-  joints:  { en:'Joints',  hi:'जोड़' }
+  head:{en:'Head',hi:'सिर'},
+  chest:{en:'Chest',hi:'छाती'},
+  stomach:{en:'Stomach',hi:'पेट'},
+  joints:{en:'Joints',hi:'जोड़'}
 };
 
 const ORDER = ['welcome','checkin','symptoms','chat','scan','summary','token','doctor'];
+const CRUMBS = {
+  welcome:['Home','Patient Kiosk','Language'],
+  checkin:['Home','Patient Kiosk','Check-in'],
+  symptoms:['Home','Patient Kiosk','Symptoms'],
+  chat:['Home','Patient Kiosk','AI History'],
+  scan:['Home','Patient Kiosk','Documents'],
+  summary:['Home','Patient Kiosk','Clinical Summary'],
+  token:['Home','Patient Kiosk','Token'],
+  doctor:['Home','Doctor Console','Patient Review']
+};
 
-/* =========================================================
+/* ══════════════════════════════════════════════════════════════
    NAVIGATION
-   ========================================================= */
+   ══════════════════════════════════════════════════════════════ */
 function go(name){
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById('s-' + name);
@@ -767,89 +2078,136 @@ function go(name){
   el.style.animation = 'none';
   void el.offsetWidth;
   el.style.animation = '';
-  document.getElementById('stage').scrollTop = 0;
 
   const idx = ORDER.indexOf(name) + 1;
-  document.querySelectorAll('.pseg').forEach(p => {
-    const s = +p.dataset.step;
-    p.classList.toggle('done', s < idx);
-    p.classList.toggle('now', s === idx);
+  document.querySelectorAll('.step').forEach(st => {
+    const n = +st.dataset.step;
+    st.classList.toggle('done', n < idx);
+    st.classList.toggle('now', n === idx);
   });
 
-  document.body.classList.toggle('doctor-mode', name === 'doctor');
-  if(name === 'doctor') buildDoctor();
-  if(name === 'summary') buildSummary();
+  const c = CRUMBS[name] || [];
+  const crumb = document.getElementById('crumb');
+  if(c.length === 3){
+    crumb.innerHTML = `<span>${c[0]}</span><i>/</i><span>${c[1]}</span><i>/</i><b>${c[2]}</b>`;
+  }
+
+  document.querySelectorAll('.nav-item').forEach(n => {
+    const t = n.dataset.nav;
+    const isPatient = ['welcome','checkin','symptoms','chat','scan','token'].includes(name);
+    n.classList.toggle('active',
+      (t === 'welcome' && isPatient) || t === name
+    );
+  });
+
+  document.getElementById('stepperBar').classList.toggle('hide', name === 'doctor');
+
+  window.scrollTo({top:0, behavior:'smooth'});
+
   if(name === 'chat'){ qIndex = 0; renderQuestion(); }
+  if(name === 'summary') buildSummary();
+  if(name === 'doctor') buildDoctor();
 }
 
-/* =========================================================
+/* ══════════════════════════════════════════════════════════════
    LANGUAGE
-   ========================================================= */
+   ══════════════════════════════════════════════════════════════ */
 function setLang(l){
   state.lang = l;
   document.body.classList.toggle('lang-hi', l === 'hi');
   document.body.classList.toggle('lang-en', l === 'en');
   document.querySelectorAll('.lang-card').forEach(c => c.classList.toggle('sel', c.dataset.lang === l));
+  document.getElementById('langTop').innerHTML =
+    l === 'en' ? '<b>EN</b> / हिं' : 'EN / <b>हिं</b>';
 }
-document.getElementById('langBtn').onclick = () => setLang(state.lang === 'en' ? 'hi' : 'en');
+document.getElementById('langTop').onclick = () => setLang(state.lang === 'en' ? 'hi' : 'en');
 
-/* =========================================================
+/* ══════════════════════════════════════════════════════════════
+   FONT SIZE + CONTRAST
+   ══════════════════════════════════════════════════════════════ */
+let fsLevel = 0;
+document.querySelectorAll('[data-fs]').forEach(b => {
+  b.onclick = () => {
+    const d = parseInt(b.dataset.fs, 10);
+    fsLevel = d === 0 ? 0 : Math.max(-2, Math.min(3, fsLevel + d));
+    document.documentElement.style.fontSize = (16 + fsLevel) + 'px';
+    toast('Text size: ' + (16 + fsLevel) + 'px');
+  };
+});
+document.getElementById('hcBtn').onclick = function(){
+  document.body.classList.toggle('hc');
+  const on = document.body.classList.contains('hc');
+  this.innerHTML = on ? '◑ Normal' : '◐ Contrast';
+  toast(on ? 'High contrast enabled' : 'High contrast disabled');
+};
+document.getElementById('skipBtn').onclick = () => {
+  const s = document.getElementById('stage');
+  s.scrollIntoView({behavior:'smooth'});
+  s.setAttribute('tabindex','-1');
+  s.focus();
+};
+
+/* ══════════════════════════════════════════════════════════════
    TOAST
-   ========================================================= */
+   ══════════════════════════════════════════════════════════════ */
 let toastT;
 function toast(msg){
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('on');
   clearTimeout(toastT);
-  toastT = setTimeout(() => t.classList.remove('on'), 2200);
+  toastT = setTimeout(() => t.classList.remove('on'), 2400);
 }
 
-/* =========================================================
+/* ══════════════════════════════════════════════════════════════
    1. WELCOME
-   ========================================================= */
+   ══════════════════════════════════════════════════════════════ */
 document.querySelectorAll('.lang-card').forEach(c => {
   c.onclick = () => {
     setLang(c.dataset.lang);
-    setTimeout(() => go('checkin'), 420);
+    setTimeout(() => go('checkin'), 380);
   };
 });
 document.getElementById('welcomeMic').onclick = () => {
   setLang('hi');
   toast('🎙️ भाषा पहचानी गई: हिंदी');
-  setTimeout(() => go('checkin'), 600);
+  setTimeout(() => go('checkin'), 620);
 };
 
-/* =========================================================
+/* ══════════════════════════════════════════════════════════════
    2. CHECK-IN
-   ========================================================= */
+   ══════════════════════════════════════════════════════════════ */
 document.querySelectorAll('[data-checkin]').forEach(t => {
   t.onclick = () => {
     const kind = t.dataset.checkin;
     t.classList.add('busy');
-    const labels = {
-      qr:     ['📷 QR स्कैन हो रहा है…', '📷 Scanning QR…'],
-      mobile: ['📱 OTP भेजा जा रहा है…', '📱 Sending OTP…'],
-      voice:  ['🎙️ आवाज़ पहचानी जा रही है…', '🎙️ Recognising voice…']
+    const msgs = {
+      qr:['📷 QR स्कैन हो रहा है…','📷 Scanning QR code…'],
+      mobile:['📱 OTP भेजा जा रहा है…','📱 Sending OTP…'],
+      voice:['🎙️ आवाज़ पहचानी जा रही है…','🎙️ Recognising voice…']
     };
-    toast(state.lang === 'hi' ? labels[kind][0] : labels[kind][1]);
-    setTimeout(() => { t.classList.remove('busy'); go('symptoms'); }, 1300);
+    toast(state.lang === 'hi' ? msgs[kind][0] : msgs[kind][1]);
+    setTimeout(() => { t.classList.remove('busy'); go('symptoms'); }, 1250);
   };
 });
 
-/* =========================================================
-   3. SYMPTOMS / BODY MAP
-   ========================================================= */
+/* ══════════════════════════════════════════════════════════════
+   3. SYMPTOMS
+   ══════════════════════════════════════════════════════════════ */
 function selectRegion(r){
   state.region = r;
   document.querySelectorAll('.body .region').forEach(el =>
     el.classList.toggle('on', el.dataset.region === r));
   document.querySelectorAll('#regionChips .chip').forEach(c =>
     c.classList.toggle('on', c.dataset.region === r));
-  refreshSymNext();
+  const echo = document.getElementById('regionEcho');
+  echo.textContent = REGIONS[r].en + ' selected';
+  echo.style.color = 'var(--green-600)';
+  echo.style.fontWeight = '800';
+  document.getElementById('symNext').disabled = false;
 }
 document.querySelectorAll('.body .region').forEach(el => {
-  el.onclick = () => selectRegion(el.dataset.region);
+  el.addEventListener('click', () => selectRegion(el.dataset.region));
 });
 document.querySelectorAll('#regionChips .chip').forEach(c => {
   c.onclick = () => selectRegion(c.dataset.region);
@@ -861,11 +2219,7 @@ document.querySelectorAll('#symChips .chip').forEach(c => {
     else { state.symptoms.add(s); c.classList.add('on'); }
   };
 });
-function refreshSymNext(){
-  document.getElementById('symNext').disabled = !state.region;
-}
 
-/* Voice simulation */
 const SAMPLE_HI = 'मेरे पेट में तीन दिन से तेज़ दर्द है और उल्टी भी हो रही है।';
 const SAMPLE_EN = 'I have had severe stomach pain for three days and I am also vomiting.';
 
@@ -882,15 +2236,14 @@ function typeInto(el, text, speed, cb){
 document.getElementById('sampleBtn').onclick = () => {
   const text = state.lang === 'hi' ? SAMPLE_HI : SAMPLE_EN;
   state.transcript = text;
-  typeInto(document.getElementById('transcript'), text, 26);
+  typeInto(document.getElementById('transcript'), text, 24);
 };
 document.getElementById('clearVoiceBtn').onclick = () => {
   state.transcript = '';
   const el = document.getElementById('transcript');
   el.className = 'transcript empty';
-  el.innerHTML = '<span class="hi">माइक दबाएँ या नीचे नमूना वाक्य भरें…</span><span class="en">Press the mic or load the sample sentence below…</span>';
+  el.innerHTML = '<span class="hi">माइक दबाएँ, या नीचे “नमूना वाक्य” चुनें…</span><span class="en">Press the mic, or load the sample sentence below…</span>';
 };
-
 document.getElementById('micBtn').onclick = function(){
   const btn = this;
   if(btn.classList.contains('rec')) return;
@@ -903,42 +2256,33 @@ document.getElementById('micBtn').onclick = function(){
     btn.classList.remove('rec');
     const text = state.lang === 'hi' ? SAMPLE_HI : SAMPLE_EN;
     state.transcript = text;
-    typeInto(el, text, 24);
-  }, 1600);
+    typeInto(el, text, 22);
+  }, 1500);
 };
-
 document.getElementById('symNext').onclick = () => go('chat');
 
-/* =========================================================
-   4+5. AI CONVERSATION ENGINE
-   ========================================================= */
+/* ══════════════════════════════════════════════════════════════
+   4. AI CHAT
+   ══════════════════════════════════════════════════════════════ */
 const QUESTIONS = [
-  {
-    id:'fever', type:'yesno',
+  { id:'fever', type:'yesno',
     en:'Do you also have fever or vomiting?',
-    hi:'क्या आपको बुखार या उल्टी भी है?'
-  },
-  {
-    id:'pain', type:'scale',
+    hi:'क्या आपको बुखार या उल्टी भी है?' },
+  { id:'pain', type:'scale',
     en:'How severe is your pain right now?',
-    hi:'दर्द अभी कितना तेज़ है?'
-  },
-  {
-    id:'duration', type:'chips',
+    hi:'दर्द अभी कितना तेज़ है?' },
+  { id:'duration', type:'chips',
     en:'Since when have you had this pain?',
     hi:'यह दर्द कब से है?',
     options:[
-      { v:'1 day',  en:'1 day',  hi:'1 दिन' },
-      { v:'2 days', en:'2 days', hi:'2 दिन' },
-      { v:'3 days', en:'3 days', hi:'3 दिन' },
-      { v:'More than a week', en:'More than a week', hi:'एक हफ्ते से ज़्यादा' }
-    ]
-  },
-  {
-    id:'meds', type:'yesno',
+      {v:'1 day', en:'1 day', hi:'1 दिन'},
+      {v:'2 days', en:'2 days', hi:'2 दिन'},
+      {v:'3 days', en:'3 days', hi:'3 दिन'},
+      {v:'More than a week', en:'More than a week', hi:'एक हफ्ते से ज़्यादा'}
+    ]},
+  { id:'meds', type:'yesno',
     en:'Are you already taking any medicines?',
-    hi:'क्या आप पहले से कोई दवा ले रहे हैं?'
-  }
+    hi:'क्या आप पहले से कोई दवा ले रहे हैं?' }
 ];
 
 let qIndex = 0;
@@ -947,8 +2291,7 @@ function renderQuestion(){
   const q = QUESTIONS[qIndex];
   if(!q){ go('scan'); return; }
 
-  document.getElementById('qCount').textContent =
-    `Question ${qIndex + 1} of ${QUESTIONS.length}`;
+  document.getElementById('qCount').textContent = `Question ${qIndex + 1} of ${QUESTIONS.length}`;
   document.getElementById('qText').innerHTML =
     `<span class="en">${q.en}</span><span class="hi">${q.hi}</span>`;
 
@@ -964,14 +2307,12 @@ function renderQuestion(){
     box.innerHTML = `
       <button class="ans big" data-v="yes">😊 <span>YES</span><small>हाँ</small></button>
       <button class="ans big no" data-v="no">❌ <span>NO</span><small>नहीं</small></button>`;
-  }
-  else if(q.type === 'scale'){
+  } else if(q.type === 'scale'){
     box.innerHTML = `
       <button class="ans" data-v="3">😊 <span>Mild</span><small>3 / 10</small></button>
       <button class="ans" data-v="6">😐 <span>Moderate</span><small>6 / 10</small></button>
       <button class="ans" data-v="8">😫 <span>Severe</span><small>8 / 10</small></button>`;
-  }
-  else if(q.type === 'chips'){
+  } else {
     box.innerHTML = q.options.map(o =>
       `<button class="ans" data-v="${o.v}">
          <span class="en">${o.en}</span><span class="hi">${o.hi}</span>
@@ -979,26 +2320,51 @@ function renderQuestion(){
   }
 
   box.querySelectorAll('.ans').forEach(b => {
-    b.onclick = () => answerQuestion(b.dataset.v);
+    b.onclick = () => {
+      b.classList.add('pick');
+      answerQuestion(b.dataset.v);
+    };
   });
+
+  updateDraftRail();
 }
 
 function answerQuestion(value){
   const q = QUESTIONS[qIndex];
   state.answers[q.id] = (q.type === 'scale') ? Number(value) : value;
+  updateDraftRail();
 
   document.getElementById('thinking').style.display = 'flex';
   document.querySelectorAll('#answers .ans').forEach(b => b.style.pointerEvents = 'none');
 
-  setTimeout(() => {
-    qIndex++;
-    renderQuestion();
-  }, 900);
+  setTimeout(() => { qIndex++; renderQuestion(); }, 950);
 }
 
-/* =========================================================
-   6. SCANNER
-   ========================================================= */
+function updateDraftRail(){
+  const a = state.answers;
+  const items = [
+    { k:'Body region', v: state.region ? REGIONS[state.region].en : '' },
+    { k:'Duration',    v: a.duration || '' },
+    { k:'Pain score',  v: a.pain ? a.pain + ' / 10' : '' },
+    { k:'Fever',       v: a.fever ? (a.fever === 'yes' ? 'Reported' : 'Denied') : '' },
+    { k:'Vomiting',    v: state.symptoms.has('Vomiting') ? 'Reported' : '' },
+    { k:'Medication',  v: a.meds ? (a.meds === 'yes' ? 'On treatment' : 'None') : '' }
+  ];
+
+  const filled = items.filter(i => i.v).length;
+  document.getElementById('draftCount').textContent = filled + '/' + items.length;
+
+  document.getElementById('draftList').innerHTML = items.map(i =>
+    `<div class="draft-item">
+       <span class="k">${i.k}</span>
+       <span class="v ${i.v ? 'filled' : 'empty'}">${i.v || 'Pending'}</span>
+     </div>`
+  ).join('');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   5. SCANNER
+   ══════════════════════════════════════════════════════════════ */
 const scanBtn = document.getElementById('scanBtn');
 const scanLine = document.getElementById('scanLine');
 
@@ -1006,18 +2372,21 @@ scanBtn.onclick = () => {
   scanBtn.disabled = true;
   scanLine.style.display = 'block';
   document.getElementById('scanDoc').textContent = '📄';
-  document.getElementById('scanHint').textContent = 'SCANNING…';
+  document.getElementById('scanHint').textContent = 'Scanning…';
   document.getElementById('ocrCard').style.display = 'block';
+  document.getElementById('scanIdle').style.display = 'none';
 
   const bar = document.getElementById('ocrBar');
+  const pct = document.getElementById('ocrPct');
   const log = document.querySelectorAll('#ocrLog div');
   log.forEach(d => d.classList.remove('on'));
 
   let p = 0;
   const iv = setInterval(() => {
-    p += Math.random() * 14 + 6;
+    p += Math.random() * 13 + 6;
     if(p >= 100) p = 100;
     bar.style.width = p + '%';
+    pct.textContent = Math.round(p) + '%';
 
     if(p > 20) log[0].classList.add('on');
     if(p > 48) log[1].classList.add('on');
@@ -1027,14 +2396,14 @@ scanBtn.onclick = () => {
     if(p === 100){
       clearInterval(iv);
       scanLine.style.display = 'none';
-      document.getElementById('scanHint').textContent = '✓ SCAN COMPLETE';
+      document.getElementById('scanHint').textContent = '✓ Scan complete';
       document.getElementById('medsCard').style.display = 'block';
-      const list = document.getElementById('medsList');
-      list.innerHTML = state.medicines.map(m => `<span class="tag">💊 ${m}</span>`).join('');
-      scanBtn.textContent = '✓ Done';
-      setTimeout(() => go('summary'), 1200);
+      document.getElementById('medsList').innerHTML =
+        state.medicines.map(m => `<span class="tag">💊 ${m.name} ${m.dose}</span>`).join('');
+      scanBtn.textContent = '✓ Document captured';
+      setTimeout(() => go('summary'), 1250);
     }
-  }, 260);
+  }, 250);
 };
 
 document.getElementById('skipScan').onclick = () => {
@@ -1042,89 +2411,103 @@ document.getElementById('skipScan').onclick = () => {
   go('summary');
 };
 
-/* =========================================================
-   7. SUMMARY BUILDER
-   ========================================================= */
+/* ══════════════════════════════════════════════════════════════
+   6. SUMMARY
+   ══════════════════════════════════════════════════════════════ */
 function buildSummary(){
   const a = state.answers;
   const region = state.region ? REGIONS[state.region] : null;
   const pain = a.pain || 0;
+  const severity = pain >= 8 ? 'Severe' : pain >= 5 ? 'Moderate' : 'Mild';
 
-  const severityWord = pain >= 8 ? 'Severe' : pain >= 5 ? 'Moderate' : 'Mild';
-  const complaint = region
-    ? `${severityWord} ${region.en.toLowerCase()} pain`
-    : 'Generalised pain';
+  document.getElementById('sumComplaint').textContent =
+    region ? `${severity} ${region.en.toLowerCase()} pain` : 'Generalised pain';
 
-  document.getElementById('sumComplaint').textContent = complaint;
   document.getElementById('sumDuration').textContent =
-    'Duration: ' + (a.duration || 'Not specified') + ' · Reported at OPD kiosk';
+    'Duration: ' + (a.duration || 'Not specified') + ' · Reported at OPD self-service kiosk';
 
-  /* symptoms */
   const syms = [];
-  syms.push(region ? region.en + ' pain' : 'Pain');
+  if(region) syms.push(region.en + ' pain');
   state.symptoms.forEach(s => syms.push(s));
   if(a.fever === 'yes' && !state.symptoms.has('Fever')) syms.push('Fever');
   if(a.meds === 'yes') syms.push('On medication');
 
   document.getElementById('sumSymptoms').innerHTML =
-    syms.map(s => `<span class="tag">${s}</span>`).join('');
+    syms.length
+      ? syms.map(s => `<span class="tag">${s}</span>`).join('')
+      : '<span class="tag warn">No symptoms recorded</span>';
 
-  /* pain */
   document.getElementById('sumPainVal').textContent = pain ? `${pain} / 10` : '—';
   document.getElementById('sumPainBar').style.width = (pain * 10) + '%';
 
-  /* meds */
   document.getElementById('sumMeds').innerHTML = state.medicines.length
-    ? state.medicines.map(m => `<span class="tag">💊 ${m}</span>`).join('')
+    ? state.medicines.map(m => `<span class="tag">💊 ${m.name} ${m.dose}</span>`).join('')
     : '<span class="tag warn">No previous prescription uploaded</span>';
 
-  /* red flags */
+  const conf = state.medicines.length ? 94 : 72;
+  setTimeout(() => {
+    document.getElementById('sumConfBar').style.width = conf + '%';
+    document.getElementById('sumConfVal').textContent = conf + '%';
+  }, 180);
+
   const flags = [];
   if(pain >= 8) flags.push('high pain score (8/10)');
   if(state.symptoms.has('Vomiting')) flags.push('persistent vomiting');
   if(state.symptoms.has('Breathlessness')) flags.push('breathlessness');
+  if(a.duration === '3 days') flags.push('symptom duration ≥ 3 days');
 
   const flagBox = document.getElementById('sumFlags');
   if(flags.length){
     flagBox.style.display = 'flex';
     document.getElementById('sumFlagText').textContent =
-      flags.join(' + ') + ' — possible acute abdomen. Priority review advised. (AI flag, not a diagnosis.)';
+      flags.join(' + ') + ' — possible acute abdomen. Priority review advised. (AI-generated flag, not a diagnosis.)';
   } else {
     flagBox.style.display = 'none';
   }
 }
 document.getElementById('toToken').onclick = () => go('token');
 
-/* =========================================================
-   9+10. DOCTOR DASHBOARD
-   ========================================================= */
+/* ══════════════════════════════════════════════════════════════
+   7. TOKEN
+   ══════════════════════════════════════════════════════════════ */
+document.getElementById('toDoctor').onclick = () => go('doctor');
+
+/* ══════════════════════════════════════════════════════════════
+   8. DOCTOR DASHBOARD
+   ══════════════════════════════════════════════════════════════ */
 function buildDoctor(){
   const a = state.answers;
-  const region = state.region ? REGIONS[state.region] : { en:'Abdomen' };
+  const region = state.region ? REGIONS[state.region] : {en:'Abdomen'};
   const pain = a.pain || 8;
 
   document.getElementById('docComplaint').textContent =
     `Severe ${region.en.toLowerCase()} pain · ${a.duration || '3 days'}`;
 
-  document.getElementById('docPain').textContent = `${pain} / 10 (patient-reported)`;
+  document.getElementById('docPain').textContent =
+    `${pain} / 10 (patient-reported at kiosk)`;
 
   document.getElementById('docHpi').textContent =
     `Onset ${a.duration || '3 days'} ago. Continuous, non-radiating. ` +
     (a.fever === 'yes' ? 'Associated with fever. ' : '') +
     (state.symptoms.has('Vomiting') ? 'Associated with vomiting. ' : '') +
-    (a.meds === 'yes' ? 'Patient is already on medication (see below). ' : '') +
+    (a.meds === 'yes' ? 'Patient is already on medication (see table below). ' : '') +
     `Kiosk transcript: "${state.transcript || '—'}"`;
 
-  const symList = document.getElementById('docSymptoms');
   const syms = [region.en + ' pain'];
   state.symptoms.forEach(s => syms.push(s));
   if(a.fever === 'yes') syms.push('Fever');
-  symList.innerHTML = syms.map(s => `<li>${s}</li>`).join('');
+  document.getElementById('docSymptoms').innerHTML =
+    syms.map(s => `<li>${s}</li>`).join('');
 
-  const medList = document.getElementById('docMeds');
-  medList.innerHTML = state.medicines.length
-    ? state.medicines.map(m => `<li>${m}</li>`).join('')
-    : '<li>None reported</li>';
+  document.getElementById('docMeds').innerHTML = state.medicines.length
+    ? state.medicines.map(m =>
+        `<tr>
+           <td><b>${m.name}</b></td>
+           <td>${m.dose}</td>
+           <td>Prescription scan</td>
+           <td class="conf">${m.conf}%</td>
+         </tr>`).join('')
+    : '<tr><td colspan="4" style="color:var(--muted)">No prescription uploaded — nothing extracted.</td></tr>';
 
   const flags = [];
   if(pain >= 8) flags.push('High pain 8/10');
@@ -1132,9 +2515,18 @@ function buildDoctor(){
   if(a.duration) flags.push(a.duration);
   document.getElementById('docFlagText').textContent =
     flags.join(' · ') + ' — consider urgent workup before routine consult.';
+
+  document.getElementById('approvedBanner').classList.remove('on');
+  const ab = document.getElementById('approveBtn');
+  ab.disabled = false;
+  ab.textContent = '✔ Approve & Sign';
+  const pill = document.getElementById('statusPill');
+  pill.textContent = 'Awaiting review';
+  pill.style.background = 'var(--amber-soft)';
+  pill.style.color = 'var(--amber)';
+  pill.style.borderColor = 'var(--amber-line)';
 }
 
-/* Edit / Notes / Approve */
 let editing = false;
 document.getElementById('editBtn').onclick = () => {
   editing = !editing;
@@ -1149,8 +2541,10 @@ document.getElementById('noteBtn').onclick = () => {
   const box = document.getElementById('docHpi');
   box.contentEditable = 'true';
   box.focus();
-  toast('Add your clinical notes here, then press Approve');
+  toast('Add clinical notes, then press Approve & Sign');
 };
+
+document.getElementById('referBtn').onclick = () => toast('↗ Referral form opened (demo)');
 
 document.getElementById('approveBtn').onclick = function(){
   state.approved = true;
@@ -1161,21 +2555,51 @@ document.getElementById('approveBtn').onclick = function(){
   document.getElementById('approvedBanner').classList.add('on');
   this.disabled = true;
   this.textContent = '✔ Approved';
+
+  const pill = document.getElementById('statusPill');
+  pill.textContent = 'Signed & committed';
+  pill.style.background = 'var(--green-soft)';
+  pill.style.color = 'var(--green-600)';
+  pill.style.borderColor = 'var(--green-line)';
+
   toast('✅ History approved & signed → pushed to EMR');
-  document.getElementById('docFlags').style.opacity = '.45';
 };
 
-document.getElementById('toDoctor').onclick = () => go('doctor');
+document.getElementById('qSearch').addEventListener('input', function(){
+  const q = this.value.trim().toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.q-item').forEach(it => {
+    const match = it.dataset.name.includes(q) || it.textContent.toLowerCase().includes(q);
+    it.style.display = match ? '' : 'none';
+    if(match) visible++;
+  });
+  document.getElementById('qEmpty').style.display = visible ? 'none' : 'block';
+});
 
-/* =========================================================
+document.querySelectorAll('.q-item').forEach(it => {
+  it.onclick = () => {
+    document.querySelectorAll('.q-item').forEach(x => x.classList.remove('active'));
+    it.classList.add('active');
+    toast('Loaded: ' + it.querySelector('.nm').textContent);
+  };
+});
+
+document.querySelectorAll('.nav-item').forEach(n => {
+  n.onclick = () => go(n.dataset.nav);
+});
+
+/* ══════════════════════════════════════════════════════════════
    RESET
-   ========================================================= */
+   ══════════════════════════════════════════════════════════════ */
 function resetAll(){
   state.region = null;
   state.symptoms.clear();
   state.transcript = '';
   state.answers = {};
-  state.medicines = ['Pantoprazole 40mg', 'Paracetamol 650mg'];
+  state.medicines = [
+    {name:'Pantoprazole', dose:'40 mg OD', conf:98},
+    {name:'Paracetamol',  dose:'650 mg TDS', conf:96}
+  ];
   state.approved = false;
   qIndex = 0;
   editing = false;
@@ -1184,106 +2608,125 @@ function resetAll(){
   document.querySelectorAll('#regionChips .chip, #symChips .chip').forEach(c => c.classList.remove('on'));
   document.getElementById('symNext').disabled = true;
 
+  const echo = document.getElementById('regionEcho');
+  echo.textContent = 'None selected';
+  echo.style.color = '';
+  echo.style.fontWeight = '';
+
   const tr = document.getElementById('transcript');
   tr.className = 'transcript empty';
-  tr.innerHTML = '<span class="hi">माइक दबाएँ या नीचे नमूना वाक्य भरें…</span><span class="en">Press the mic or load the sample sentence below…</span>';
+  tr.innerHTML = '<span class="hi">माइक दबाएँ, या नीचे “नमूना वाक्य” चुनें…</span><span class="en">Press the mic, or load the sample sentence below…</span>';
 
   document.getElementById('ocrCard').style.display = 'none';
   document.getElementById('medsCard').style.display = 'none';
+  document.getElementById('scanIdle').style.display = 'block';
   document.getElementById('ocrBar').style.width = '0%';
+  document.getElementById('ocrPct').textContent = '0%';
   document.querySelectorAll('#ocrLog div').forEach(d => d.classList.remove('on'));
   document.getElementById('scanLine').style.display = 'none';
-  document.getElementById('scanHint').textContent = 'PLACE DOCUMENT HERE';
-  document.getElementById('scanBtn').disabled = false;
-  document.getElementById('scanBtn').innerHTML = '📸 <span class="hi">दस्तावेज़ स्कैन करें</span><span class="en">Scan Document</span>';
+  document.getElementById('scanHint').textContent = 'Place document here';
+  scanBtn.disabled = false;
+  scanBtn.innerHTML = '📸 Scan Document';
+
+  document.getElementById('sumConfBar').style.width = '0%';
+  document.getElementById('sumConfVal').textContent = '0%';
 
   document.getElementById('approvedBanner').classList.remove('on');
-  const ab = document.getElementById('approveBtn');
-  ab.disabled = false;
-  ab.textContent = '✔ Approve & Sign';
-  document.getElementById('docFlags').style.opacity = '1';
+  document.getElementById('approveBtn').disabled = false;
+  document.getElementById('approveBtn').textContent = '✔ Approve & Sign';
   document.getElementById('editBtn').textContent = '✏️ Edit Draft';
-}
-document.getElementById('resetBtn').onclick = () => {
-  stopDemo();
-  resetAll();
-  go('welcome');
-  toast('Prototype reset');
-};
 
-/* =========================================================
-   AUTO DEMO (for judges)
-   ========================================================= */
+  document.getElementById('qSearch').value = '';
+  document.querySelectorAll('.q-item').forEach(i => i.style.display = '');
+  document.getElementById('qEmpty').style.display = 'none';
+
+  updateDraftRail();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   AUTO DEMO
+   ══════════════════════════════════════════════════════════════ */
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 let demoRunning = false;
-let demoTimers = [];
+
 function stopDemo(){
   demoRunning = false;
-  demoTimers.forEach(clearTimeout);
-  demoTimers = [];
   const b = document.getElementById('demoBtn');
-  b.classList.remove('on');
-  b.innerHTML = '▶ <span class="hi">ऑटो डेमो</span><span class="en">Auto Demo</span>';
+  if(b){ b.classList.remove('on'); b.innerHTML = '▶ Auto Demo'; }
 }
-document.getElementById('demoBtn').onclick = () => {
-  if(demoRunning) stopDemo();
-  else runDemo();
-};
 
 async function runDemo(){
   demoRunning = true;
   const b = document.getElementById('demoBtn');
   b.classList.add('on');
-  b.innerHTML = '⏹ <span class="hi">रोकें</span><span class="en">Stop</span>';
+  b.innerHTML = '⏹ Stop Demo';
 
   resetAll();
   setLang('en');
   go('welcome');
-  await sleep(1800); if(!demoRunning) return;
+  await sleep(1700); if(!demoRunning) return;
 
   document.querySelector('.lang-card[data-lang="en"]').click();
-  await sleep(1600); if(!demoRunning) return;
+  await sleep(1500); if(!demoRunning) return;
 
   document.querySelector('[data-checkin="voice"]').click();
-  await sleep(1900); if(!demoRunning) return;
+  await sleep(1800); if(!demoRunning) return;
 
-  /* symptoms */
   selectRegion('stomach');
   document.querySelector('[data-sym="Vomiting"]').click();
-  await sleep(700); if(!demoRunning) return;
+  await sleep(650); if(!demoRunning) return;
   document.getElementById('sampleBtn').click();
-  await sleep(2600); if(!demoRunning) return;
+  await sleep(2500); if(!demoRunning) return;
   document.getElementById('symNext').click();
-  await sleep(600); if(!demoRunning) return;
+  await sleep(550); if(!demoRunning) return;
 
-  /* chat */
   const auto = ['yes', '8', '3 days', 'yes'];
   for(let i = 0; i < QUESTIONS.length; i++){
-    await sleep(2400); if(!demoRunning) return;
-    answerQuestion(auto[i]);
+    await sleep(2300); if(!demoRunning) return;
+    const btn = document.querySelector(`#answers .ans[data-v="${auto[i]}"]`);
+    if(btn) btn.click();
   }
-  await sleep(1600); if(!demoRunning) return;
+  await sleep(1700); if(!demoRunning) return;
 
-  /* scan */
   scanBtn.click();
   await sleep(4200); if(!demoRunning) return;
 
-  /* summary → token → doctor */
   await sleep(1200); if(!demoRunning) return;
   document.getElementById('toToken').click();
-  await sleep(2600); if(!demoRunning) return;
+  await sleep(2500); if(!demoRunning) return;
   document.getElementById('toDoctor').click();
   await sleep(2600); if(!demoRunning) return;
 
   document.getElementById('approveBtn').click();
   stopDemo();
+  toast('✅ Demo complete — patient → doctor → signed history');
 }
 
-/* =========================================================
+/* inject controls into gov strip */
+(function injectControls(){
+  const right = document.querySelector('.gs-right');
+  const demo = document.createElement('button');
+  demo.className = 'gs-link primary';
+  demo.id = 'demoBtn';
+  demo.innerHTML = '▶ Auto Demo';
+  demo.onclick = () => demoRunning ? stopDemo() : runDemo();
+
+  const reset = document.createElement('button');
+  reset.className = 'gs-link';
+  reset.id = 'resetBtn';
+  reset.textContent = '↺ Reset';
+  reset.onclick = () => { stopDemo(); resetAll(); go('welcome'); toast('Prototype reset'); };
+
+  right.insertBefore(demo, right.firstChild);
+  right.insertBefore(reset, demo.nextSibling);
+})();
+
+/* ══════════════════════════════════════════════════════════════
    INIT
-   ========================================================= */
+   ══════════════════════════════════════════════════════════════ */
 setLang('en');
-document.querySelector('.pseg[data-step="1"]').classList.add('now');
+updateDraftRail();
+document.querySelector('.step[data-step="1"]').classList.add('now');
 </script>
 </body>
 </html>
