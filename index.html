@@ -4,86 +4,41 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0a2c52" />
-<title>MediKiosk | AI-Assisted OPD Registration — Prototype</title>
+<title>MediKiosk | AI OPD Registration — Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Noto+Serif:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
 <style>
-/* ═══════════════════════════════════════════════════════════════
-   1. DESIGN TOKENS
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══════════ TOKENS ═══════════ */
 :root{
-  --navy-900:#05203c;
-  --navy-800:#0a2c52;
-  --navy-700:#0f3d6e;
-  --navy-600:#15518c;
-  --blue:#1c6fb5;
-  --blue-soft:#eaf3fb;
-  --blue-line:#cfe2f3;
-  --saffron:#ff8f1f;
-  --saffron-600:#d97500;
-  --saffron-soft:#fff4e5;
-  --green:#0f8a3c;
-  --green-600:#0b6b2e;
-  --green-soft:#e8f6ed;
-  --green-line:#bfe3cc;
-  --red:#c62828;
-  --red-soft:#fdecec;
-  --red-line:#f2c4c4;
-  --amber:#8a5700;
-  --amber-soft:#fff6e6;
-  --amber-line:#f0d9a8;
-
-  --bg:#eef2f7;
-  --surface:#ffffff;
-  --surface-2:#f7f9fc;
-  --surface-3:#eef3f9;
-  --line:#d7e0ea;
-  --line-2:#bccbdb;
-  --ink:#0b1b2b;
-  --ink-2:#33475c;
-  --muted:#657a90;
-
-  --r-xs:4px;
-  --r-sm:7px;
-  --r:10px;
-  --r-lg:14px;
-  --r-xl:20px;
-
+  --navy-900:#05203c; --navy-800:#0a2c52; --navy-700:#0f3d6e; --navy-600:#15518c;
+  --blue:#1c6fb5; --blue-soft:#eaf3fb; --blue-line:#cfe2f3;
+  --saffron:#ff8f1f; --saffron-600:#d97500; --saffron-soft:#fff4e5;
+  --green:#0f8a3c; --green-600:#0b6b2e; --green-soft:#e8f6ed; --green-line:#bfe3cc;
+  --red:#c62828; --red-soft:#fdecec; --red-line:#f2c4c4;
+  --amber:#8a5700; --amber-soft:#fff6e6; --amber-line:#f0d9a8;
+  --bg:#eef2f7; --surface:#ffffff; --surface-2:#f7f9fc; --surface-3:#eef3f9;
+  --line:#d7e0ea; --line-2:#bccbdb;
+  --ink:#0b1b2b; --ink-2:#33475c; --muted:#657a90;
+  --r-xs:4px; --r-sm:7px; --r:10px; --r-lg:14px;
   --sh-1:0 1px 2px rgba(6,32,61,.06);
-  --sh-2:0 1px 3px rgba(6,32,61,.05), 0 12px 28px -20px rgba(6,32,61,.30);
+  --sh-2:0 1px 3px rgba(6,32,61,.05),0 12px 28px -20px rgba(6,32,61,.30);
   --sh-3:0 26px 60px -30px rgba(6,32,61,.50);
-
   --font:'Noto Sans','Noto Sans Devanagari',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   --font-serif:'Noto Serif','Noto Sans Devanagari',Georgia,serif;
   --font-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
-
   --container:1320px;
-  --gutter:22px;
+  --gutter:16px;
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   2. RESET & BASE
-   ═══════════════════════════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{
-  font-size:16px;
-  scroll-behavior:smooth;
-  -webkit-text-size-adjust:100%;
-  text-size-adjust:100%;
-}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 html,body{overflow-x:hidden;max-width:100vw}
 body{
-  font-family:var(--font);
-  background:var(--bg);
-  color:var(--ink);
-  font-size:.9375rem;
-  line-height:1.55;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+  font-family:var(--font);background:var(--bg);color:var(--ink);
+  font-size:1rem;line-height:1.55;-webkit-font-smoothing:antialiased;
   min-height:100vh;
 }
-button,input,select,textarea{font:inherit;color:inherit}
+button,input{font:inherit;color:inherit}
 button{cursor:pointer;border:none;background:none;text-align:inherit}
 a{color:inherit;text-decoration:none}
 img,svg,table{max-width:100%;display:block}
@@ -91,201 +46,106 @@ ul,ol{list-style:none}
 h1,h2,h3,h4,h5,p,li,td,th,button,span{overflow-wrap:anywhere;word-break:break-word}
 ::selection{background:var(--saffron);color:#fff}
 :focus-visible{outline:3px solid var(--saffron);outline-offset:2px;border-radius:3px}
-
-/* language visibility */
-body.lang-en .hi{display:none !important}
-body.lang-hi .en{display:none !important}
-
-/* high contrast */
 body.hc{
   --bg:#fff;--surface:#fff;--surface-2:#fff;--surface-3:#fff;
   --line:#000;--line-2:#000;--ink:#000;--ink-2:#000;--muted:#1a1a1a;
   --sh-1:none;--sh-2:none;--sh-3:none;
   --navy-900:#000;--navy-800:#000;--navy-700:#000;--navy-600:#000;--blue:#000;
 }
-body.hc .panel,body.hc .card,body.hc .tile,body.hc .sub-card{border-width:2px}
-
-/* utilities */
+body.hc .panel,body.hc .tile,body.hc .sub-card,body.hc .dcard{border-width:2px}
 .wrap{width:100%;max-width:var(--container);margin:0 auto;padding:0 var(--gutter)}
-.muted-sm{font-size:.8125rem;color:var(--muted);line-height:1.6}
 .mono{font-family:var(--font-mono)}
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.muted-sm{font-size:.82rem;color:var(--muted);line-height:1.6}
 
-/* ═══════════════════════════════════════════════════════════════
-   3. GOV SHELL
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══════════ GOV SHELL ═══════════ */
 .tricolor{height:4px;background:linear-gradient(90deg,#ff9933 0 33.33%,#fff 33.33% 66.66%,#138808 66.66% 100%)}
-
 .gov-strip{background:var(--navy-900);color:#c9d9ea;font-size:.75rem;font-weight:600}
-.gov-strip .wrap{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:14px;min-height:40px;flex-wrap:wrap;
-}
-.gs-left,.gs-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.gs-flag{font-size:.95rem;line-height:1}
-.gs-sep{width:1px;height:13px;background:#2b4a6d}
-.gs-link{
-  color:#c9d9ea;font-size:.75rem;font-weight:600;
-  padding:5px 9px;border-radius:4px;transition:.18s;
-  display:inline-flex;align-items:center;gap:5px;
-}
+.gov-strip .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:38px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px}
+.gs-left,.gs-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gs-flag{font-size:.9rem;line-height:1}
+.gs-sep{width:1px;height:12px;background:#2b4a6d}
+.gs-link{color:#c9d9ea;font-size:.72rem;font-weight:600;padding:5px 9px;border-radius:4px;transition:.18s;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .gs-link:hover{background:#14375e;color:#fff}
 .gs-link.primary{background:var(--saffron-600);color:#fff;font-weight:800}
 .gs-link.primary:hover{background:var(--saffron)}
-
 .fs-ctrl{display:flex;border:1px solid #2b4a6d;border-radius:5px;overflow:hidden}
-.fs-ctrl button{
-  color:#c9d9ea;font-size:.72rem;font-weight:800;
-  padding:5px 10px;border-right:1px solid #2b4a6d;transition:.18s;
-}
+.fs-ctrl button{color:#c9d9ea;font-size:.7rem;font-weight:800;padding:4px 9px;border-right:1px solid #2b4a6d;transition:.18s}
 .fs-ctrl button:last-child{border-right:none}
 .fs-ctrl button:hover{background:#14375e;color:#fff}
 
 .gov-header{background:var(--surface);border-bottom:1px solid var(--line)}
-.hdr-inner{display:flex;align-items:center;gap:18px;padding:16px 0}
+.hdr-inner{display:flex;align-items:center;gap:14px;padding:12px 0}
 .emblem{
-  width:60px;height:60px;flex:0 0 auto;border-radius:50%;
+  width:52px;height:52px;flex:0 0 auto;border-radius:50%;
   background:radial-gradient(circle at 50% 42%,#fff 0 38%,#eef3f9 39% 100%);
-  border:2px solid var(--navy-800);
-  display:grid;place-items:center;
+  border:2px solid var(--navy-800);display:grid;place-items:center;
   box-shadow:0 2px 10px rgba(6,32,61,.14);
 }
-.emblem svg{width:36px;height:36px}
+.emblem svg{width:30px;height:30px}
 .hdr-text{flex:1;min-width:0}
 .hdr-text h1{
-  font-family:var(--font-serif);
-  font-size:1.35rem;font-weight:700;color:var(--navy-800);
-  letter-spacing:-.015em;line-height:1.2;
-  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  font-family:var(--font-serif);font-size:1.2rem;font-weight:700;
+  color:var(--navy-800);letter-spacing:-.015em;line-height:1.2;
+  display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
 }
-.hdr-text h1 .hdr-hi{
-  font-family:var(--font);font-size:.92rem;font-weight:700;
-  color:var(--blue);opacity:.92;
-}
-.hdr-text p{
-  font-size:.76rem;color:var(--muted);font-weight:600;margin-top:3px;
-  line-height:1.5;
-}
-.hdr-right{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:flex-end}
-.badge-row{display:flex;gap:6px;flex-wrap:wrap}
-.ver-badge{
-  display:inline-flex;align-items:center;gap:5px;
-  font-size:.68rem;font-weight:800;letter-spacing:.03em;
-  padding:4px 10px;border-radius:4px;
-  border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink-2);
-  text-transform:uppercase;white-space:nowrap;
-}
+.hdr-text h1 .hdr-hi{font-family:var(--font);font-size:.85rem;font-weight:700;color:var(--blue);opacity:.92}
+.hdr-text p{font-size:.73rem;color:var(--muted);font-weight:600;margin-top:3px;line-height:1.4}
+.hdr-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end}
+.badge-row{display:flex;gap:5px;flex-wrap:wrap}
+.ver-badge{display:inline-flex;align-items:center;gap:4px;font-size:.66rem;font-weight:800;letter-spacing:.03em;padding:4px 9px;border-radius:4px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink-2);text-transform:uppercase;white-space:nowrap}
 .ver-badge.ok{border-color:var(--green-line);background:var(--green-soft);color:var(--green-600)}
 .ver-badge.info{border-color:var(--blue-line);background:var(--blue-soft);color:var(--navy-600)}
-.helpline{text-align:right;border-left:2px solid var(--line);padding-left:16px}
-.helpline b{display:block;font-size:.98rem;color:var(--navy-800);font-weight:800;letter-spacing:.01em;font-family:var(--font-serif)}
-.helpline span{font-size:.66rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+.helpline{text-align:right;border-left:2px solid var(--line);padding-left:14px}
+.helpline b{display:block;font-size:.94rem;color:var(--navy-800);font-weight:800;font-family:var(--font-serif);letter-spacing:.01em}
+.helpline span{font-size:.63rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.07em}
 
-.gov-nav{background:var(--navy-800);border-bottom:3px solid var(--saffron);position:relative;z-index:10}
-.gov-nav .wrap{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.gov-nav{background:var(--navy-800);border-bottom:3px solid var(--saffron)}
+.gov-nav .wrap{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-left:0;padding-right:0}
 .gov-nav .wrap::-webkit-scrollbar{display:none}
-.nav-item{
-  color:#c6d8ea;font-size:.83rem;font-weight:700;
-  padding:14px 22px;white-space:nowrap;
-  border-bottom:3px solid transparent;margin-bottom:-3px;
-  transition:.18s;flex:0 0 auto;
-}
+.nav-item{color:#c6d8ea;font-size:.82rem;font-weight:700;padding:13px 18px;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-3px;transition:.18s;flex:0 0 auto}
 .nav-item:hover{background:#0e3760;color:#fff}
 .nav-item.active{background:var(--navy-700);color:#fff;border-bottom-color:var(--saffron)}
 
-/* stepper */
-.stepper-bar{
-  background:var(--surface);border-bottom:1px solid var(--line);
-  position:sticky;top:0;z-index:40;box-shadow:var(--sh-1);
-}
+.stepper-bar{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40;box-shadow:var(--sh-1)}
 .stepper-bar.hide{display:none}
-.stepper{
-  display:flex;align-items:center;gap:0;
-  padding:14px 0;overflow-x:auto;scrollbar-width:none;
-}
+.stepper{display:flex;align-items:center;gap:0;padding:11px 0;overflow-x:auto;scrollbar-width:none}
 .stepper::-webkit-scrollbar{display:none}
-.step{display:flex;align-items:center;gap:10px;flex:1;min-width:130px;padding-right:14px;position:relative}
+.step{display:flex;align-items:center;gap:8px;flex:1;min-width:100px;padding-right:10px;position:relative}
 .step:last-child{flex:0 0 auto;padding-right:0}
-.step .num{
-  width:28px;height:28px;flex:0 0 auto;border-radius:50%;
-  display:grid;place-items:center;font-size:.74rem;font-weight:800;
-  background:var(--surface-3);color:var(--muted);
-  border:1.5px solid var(--line-2);transition:.3s;
-}
-.step .lbl{font-size:.74rem;font-weight:700;color:var(--muted);white-space:nowrap;transition:.3s}
-.step .line{flex:1;height:1.5px;background:var(--line-2);margin:0 10px;min-width:14px}
+.step .num{width:26px;height:26px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;font-size:.72rem;font-weight:800;background:var(--surface-3);color:var(--muted);border:1.5px solid var(--line-2);transition:.3s}
+.step .lbl{font-size:.73rem;font-weight:700;color:var(--muted);white-space:nowrap;transition:.3s}
+.step .line{flex:1;height:1.5px;background:var(--line-2);margin:0 8px;min-width:12px}
 .step.done .num{background:var(--green);border-color:var(--green);color:#fff}
 .step.done .lbl{color:var(--green-600)}
 .step.done .line{background:var(--green)}
-.step.now .num{background:var(--navy-800);border-color:var(--navy-800);color:#fff;box-shadow:0 0 0 5px rgba(10,44,82,.12)}
+.step.now .num{background:var(--navy-800);border-color:var(--navy-800);color:#fff;box-shadow:0 0 0 4px rgba(10,44,82,.12)}
 .step.now .lbl{color:var(--navy-800);font-weight:800}
 
-/* breadcrumb */
-.crumb{
-  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-  font-size:.76rem;font-weight:600;color:var(--muted);
-  padding:12px 0 0;
-}
+.crumb{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:.75rem;font-weight:600;color:var(--muted);padding:10px 0 0}
 .crumb b{color:var(--ink-2);font-weight:800}
 .crumb i{font-style:normal;opacity:.45}
 
-/* ═══════════════════════════════════════════════════════════════
-   4. STAGE & SCREENS
-   ═══════════════════════════════════════════════════════════════ */
-.stage{padding-bottom:52px;min-height:60vh}
+/* ═══════════ STAGE ═══════════ */
+.stage{padding-bottom:40px;min-height:60vh}
 .screen{display:none;animation:fadeUp .4s cubic-bezier(.2,.75,.3,1)}
 .screen.active{display:block}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-/* ═══════════════════════════════════════════════════════════════
-   5. PANEL COMPONENTS
-   ═══════════════════════════════════════════════════════════════ */
-.panel{
-  background:var(--surface);border:1px solid var(--line);
-  border-radius:var(--r-lg);box-shadow:var(--sh-2);overflow:hidden;
-}
-.panel-head{
-  display:flex;justify-content:space-between;align-items:center;
-  gap:14px;flex-wrap:wrap;
-  padding:15px 22px;border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg,#fff,#f7f9fc);
-}
-.panel-title{
-  font-size:.94rem;font-weight:800;color:var(--navy-800);
-  display:flex;align-items:center;gap:10px;letter-spacing:-.01em;
-}
-.panel-title::before{content:"";width:4px;height:17px;border-radius:2px;background:var(--saffron)}
-.panel-body{padding:24px 22px}
-.step-chip{
-  font-size:.68rem;font-weight:800;letter-spacing:.07em;
-  text-transform:uppercase;background:var(--blue-soft);color:var(--navy-600);
-  padding:5px 12px;border-radius:99px;border:1px solid var(--blue-line);
-  white-space:nowrap;
-}
-.count-chip{
-  font-size:.72rem;font-weight:800;background:var(--navy-800);color:#fff;
-  padding:4px 11px;border-radius:99px;font-family:var(--font-mono);
-}
+/* ═══════════ PANELS ═══════════ */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-2);overflow:hidden}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#f7f9fc)}
+.panel-title{font-size:.92rem;font-weight:800;color:var(--navy-800);display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
+.panel-title::before{content:"";width:4px;height:16px;border-radius:2px;background:var(--saffron)}
+.panel-body{padding:20px 18px}
+.step-chip{font-size:.66rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;background:var(--blue-soft);color:var(--navy-600);padding:5px 11px;border-radius:99px;border:1px solid var(--blue-line);white-space:nowrap}
+.count-chip{font-size:.71rem;font-weight:800;background:var(--navy-800);color:#fff;padding:4px 10px;border-radius:99px;font-family:var(--font-mono)}
 
-.notice{
-  display:flex;gap:13px;align-items:flex-start;
-  background:var(--amber-soft);border:1px solid var(--amber-line);
-  border-left:4px solid var(--saffron);
-  border-radius:var(--r);padding:13px 17px;margin:18px 0 20px;
-}
+.notice{display:flex;gap:12px;align-items:flex-start;background:var(--amber-soft);border:1px solid var(--amber-line);border-left:4px solid var(--saffron);border-radius:var(--r);padding:13px 15px;margin:16px 0 18px}
 .notice-ico{font-size:1rem;line-height:1.5;flex:0 0 auto}
-.notice p{font-size:.81rem;color:#6d4a00;line-height:1.58}
+.notice p{font-size:.8rem;color:#6d4a00;line-height:1.58}
 .notice b{color:#4d3400;font-weight:800}
 
-/* buttons */
-.btn{
-  border-radius:var(--r-sm);padding:13px 26px;
-  font-size:.86rem;font-weight:800;letter-spacing:.01em;
-  background:linear-gradient(140deg,var(--navy-600),var(--navy-800));
-  color:#fff;box-shadow:0 10px 22px -14px rgba(10,44,82,.9);
-  transition:.22s;display:inline-flex;align-items:center;gap:9px;
-  justify-content:center;white-space:nowrap;
-}
+.btn{border-radius:var(--r-sm);padding:13px 22px;font-size:.86rem;font-weight:800;letter-spacing:.01em;background:linear-gradient(140deg,var(--navy-600),var(--navy-800));color:#fff;box-shadow:0 10px 22px -14px rgba(10,44,82,.9);transition:.22s;display:inline-flex;align-items:center;gap:8px;justify-content:center;white-space:nowrap;min-height:44px}
 .btn:hover{transform:translateY(-2px);box-shadow:0 16px 30px -14px rgba(10,44,82,.95)}
 .btn:active{transform:translateY(0)}
 .btn:disabled{opacity:.4;pointer-events:none;box-shadow:none}
@@ -294,180 +154,68 @@ body.hc .panel,body.hc .card,body.hc .tile,body.hc .sub-card{border-width:2px}
 .btn.green{background:linear-gradient(140deg,#17a34a,var(--green-600));box-shadow:0 10px 22px -14px rgba(15,138,60,.9)}
 .btn.green:hover{box-shadow:0 16px 30px -14px rgba(15,138,60,.95)}
 .btn.wide{width:100%}
+.row-end{display:flex;justify-content:flex-end;gap:11px;flex-wrap:wrap;margin-top:20px}
 
-.row-end{
-  display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap;
-  margin-top:22px;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   6. SCREEN 1 — WELCOME
-   ═══════════════════════════════════════════════════════════════ */
-.welcome-grid{
-  display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
-  gap:22px;align-items:start;
-}
-.hero-panel .panel-body{padding:32px 30px}
-.tag-chip{
-  display:inline-flex;align-items:center;gap:8px;
-  font-size:.7rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
-  color:var(--green-600);background:var(--green-soft);
-  border:1px solid var(--green-line);padding:6px 14px;border-radius:99px;
-}
-.tag-chip::before{
-  content:"";width:7px;height:7px;border-radius:50%;
-  background:var(--green);animation:blink 1.8s infinite;
-}
+/* ═══════════ WELCOME ═══════════ */
+.welcome-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
+.hero-panel .panel-body{padding:26px 24px}
+.tag-chip{display:inline-flex;align-items:center;gap:8px;font-size:.7rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--green-600);background:var(--green-soft);border:1px solid var(--green-line);padding:6px 13px;border-radius:99px}
+.tag-chip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.8s infinite}
 @keyframes blink{50%{opacity:.28}}
-
-.hero-h{
-  font-family:var(--font-serif);
-  font-size:clamp(1.55rem,2.8vw,2.35rem);
-  font-weight:700;line-height:1.24;
-  letter-spacing:-.022em;color:var(--navy-900);
-  margin:18px 0 14px;max-width:22ch;
-}
-.hero-p{
-  font-size:.94rem;color:var(--ink-2);line-height:1.72;
-  max-width:62ch;
-}
-
-.stat-row{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  margin:26px 0;border:1px solid var(--line);
-  border-radius:var(--r);overflow:hidden;background:var(--surface-2);
-}
-.stat{
-  padding:16px 18px;border-right:1px solid var(--line);
-  text-align:center;
-}
+.hero-h{font-family:var(--font-serif);font-size:clamp(1.5rem,2.7vw,2.3rem);font-weight:700;line-height:1.24;letter-spacing:-.022em;color:var(--navy-900);margin:16px 0 12px;max-width:24ch}
+.hero-p{font-size:.93rem;color:var(--ink-2);line-height:1.72;max-width:62ch}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);margin:22px 0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface-2)}
+.stat{padding:14px 12px;border-right:1px solid var(--line);text-align:center}
 .stat:last-child{border-right:none}
-.stat b{
-  display:block;font-family:var(--font-serif);
-  font-size:1.4rem;color:var(--navy-800);font-weight:700;
-  line-height:1.2;
-}
-.stat span{
-  font-size:.7rem;color:var(--muted);font-weight:700;
-  letter-spacing:.02em;margin-top:4px;display:block;
-}
+.stat b{display:block;font-family:var(--font-serif);font-size:1.3rem;color:var(--navy-800);font-weight:700;line-height:1.2}
+.stat span{font-size:.69rem;color:var(--muted);font-weight:700;margin-top:4px;display:block;line-height:1.35}
+.feat-list{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.feat-list li{display:flex;gap:11px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface-2);transition:.22s}
+.feat-list li:hover{border-color:var(--line-2);transform:translateY(-2px);box-shadow:var(--sh-1);background:var(--surface)}
+.feat-list i{font-style:normal;font-size:1.15rem;line-height:1.3;flex:0 0 auto}
+.feat-list b{display:block;font-size:.82rem;font-weight:800;color:var(--ink);margin-bottom:2px}
+.feat-list span{font-size:.72rem;color:var(--muted);font-weight:600;line-height:1.5}
 
-.feat-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.feat-list li{
-  display:flex;gap:12px;align-items:flex-start;
-  padding:13px;border:1px solid var(--line);
-  border-radius:var(--r);background:var(--surface-2);
-  transition:.22s;
-}
-.feat-list li:hover{
-  border-color:var(--line-2);transform:translateY(-2px);
-  box-shadow:var(--sh-1);background:var(--surface);
-}
-.feat-list i{font-style:normal;font-size:1.2rem;line-height:1.3;flex:0 0 auto}
-.feat-list b{display:block;font-size:.83rem;font-weight:800;color:var(--ink);margin-bottom:2px}
-.feat-list span{font-size:.73rem;color:var(--muted);font-weight:600;line-height:1.5}
-
-.lang-list{display:flex;flex-direction:column;gap:12px;margin:16px 0 22px}
-.lang-card{
-  display:flex;align-items:center;gap:15px;
-  padding:16px 18px;border:2px solid var(--line);
-  border-radius:var(--r);background:var(--surface);
-  transition:.24s cubic-bezier(.2,.8,.25,1);width:100%;
-  text-align:left;
-}
-.lang-card:hover{
-  border-color:var(--navy-600);transform:translateX(3px);
-  box-shadow:var(--sh-1);
-}
+.lang-list{display:flex;flex-direction:column;gap:11px;margin:14px 0 20px}
+.lang-card{display:flex;align-items:center;gap:14px;padding:15px 16px;border:2px solid var(--line);border-radius:var(--r);background:var(--surface);transition:.24s cubic-bezier(.2,.8,.25,1);width:100%;text-align:left;min-height:64px}
+.lang-card:hover{border-color:var(--navy-600);transform:translateX(3px);box-shadow:var(--sh-1)}
 .lang-card.sel{border-color:var(--navy-700);background:var(--blue-soft)}
-.lc-flag{
-  width:46px;height:46px;flex:0 0 auto;border-radius:10px;
-  display:grid;place-items:center;
-  background:var(--navy-800);color:#fff;
-  font-weight:800;font-size:1.1rem;font-family:var(--font-serif);
-  transition:.24s;
-}
+.lc-flag{width:44px;height:44px;flex:0 0 auto;border-radius:10px;display:grid;place-items:center;background:var(--navy-800);color:#fff;font-weight:800;font-size:1.1rem;font-family:var(--font-serif);transition:.24s}
 .lang-card.sel .lc-flag{background:var(--saffron-600)}
 .lc-main{flex:1;min-width:0}
-.lc-main b{display:block;font-size:1.02rem;font-weight:800;color:var(--ink);letter-spacing:-.01em}
-.lc-main small{font-size:.75rem;color:var(--muted);font-weight:600;display:block;margin-top:2px}
-.lc-check{font-size:1.05rem;font-weight:800;color:var(--green);opacity:0;transition:.24s}
+.lc-main b{display:block;font-size:1rem;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.lc-main small{font-size:.73rem;color:var(--muted);font-weight:600;display:block;margin-top:2px}
+.lc-check{font-size:1rem;font-weight:800;color:var(--green);opacity:0;transition:.24s}
 .lang-card.sel .lc-check{opacity:1}
 
-.mic-cta{
-  width:100%;display:flex;align-items:center;gap:15px;
-  padding:17px 22px;border-radius:var(--r);
-  background:linear-gradient(135deg,var(--navy-700),var(--navy-800));
-  color:#fff;box-shadow:0 14px 30px -18px rgba(10,44,82,.9);
-  transition:.24s;position:relative;overflow:hidden;
-}
+.mic-cta{width:100%;display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:var(--r);background:linear-gradient(135deg,var(--navy-700),var(--navy-800));color:#fff;box-shadow:0 14px 30px -18px rgba(10,44,82,.9);transition:.24s;position:relative;overflow:hidden;min-height:64px;text-align:left}
 .mic-cta:hover{transform:translateY(-3px);box-shadow:0 20px 38px -18px rgba(10,44,82,.95)}
-.mic-cta::after{
-  content:"";position:absolute;inset:0;border-radius:var(--r);
-  border:2px solid rgba(255,255,255,.35);animation:ringOut 2.4s infinite;
-}
+.mic-cta::after{content:"";position:absolute;inset:0;border-radius:var(--r);border:2px solid rgba(255,255,255,.35);animation:ringOut 2.4s infinite;pointer-events:none}
 @keyframes ringOut{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.09);opacity:0}}
-.mic-ico{font-size:1.7rem;line-height:1}
-.mic-cta b{display:block;font-size:1rem;font-weight:800;text-align:left}
-.mic-cta small{font-size:.77rem;opacity:.85;font-weight:600;display:block;margin-top:2px;text-align:left}
+.mic-ico{font-size:1.6rem;line-height:1;flex:0 0 auto}
+.mic-cta b{display:block;font-size:.98rem;font-weight:800}
+.mic-cta small{font-size:.75rem;opacity:.85;font-weight:600;display:block;margin-top:2px}
 
-.trust-row{
-  display:flex;gap:7px;flex-wrap:wrap;
-  margin-top:18px;padding-top:18px;
-  border-top:1px dashed var(--line-2);
-}
-.trust-row span{
-  font-size:.68rem;font-weight:800;letter-spacing:.05em;
-  text-transform:uppercase;color:var(--muted);
-  border:1px solid var(--line);background:var(--surface-2);
-  padding:5px 11px;border-radius:4px;
-}
+.trust-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px dashed var(--line-2)}
+.trust-row span{font-size:.66rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);background:var(--surface-2);padding:5px 10px;border-radius:4px}
 
-/* ═══════════════════════════════════════════════════════════════
-   7. SCREEN 2 — CHECK-IN
-   ═══════════════════════════════════════════════════════════════ */
-.tiles3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.tile{
-  background:var(--surface);border:2px solid var(--line);
-  border-radius:var(--r);padding:32px 20px;
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-  transition:.24s cubic-bezier(.2,.8,.25,1);
-  position:relative;overflow:hidden;
-}
-.tile::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:3px;
-  background:var(--saffron);transform:scaleX(0);transition:.3s;
-}
-.tile:hover{
-  transform:translateY(-5px);border-color:var(--navy-600);
-  box-shadow:var(--sh-2);
-}
+/* ═══════════ CHECK-IN ═══════════ */
+.tiles3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tile{background:var(--surface);border:2px solid var(--line);border-radius:var(--r);padding:26px 18px;display:flex;flex-direction:column;align-items:center;gap:9px;transition:.24s cubic-bezier(.2,.8,.25,1);position:relative;overflow:hidden;min-height:130px}
+.tile::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--saffron);transform:scaleX(0);transition:.3s}
+.tile:hover{transform:translateY(-5px);border-color:var(--navy-600);box-shadow:var(--sh-2)}
 .tile:hover::before{transform:scaleX(1)}
-.tile .ico{font-size:2.4rem;line-height:1}
-.tile .tt{font-size:1.02rem;font-weight:800;color:var(--navy-800);letter-spacing:-.01em;text-align:center}
-.tile .ts{font-size:.75rem;color:var(--muted);font-weight:600;text-align:center}
+.tile .ico{font-size:2.2rem;line-height:1}
+.tile .tt{font-size:1rem;font-weight:800;color:var(--navy-800);letter-spacing:-.01em;text-align:center}
+.tile .ts{font-size:.74rem;color:var(--muted);font-weight:600;text-align:center}
 .tile.busy{opacity:.5;pointer-events:none}
 .tile.busy .ico{animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ═══════════════════════════════════════════════════════════════
-   8. SCREEN 3 — SYMPTOMS
-   ═══════════════════════════════════════════════════════════════ */
-.sym-grid{
-  display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);
-  gap:22px;align-items:start;
-}
-.body-card{
-  background:var(--surface-2);border:1px solid var(--line);
-  border-radius:var(--r);padding:16px;position:relative;
-}
-.body-card .hint-badge{
-  position:absolute;top:12px;left:12px;
-  font-size:.66rem;font-weight:800;text-transform:uppercase;
-  letter-spacing:.06em;color:var(--navy-600);
-  background:var(--blue-soft);border:1px solid var(--blue-line);
-  padding:5px 10px;border-radius:99px;
-}
+/* ═══════════ SYMPTOMS ═══════════ */
+.sym-grid{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:20px;align-items:start}
+.body-card{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:14px;position:relative}
+.body-card .hint-badge{position:absolute;top:10px;left:10px;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--navy-600);background:var(--blue-soft);border:1px solid var(--blue-line);padding:4px 9px;border-radius:99px;z-index:2}
 .body{width:100%;max-height:420px;margin:0 auto}
 .body .base{fill:#dde7f0}
 .body .region{transition:.26s;cursor:pointer}
@@ -479,48 +227,20 @@ body.hc .panel,body.hc .card,body.hc .tile,body.hc .sub-card{border-width:2px}
 .body line.region.on{stroke:var(--navy-600)}
 .body .region.on{filter:drop-shadow(0 6px 14px rgba(21,81,140,.45))}
 
-.panel-stack{display:flex;flex-direction:column;gap:16px}
-.sub-card{
-  background:var(--surface);border:1px solid var(--line);
-  border-radius:var(--r);padding:20px;
-}
-.sub-card h4{
-  font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--muted);font-weight:800;margin-bottom:14px;
-  display:flex;justify-content:space-between;align-items:center;
-  gap:10px;flex-wrap:wrap;
-}
-.chips{display:flex;flex-wrap:wrap;gap:9px}
-.chip{
-  border:1.5px solid var(--line-2);background:var(--surface);
-  padding:10px 16px;border-radius:99px;
-  font-size:.81rem;font-weight:700;transition:.2s;color:var(--ink-2);
-  display:inline-flex;align-items:center;gap:6px;
-}
+.panel-stack{display:flex;flex-direction:column;gap:14px}
+.sub-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.sub-card h4{font-size:.69rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:13px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line-2);background:var(--surface);padding:10px 15px;border-radius:99px;font-size:.8rem;font-weight:700;transition:.2s;color:var(--ink-2);display:inline-flex;align-items:center;gap:6px;min-height:40px}
 .chip:hover{border-color:var(--navy-600);color:var(--navy-800);transform:translateY(-2px)}
-.chip.on{
-  background:var(--navy-700);color:#fff;border-color:var(--navy-700);
-  box-shadow:0 6px 16px -8px rgba(15,61,110,.8);
-}
-
-.voice-box{display:flex;gap:13px;align-items:stretch}
-.mic-btn{
-  width:60px;flex:0 0 auto;border-radius:var(--r);font-size:1.4rem;color:#fff;
-  background:linear-gradient(140deg,var(--navy-600),var(--navy-800));
-  box-shadow:0 10px 22px -12px rgba(10,44,82,.9);transition:.2s;
-  display:flex;align-items:center;justify-content:center;
-}
+.chip.on{background:var(--navy-700);color:#fff;border-color:var(--navy-700);box-shadow:0 6px 16px -8px rgba(15,61,110,.8)}
+.voice-box{display:flex;gap:12px;align-items:stretch}
+.mic-btn{width:56px;flex:0 0 auto;border-radius:var(--r);font-size:1.4rem;color:#fff;background:linear-gradient(140deg,var(--navy-600),var(--navy-800));box-shadow:0 10px 22px -12px rgba(10,44,82,.9);transition:.2s;display:flex;align-items:center;justify-content:center;min-height:56px}
 .mic-btn:hover{transform:scale(1.04)}
 .mic-btn.rec{background:linear-gradient(140deg,#e04a4a,var(--red));animation:pulseRed 1s infinite}
-@keyframes pulseRed{50%{box-shadow:0 0 0 14px rgba(198,40,40,.13)}}
-.transcript{
-  flex:1;min-height:60px;border-radius:var(--r);
-  background:var(--surface-2);border:1.5px dashed var(--line-2);
-  padding:14px 16px;font-size:.86rem;font-weight:600;
-  color:var(--ink);display:flex;align-items:center;line-height:1.6;
-}
+@keyframes pulseRed{50%{box-shadow:0 0 0 12px rgba(198,40,40,.13)}}
+.transcript{flex:1;min-height:56px;border-radius:var(--r);background:var(--surface-2);border:1.5px dashed var(--line-2);padding:13px 15px;font-size:.85rem;font-weight:600;color:var(--ink);display:flex;align-items:center;line-height:1.6}
 .transcript.empty{color:#93a8b8;font-weight:600}
-
 .wave{display:inline-flex;gap:3px;align-items:flex-end;height:22px}
 .wave span{width:4px;border-radius:99px;background:var(--navy-600);animation:wv .95s infinite ease-in-out}
 .wave span:nth-child(1){height:38%;animation-delay:0s}
@@ -530,81 +250,34 @@ body.hc .panel,body.hc .card,body.hc .tile,body.hc .sub-card{border-width:2px}
 .wave span:nth-child(5){height:44%;animation-delay:.4s}
 @keyframes wv{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
 
-/* ═══════════════════════════════════════════════════════════════
-   9. SCREEN 4 — AI CHAT
-   ═══════════════════════════════════════════════════════════════ */
-.chat-grid{
-  display:grid;grid-template-columns:minmax(0,1fr) 300px;
-  gap:22px;align-items:start;
-}
-.chat-stage{
-  padding:38px 26px;text-align:center;min-height:460px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-}
-.bot{position:relative;width:96px;height:96px;display:grid;place-items:center;margin-bottom:16px}
-.bot-core{
-  width:80px;height:80px;border-radius:50%;
-  display:grid;place-items:center;font-size:2rem;
-  background:linear-gradient(140deg,var(--navy-600),var(--navy-800));
-  color:#fff;box-shadow:0 16px 34px -16px rgba(10,44,82,.95);
-  z-index:2;transition:.3s;
-}
+/* ═══════════ CHAT ═══════════ */
+.chat-grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}
+.chat-stage{padding:32px 22px;text-align:center;min-height:440px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.bot{position:relative;width:90px;height:90px;display:grid;place-items:center;margin-bottom:14px}
+.bot-core{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;font-size:1.9rem;background:linear-gradient(140deg,var(--navy-600),var(--navy-800));color:#fff;box-shadow:0 16px 34px -16px rgba(10,44,82,.95);z-index:2;transition:.3s}
 .bot-core.speaking{animation:botPulse 1.1s infinite}
 @keyframes botPulse{50%{transform:scale(1.07)}}
-.bot-ring{
-  position:absolute;inset:0;border-radius:50%;
-  border:2px solid var(--navy-600);opacity:.5;
-  animation:ringOut2 2.4s infinite;
-}
+.bot-ring{position:absolute;inset:0;border-radius:50%;border:2px solid var(--navy-600);opacity:.5;animation:ringOut2 2.4s infinite}
 .bot-ring:nth-child(2){animation-delay:1.2s}
 @keyframes ringOut2{0%{transform:scale(.85);opacity:.55}100%{transform:scale(1.3);opacity:0}}
-
-.q-count{
-  font-size:.68rem;font-weight:800;letter-spacing:.13em;
-  color:var(--muted);text-transform:uppercase;margin-bottom:12px;
-}
-.q-text{
-  font-family:var(--font-serif);
-  font-size:clamp(1.3rem,2.6vw,1.95rem);
-  font-weight:700;line-height:1.35;letter-spacing:-.02em;
-  color:var(--navy-900);max-width:26ch;
-}
-.q-voice{
-  display:inline-flex;align-items:center;gap:10px;
-  margin-top:16px;color:var(--navy-600);
-  font-weight:800;font-size:.77rem;
-}
-
-.answers{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:34px}
-.ans{
-  min-width:155px;padding:18px 24px;border-radius:var(--r);
-  border:2px solid var(--line);background:var(--surface);
-  font-size:.96rem;font-weight:800;
-  transition:.24s cubic-bezier(.2,.8,.25,1);
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  color:var(--navy-800);
-}
+.q-count{font-size:.67rem;font-weight:800;letter-spacing:.13em;color:var(--muted);text-transform:uppercase;margin-bottom:11px}
+.q-text{font-family:var(--font-serif);font-size:clamp(1.25rem,2.5vw,1.9rem);font-weight:700;line-height:1.35;letter-spacing:-.02em;color:var(--navy-900);max-width:28ch}
+.q-voice{display:inline-flex;align-items:center;gap:9px;margin-top:15px;color:var(--navy-600);font-weight:800;font-size:.75rem}
+.answers{display:flex;gap:13px;flex-wrap:wrap;justify-content:center;margin-top:30px;width:100%}
+.ans{min-width:140px;padding:16px 22px;border-radius:var(--r);border:2px solid var(--line);background:var(--surface);font-size:.94rem;font-weight:800;transition:.24s cubic-bezier(.2,.8,.25,1);display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--navy-800);min-height:56px}
 .ans:hover{transform:translateY(-5px);border-color:var(--navy-600);box-shadow:var(--sh-2)}
-.ans small{font-size:.68rem;color:var(--muted);font-weight:700}
-.ans.big{font-size:1.06rem;padding:22px 32px;min-width:180px}
+.ans small{font-size:.67rem;color:var(--muted);font-weight:700}
+.ans.big{font-size:1.04rem;padding:20px 30px;min-width:170px}
 .ans.no:hover{border-color:var(--red);color:var(--red)}
 .ans.pick{background:var(--navy-700);color:#fff;border-color:var(--navy-700)}
 .ans.pick small{color:rgba(255,255,255,.75)}
-
-.thinking{
-  margin-top:26px;color:var(--muted);font-weight:700;font-size:.81rem;
-  display:flex;gap:10px;align-items:center;justify-content:center;
-}
+.thinking{margin-top:24px;color:var(--muted);font-weight:700;font-size:.8rem;display:flex;gap:9px;align-items:center;justify-content:center}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--navy-600);animation:bnc 1s infinite}
 .dot:nth-child(2){animation-delay:.15s}
 .dot:nth-child(3){animation-delay:.3s}
 @keyframes bnc{0%,100%{transform:translateY(0);opacity:.35}50%{transform:translateY(-7px);opacity:1}}
-
-.draft-rail{position:sticky;top:76px}
-.draft-item{
-  display:flex;justify-content:space-between;gap:14px;
-  padding:12px 0;border-bottom:1px dashed var(--line);font-size:.81rem;
-}
+.draft-rail{position:sticky;top:70px}
+.draft-item{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line);font-size:.8rem}
 .draft-item:last-child{border-bottom:none}
 .draft-item .k{color:var(--muted);font-weight:700;flex:0 0 auto}
 .draft-item .v{font-weight:800;color:var(--ink);text-align:right;max-width:62%}
@@ -612,775 +285,495 @@ body.hc .panel,body.hc .card,body.hc .tile,body.hc .sub-card{border-width:2px}
 .draft-item .v.filled{color:var(--green-600)}
 .draft-item .v.filled::before{content:"✓ ";font-weight:800}
 
-/* ═══════════════════════════════════════════════════════════════
-   10. SCREEN 5 — SCANNER
-   ═══════════════════════════════════════════════════════════════ */
-.scan-grid{
-  display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
-  gap:22px;align-items:start;
-}
-.scan-frame{
-  position:relative;border-radius:var(--r);background:#0c1a2b;
-  aspect-ratio:16/10;overflow:hidden;
-  display:grid;place-items:center;border:2px dashed #2c405a;
-}
-.scan-frame .doc{font-size:4.4rem;opacity:.3;line-height:1}
-.scan-frame .hint{
-  position:absolute;bottom:18px;color:#7e93ab;font-weight:800;
-  font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
-}
-.scan-line{
-  position:absolute;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,transparent,#38b6ff,transparent);
-  box-shadow:0 0 22px #38b6ff;
-  animation:scanmove 1.9s linear infinite;
-}
+/* ═══════════ SCANNER ═══════════ */
+.scan-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
+.scan-frame{position:relative;border-radius:var(--r);background:#0c1a2b;aspect-ratio:16/10;overflow:hidden;display:grid;place-items:center;border:2px dashed #2c405a}
+.scan-frame .doc{font-size:4rem;opacity:.3;line-height:1}
+.scan-frame .hint{position:absolute;bottom:16px;color:#7e93ab;font-weight:800;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase}
+.scan-line{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#38b6ff,transparent);box-shadow:0 0 22px #38b6ff;animation:scanmove 1.9s linear infinite}
 @keyframes scanmove{0%{top:7%}100%{top:93%}}
-.corner{position:absolute;width:32px;height:32px;border:3px solid #38b6ff;border-radius:5px}
-.corner.tl{top:16px;left:16px;border-right:none;border-bottom:none}
-.corner.tr{top:16px;right:16px;border-left:none;border-bottom:none}
-.corner.bl{bottom:16px;left:16px;border-right:none;border-top:none}
-.corner.br{bottom:16px;right:16px;border-left:none;border-top:none}
-
+.corner{position:absolute;width:30px;height:30px;border:3px solid #38b6ff;border-radius:5px}
+.corner.tl{top:14px;left:14px;border-right:none;border-bottom:none}
+.corner.tr{top:14px;right:14px;border-left:none;border-bottom:none}
+.corner.bl{bottom:14px;left:14px;border-right:none;border-top:none}
+.corner.br{bottom:14px;right:14px;border-left:none;border-top:none}
 .bar{height:9px;border-radius:99px;background:var(--surface-3);overflow:hidden;border:1px solid var(--line)}
-.bar > i{
-  display:block;height:100%;width:0;border-radius:99px;
-  background:linear-gradient(90deg,var(--navy-600),var(--blue));
-  transition:width .35s ease;
-}
+.bar > i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--navy-600),var(--blue));transition:width .35s ease}
 .bar.green > i{background:linear-gradient(90deg,#17a34a,var(--green-600))}
 .bar.red > i{background:linear-gradient(90deg,#e04a4a,var(--red))}
-
-.steps-log{display:flex;flex-direction:column;gap:10px;margin-top:16px}
-.steps-log div{
-  font-size:.81rem;font-weight:700;color:var(--muted);
-  opacity:.35;transform:translateX(-6px);transition:.4s;
-  display:flex;gap:10px;align-items:center;
-}
+.steps-log{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.steps-log div{font-size:.8rem;font-weight:700;color:var(--muted);opacity:.35;transform:translateX(-6px);transition:.4s;display:flex;gap:9px;align-items:center}
 .steps-log div.on{opacity:1;transform:none;color:var(--green-600)}
 
-/* ═══════════════════════════════════════════════════════════════
-   11. SCREEN 6 — SUMMARY
-   ═══════════════════════════════════════════════════════════════ */
-.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.sum-card{
-  background:var(--surface);border:1px solid var(--line);
-  border-radius:var(--r);padding:20px;box-shadow:var(--sh-1);
-}
+/* ═══════════ SUMMARY ═══════════ */
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.sum-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh-1)}
 .sum-card.span2{grid-column:span 2}
-.sum-card h4{
-  font-size:.69rem;letter-spacing:.11em;text-transform:uppercase;
-  color:var(--muted);font-weight:800;margin-bottom:12px;
-  display:flex;justify-content:space-between;align-items:center;
-  gap:10px;flex-wrap:wrap;
-}
-.big-val{
-  font-family:var(--font-serif);font-size:1.4rem;font-weight:700;
-  letter-spacing:-.02em;color:var(--navy-900);line-height:1.3;
-}
-.kv{font-size:.81rem;font-weight:600;color:var(--muted);margin-top:6px;line-height:1.55}
+.sum-card h4{font-size:.68rem;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:11px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.big-val{font-family:var(--font-serif);font-size:1.35rem;font-weight:700;letter-spacing:-.02em;color:var(--navy-900);line-height:1.3}
+.kv{font-size:.8rem;font-weight:600;color:var(--muted);margin-top:5px;line-height:1.55}
 .taglist{display:flex;flex-wrap:wrap;gap:8px}
-.tag{
-  background:var(--blue-soft);color:var(--navy-600);
-  padding:8px 15px;border-radius:99px;
-  font-size:.77rem;font-weight:800;border:1px solid var(--blue-line);
-}
+.tag{background:var(--blue-soft);color:var(--navy-600);padding:7px 14px;border-radius:99px;font-size:.76rem;font-weight:800;border:1px solid var(--blue-line)}
 .tag.warn{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-line)}
 .tag.red{background:var(--red-soft);color:var(--red);border-color:var(--red-line)}
 .tag.ok{background:var(--green-soft);color:var(--green-600);border-color:var(--green-line)}
-
 .confidence{display:flex;align-items:center;gap:12px}
 .confidence .bar{flex:1}
-.confidence b{font-size:.81rem;color:var(--green-600);font-weight:800;font-family:var(--font-mono)}
+.confidence b{font-size:.8rem;color:var(--green-600);font-weight:800;font-family:var(--font-mono)}
+.flags{grid-column:span 2;display:flex;gap:14px;align-items:flex-start;background:linear-gradient(120deg,var(--red-soft),#fff);border:1px solid var(--red-line);border-left:4px solid var(--red);border-radius:var(--r);padding:16px 20px}
+.flags .fi{font-size:1.6rem;line-height:1;flex:0 0 auto}
+.flags b{display:block;font-size:.82rem;color:#8f1f1f;font-weight:800;letter-spacing:.03em;text-transform:uppercase}
+.flags p{font-size:.78rem;color:#7a3a3a;font-weight:600;margin-top:4px;line-height:1.6}
 
-.flags{
-  grid-column:span 2;display:flex;gap:15px;align-items:flex-start;
-  background:linear-gradient(120deg,var(--red-soft),#fff);
-  border:1px solid var(--red-line);border-left:4px solid var(--red);
-  border-radius:var(--r);padding:17px 22px;
-}
-.flags .fi{font-size:1.7rem;line-height:1;flex:0 0 auto}
-.flags b{
-  display:block;font-size:.83rem;color:#8f1f1f;
-  font-weight:800;letter-spacing:.03em;text-transform:uppercase;
-}
-.flags p{font-size:.79rem;color:#7a3a3a;font-weight:600;margin-top:4px;line-height:1.6}
-
-/* ═══════════════════════════════════════════════════════════════
-   12. SCREEN 7 — TOKEN
-   ═══════════════════════════════════════════════════════════════ */
-.token-wrap{
-  display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);
-  gap:22px;align-items:start;
-}
-.token-card{
-  background:var(--surface);border:1px solid var(--line);
-  border-radius:var(--r-lg);box-shadow:var(--sh-2);
-  padding:38px 34px;
-  display:flex;flex-direction:column;align-items:center;
-  gap:6px;text-align:center;position:relative;overflow:hidden;
-}
-.token-card::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:4px;
-  background:linear-gradient(90deg,var(--saffron),#fff,var(--green));
-}
-.check{
-  width:64px;height:64px;border-radius:50%;
-  background:var(--green-soft);border:2px solid var(--green);
-  color:var(--green-600);display:grid;place-items:center;
-  font-size:1.8rem;margin-bottom:10px;
-  animation:popIn .5s cubic-bezier(.2,1.5,.4,1);
-}
+/* ═══════════ TOKEN ═══════════ */
+.token-wrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px;align-items:start}
+.token-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-2);padding:34px 30px;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;position:relative;overflow:hidden}
+.token-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--saffron),#fff,var(--green))}
+.check{width:60px;height:60px;border-radius:50%;background:var(--green-soft);border:2px solid var(--green);color:var(--green-600);display:grid;place-items:center;font-size:1.7rem;margin-bottom:8px;animation:popIn .5s cubic-bezier(.2,1.5,.4,1)}
 @keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
-.token-label{
-  font-size:.69rem;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--muted);font-weight:800;
-}
-.token-no{
-  font-family:var(--font-serif);
-  font-size:clamp(3.4rem,9vw,5.2rem);
-  font-weight:700;letter-spacing:-.04em;line-height:1;
-  color:var(--navy-800);margin:8px 0;
-}
-.token-meta{font-size:.86rem;font-weight:700;color:var(--ink-2)}
-.token-note{
-  margin-top:16px;background:var(--green-soft);color:var(--green-600);
-  border:1px solid var(--green-line);
-  padding:10px 20px;border-radius:99px;
-  font-size:.77rem;font-weight:800;
-}
-.qr{width:128px;height:128px;margin-top:20px;border:1px solid var(--line);border-radius:10px;padding:9px;background:#fff}
-
-.info-row{
-  display:flex;justify-content:space-between;gap:12px;
-  padding:12px 0;border-bottom:1px dashed var(--line);font-size:.83rem;
-}
+.token-label{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.token-no{font-family:var(--font-serif);font-size:clamp(3.2rem,8vw,5rem);font-weight:700;letter-spacing:-.04em;line-height:1;color:var(--navy-800);margin:8px 0}
+.token-meta{font-size:.85rem;font-weight:700;color:var(--ink-2)}
+.token-note{margin-top:14px;background:var(--green-soft);color:var(--green-600);border:1px solid var(--green-line);padding:9px 18px;border-radius:99px;font-size:.76rem;font-weight:800;text-align:center}
+.qr{width:120px;height:120px;margin-top:18px;border:1px solid var(--line);border-radius:10px;padding:9px;background:#fff}
+.info-row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line);font-size:.82rem}
 .info-row:last-child{border-bottom:none}
 .info-row .k{color:var(--muted);font-weight:700}
 .info-row .v{font-weight:800;color:var(--ink);text-align:right}
 
-/* ═══════════════════════════════════════════════════════════════
-   13. SCREEN 8 — DOCTOR DASHBOARD
-   ═══════════════════════════════════════════════════════════════ */
-.doc-layout{
-  display:grid;grid-template-columns:290px minmax(0,1fr);
-  gap:20px;align-items:start;
-}
-.doc-queue{position:sticky;top:76px}
-.q-search{padding:14px 16px;border-bottom:1px solid var(--line);background:var(--surface-2)}
-.q-search input{
-  width:100%;padding:10px 13px;border:1.5px solid var(--line-2);
-  border-radius:var(--r-sm);font-size:.81rem;background:var(--surface);
-  transition:.2s;font-weight:600;
-}
+/* ═══════════ DOCTOR ═══════════ */
+.doc-layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:18px;align-items:start}
+.doc-queue{position:sticky;top:70px}
+.q-search{padding:13px 15px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.q-search input{width:100%;padding:10px 12px;border:1.5px solid var(--line-2);border-radius:var(--r-sm);font-size:.81rem;background:var(--surface);transition:.2s;font-weight:600}
 .q-search input:focus{outline:none;border-color:var(--navy-600);box-shadow:0 0 0 3px rgba(21,81,140,.12)}
-.q-list{max-height:540px;overflow-y:auto;scrollbar-width:thin}
-.q-item{
-  display:flex;justify-content:space-between;align-items:center;
-  gap:12px;width:100%;padding:13px 16px;
-  border-bottom:1px solid var(--line);text-align:left;
-  transition:.2s;position:relative;
-}
+.q-list{max-height:520px;overflow-y:auto;scrollbar-width:thin}
+.q-item{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:12px 15px;border-bottom:1px solid var(--line);text-align:left;transition:.2s;position:relative}
 .q-item:hover{background:var(--surface-2)}
 .q-item.active{background:var(--blue-soft)}
-.q-item.active::before{
-  content:"";position:absolute;left:0;top:0;bottom:0;
-  width:3px;background:var(--navy-700);
-}
+.q-item.active::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--navy-700)}
 .q-item .nm{font-size:.85rem;font-weight:800;color:var(--ink);letter-spacing:-.01em}
-.q-item .sub{font-size:.71rem;color:var(--muted);font-weight:600;margin-top:3px}
-.q-item .tk{
-  font-size:.75rem;font-weight:800;color:var(--navy-700);
-  background:var(--surface);border:1px solid var(--line-2);
-  padding:4px 10px;border-radius:5px;font-family:var(--font-mono);
-  flex:0 0 auto;
-}
+.q-item .sub{font-size:.7rem;color:var(--muted);font-weight:600;margin-top:2px}
+.q-item .tk{font-size:.74rem;font-weight:800;color:var(--navy-700);background:var(--surface);border:1px solid var(--line-2);padding:4px 10px;border-radius:5px;font-family:var(--font-mono);flex:0 0 auto}
 .q-item.active .tk{background:var(--navy-700);color:#fff;border-color:var(--navy-700)}
-.q-empty{padding:32px 18px;text-align:center;color:var(--muted);font-size:.81rem;font-weight:600}
-
-.doc-main{display:flex;flex-direction:column;gap:16px;min-width:0}
-
-.doc-head{
-  display:flex;justify-content:space-between;
-  align-items:flex-start;gap:18px;flex-wrap:wrap;
-  padding:22px;
-}
-.doc-id{display:flex;gap:15px;align-items:flex-start;min-width:0}
-.avatar{
-  width:56px;height:56px;border-radius:50%;flex:0 0 auto;
-  display:grid;place-items:center;
-  background:var(--navy-700);color:#fff;
-  font-weight:800;font-size:1.15rem;font-family:var(--font-serif);
-}
-.doc-id h2{
-  font-family:var(--font-serif);font-size:1.4rem;font-weight:700;
-  color:var(--navy-900);letter-spacing:-.022em;line-height:1.2;
-}
-.doc-id .meta{
-  font-size:.77rem;color:var(--muted);font-weight:600;
-  margin-top:5px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;
-}
+.q-empty{padding:28px 18px;text-align:center;color:var(--muted);font-size:.8rem;font-weight:600}
+.doc-main{display:flex;flex-direction:column;gap:14px;min-width:0}
+.doc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;padding:20px}
+.doc-id{display:flex;gap:14px;align-items:flex-start;min-width:0}
+.avatar{width:54px;height:54px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;background:var(--navy-700);color:#fff;font-weight:800;font-size:1.1rem;font-family:var(--font-serif)}
+.doc-id h2{font-family:var(--font-serif);font-size:1.35rem;font-weight:700;color:var(--navy-900);letter-spacing:-.022em;line-height:1.2}
+.doc-id .meta{font-size:.76rem;color:var(--muted);font-weight:600;margin-top:5px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .doc-id .meta i{font-style:normal;color:var(--line-2)}
-.doc-token-box{
-  text-align:right;display:flex;flex-direction:column;
-  align-items:flex-end;gap:8px;
-}
-.doc-token{
-  font-family:var(--font-serif);font-size:1.6rem;font-weight:700;
-  color:#fff;background:linear-gradient(140deg,var(--navy-600),var(--navy-800));
-  padding:10px 22px;border-radius:var(--r-sm);letter-spacing:.01em;
-}
-.status-pill{
-  font-size:.67rem;font-weight:800;letter-spacing:.08em;
-  text-transform:uppercase;padding:5px 12px;border-radius:99px;
-  background:var(--amber-soft);color:var(--amber);
-  border:1px solid var(--amber-line);
-}
-
-.vitals-strip{
-  display:grid;grid-template-columns:repeat(5,1fr);
-  border-top:1px solid var(--line);background:var(--surface-2);
-}
-.vital{padding:14px 12px;border-right:1px solid var(--line);text-align:center}
+.doc-token-box{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.doc-token{font-family:var(--font-serif);font-size:1.5rem;font-weight:700;color:#fff;background:linear-gradient(140deg,var(--navy-600),var(--navy-800));padding:9px 20px;border-radius:var(--r-sm)}
+.status-pill{font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:5px 11px;border-radius:99px;background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber-line)}
+.vitals-strip{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--surface-2)}
+.vital{padding:13px 10px;border-right:1px solid var(--line);text-align:center}
 .vital:last-child{border-right:none}
-.vital b{display:block;font-size:1rem;font-weight:800;color:var(--navy-800);letter-spacing:-.01em;font-family:var(--font-mono)}
-.vital span{font-size:.66rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;display:block}
+.vital b{display:block;font-size:.95rem;font-weight:800;color:var(--navy-800);font-family:var(--font-mono)}
+.vital span{font-size:.64rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;display:block}
 .vital.abn b{color:var(--red)}
-
-.alert-banner{
-  display:flex;gap:15px;align-items:flex-start;
-  background:var(--red-soft);border:1px solid var(--red-line);
-  border-left:4px solid var(--red);border-radius:var(--r);padding:16px 20px;
-}
-.alert-banner .fi{font-size:1.6rem;line-height:1;flex:0 0 auto}
-.alert-banner b{
-  display:block;font-size:.79rem;color:#8f1f1f;font-weight:800;
-  letter-spacing:.04em;text-transform:uppercase;
-}
-.alert-banner p{font-size:.78rem;color:#7a3a3a;font-weight:600;margin-top:3px;line-height:1.55}
-
-.doc-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.dcard{
-  background:var(--surface);border:1px solid var(--line);
-  border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh-1);
-}
+.alert-banner{display:flex;gap:14px;align-items:flex-start;background:var(--red-soft);border:1px solid var(--red-line);border-left:4px solid var(--red);border-radius:var(--r);padding:15px 18px}
+.alert-banner .fi{font-size:1.5rem;line-height:1;flex:0 0 auto}
+.alert-banner b{display:block;font-size:.78rem;color:#8f1f1f;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.alert-banner p{font-size:.77rem;color:#7a3a3a;font-weight:600;margin-top:3px;line-height:1.55}
+.doc-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.dcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:17px 18px;box-shadow:var(--sh-1)}
 .dcard.span2{grid-column:span 2}
-.dcard h4{
-  font-size:.67rem;letter-spacing:.11em;text-transform:uppercase;
-  color:var(--muted);font-weight:800;margin-bottom:12px;
-  display:flex;justify-content:space-between;align-items:center;
-  gap:10px;flex-wrap:wrap;
-}
-.ai-badge{
-  font-size:.6rem;letter-spacing:.07em;background:var(--blue-soft);
-  color:var(--navy-600);padding:3px 9px;border-radius:99px;
-  border:1px solid var(--blue-line);font-weight:800;
-}
-.dcard .val{font-size:.87rem;font-weight:600;color:var(--ink);line-height:1.7}
+.dcard h4{font-size:.66rem;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:11px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.ai-badge{font-size:.59rem;letter-spacing:.07em;background:var(--blue-soft);color:var(--navy-600);padding:3px 8px;border-radius:99px;border:1px solid var(--blue-line);font-weight:800}
+.dcard .val{font-size:.86rem;font-weight:600;color:var(--ink);line-height:1.7}
 .dcard ul{display:flex;flex-direction:column;gap:8px}
-.dcard li{
-  font-size:.83rem;font-weight:700;color:var(--ink-2);
-  display:flex;gap:10px;align-items:flex-start;
-}
-.dcard li::before{
-  content:"";width:6px;height:6px;border-radius:50%;
-  background:var(--navy-600);flex:0 0 auto;margin-top:8px;
-}
-[contenteditable="true"]{
-  outline:2px dashed var(--navy-600);outline-offset:5px;
-  border-radius:5px;background:var(--blue-soft);padding:3px 5px;
-}
-
+.dcard li{font-size:.82rem;font-weight:700;color:var(--ink-2);display:flex;gap:9px;align-items:flex-start}
+.dcard li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--navy-600);flex:0 0 auto;margin-top:8px}
+[contenteditable="true"]{outline:2px dashed var(--navy-600);outline-offset:4px;border-radius:5px;background:var(--blue-soft);padding:3px 5px}
 .tbl{width:100%;border-collapse:collapse;font-size:.81rem}
-.tbl th{
-  text-align:left;font-size:.65rem;letter-spacing:.09em;
-  text-transform:uppercase;color:var(--muted);font-weight:800;
-  padding:9px 11px;border-bottom:1.5px solid var(--line-2);
-  background:var(--surface-2);
-}
-.tbl td{padding:11px;border-bottom:1px solid var(--line);font-weight:600;color:var(--ink-2)}
+.tbl th{text-align:left;font-size:.64rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:800;padding:9px 10px;border-bottom:1.5px solid var(--line-2);background:var(--surface-2)}
+.tbl td{padding:10px;border-bottom:1px solid var(--line);font-weight:600;color:var(--ink-2)}
 .tbl tr:last-child td{border-bottom:none}
 .tbl td b{color:var(--ink);font-weight:800}
 .tbl .conf{color:var(--green-600);font-weight:800;font-family:var(--font-mono)}
-
-.approved-banner{
-  display:none;align-items:center;gap:13px;
-  background:var(--green-soft);border:1px solid var(--green-line);
-  border-left:4px solid var(--green);border-radius:var(--r);
-  padding:15px 20px;color:var(--green-600);
-  font-weight:800;font-size:.83rem;
-  animation:fadeUp .4s;
-}
+.approved-banner{display:none;align-items:center;gap:12px;background:var(--green-soft);border:1px solid var(--green-line);border-left:4px solid var(--green);border-radius:var(--r);padding:14px 18px;color:var(--green-600);font-weight:800;font-size:.82rem;animation:fadeUp .4s}
 .approved-banner.on{display:flex}
+.action-bar{display:flex;gap:11px;justify-content:flex-end;flex-wrap:wrap;padding:14px 18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh-1)}
 
-.action-bar{
-  display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;
-  padding:15px 20px;background:var(--surface);
-  border:1px solid var(--line);border-radius:var(--r);
-  box-shadow:var(--sh-1);
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   14. FOOTER
-   ═══════════════════════════════════════════════════════════════ */
-.gov-footer{
-  background:var(--navy-900);color:#a9c0d6;
-  margin-top:38px;border-top:4px solid var(--saffron);
-}
-.foot-grid{
-  display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;
-  gap:28px;padding:38px 22px 28px;
-}
-.foot-col h5{
-  font-size:.73rem;letter-spacing:.11em;text-transform:uppercase;
-  color:#fff;font-weight:800;margin-bottom:14px;
-}
-.foot-col p{font-size:.77rem;line-height:1.78;color:#93aec8;max-width:40ch}
-.foot-col ul{display:flex;flex-direction:column;gap:9px}
-.foot-col a{font-size:.77rem;color:#a9c0d6;font-weight:600;transition:.18s}
+/* ═══════════ FOOTER ═══════════ */
+.gov-footer{background:var(--navy-900);color:#a9c0d6;margin-top:32px;border-top:4px solid var(--saffron)}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:24px;padding:32px 20px 24px}
+.foot-col h5{font-size:.72rem;letter-spacing:.11em;text-transform:uppercase;color:#fff;font-weight:800;margin-bottom:12px}
+.foot-col p{font-size:.76rem;line-height:1.78;color:#93aec8;max-width:40ch}
+.foot-col ul{display:flex;flex-direction:column;gap:8px}
+.foot-col a{font-size:.76rem;color:#a9c0d6;font-weight:600;transition:.18s}
 .foot-col a:hover{color:#fff;text-decoration:underline}
-.foot-bottom{
-  border-top:1px solid #14375e;padding:16px 22px;
-  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
-  font-size:.71rem;color:#7f9cb8;font-weight:600;
-}
+.foot-bottom{border-top:1px solid #14375e;padding:14px 20px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.7rem;color:#7f9cb8;font-weight:600}
 .foot-bottom b{color:#c9d9ea;font-weight:700}
 
-/* ═══════════════════════════════════════════════════════════════
-   15. TOAST
-   ═══════════════════════════════════════════════════════════════ */
-.toast{
-  position:fixed;bottom:26px;left:50%;
-  transform:translate(-50%,140%);
-  background:var(--navy-900);color:#fff;
-  padding:13px 26px;border-radius:var(--r-sm);
-  font-weight:800;font-size:.82rem;
-  box-shadow:var(--sh-3);transition:.42s cubic-bezier(.2,.9,.3,1);
-  z-index:200;border-left:4px solid var(--saffron);
-  max-width:calc(100vw - 32px);text-align:center;
-}
+/* ═══════════ TOAST ═══════════ */
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,140%);background:var(--navy-900);color:#fff;padding:13px 22px;border-radius:var(--r-sm);font-weight:800;font-size:.82rem;box-shadow:var(--sh-3);transition:.42s cubic-bezier(.2,.9,.3,1);z-index:200;border-left:4px solid var(--saffron);max-width:calc(100vw - 32px);text-align:center;line-height:1.4}
 .toast.on{transform:translate(-50%,0)}
 
-/* ═══════════════════════════════════════════════════════════════
-   16. RESPONSIVE — LAPTOP / DESKTOP / TABLET / MOBILE
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE — MOBILE FIRST
+   ═══════════════════════════════════════════════════ */
 
-/* — Fluid type scaling — */
-html{font-size:clamp(14.5px, 0.25vw + 13.8px, 16.5px)}
+/* Tablet ≥640px */
+@media(min-width:640px){
+  :root{--gutter:20px}
+  .gov-strip .wrap{min-height:40px}
+  .hdr-inner{padding:14px 0;gap:16px}
+  .emblem{width:56px;height:56px}
+  .emblem svg{width:32px;height:32px}
+  .hdr-text h1{font-size:1.28rem}
+  .hdr-text p{font-size:.75rem}
+  .nav-item{padding:14px 22px;font-size:.83rem}
+  .stepper{padding:13px 0}
+  .step{min-width:120px;padding-right:14px}
+  .step .num{width:28px;height:28px;font-size:.74rem}
+  .step .lbl{font-size:.74rem;display:inline}
+  .panel-body{padding:22px 20px}
+  .panel-head{padding:15px 22px}
+  .panel-title{font-size:.94rem}
+  .hero-panel .panel-body{padding:28px 26px}
+  .chat-stage{padding:36px 24px;min-height:460px}
+  .bot{width:96px;height:96px}
+  .bot-core{width:80px;height:80px;font-size:1.95rem}
+  .token-card{padding:36px 32px}
+  .doc-head{padding:22px}
+  .vitals-strip{grid-template-columns:repeat(5,1fr)}
+  .vital{padding:14px 12px}
+  .vital b{font-size:1rem}
+  .foot-grid{grid-template-columns:1.6fr 1fr 1fr 1fr;gap:26px;padding:36px 20px 26px}
+  .foot-col p{font-size:.77rem}
+}
 
-/* — Large desktop (≥1600px) — */
+/* Desktop ≥1024px */
+@media(min-width:1024px){
+  :root{--container:1180px;--gutter:22px}
+  .hdr-inner{gap:18px}
+  .emblem{width:60px;height:60px}
+  .emblem svg{width:36px;height:36px}
+  .hdr-text h1{font-size:1.35rem}
+  .hero-panel .panel-body{padding:32px 30px}
+  .chat-stage{min-height:480px}
+  .doc-layout{grid-template-columns:280px minmax(0,1fr);gap:18px}
+  .doc-queue{position:sticky;top:76px}
+  .chat-grid{grid-template-columns:minmax(0,1fr) 290px;gap:20px}
+}
+
+/* Large desktop ≥1440px */
+@media(min-width:1440px){
+  :root{--container:1320px}
+}
 @media(min-width:1600px){
   :root{--container:1480px;--gutter:26px}
-  .hero-h{font-size:2.6rem}
-  .q-text{font-size:2.05rem}
-  .emblem{width:66px;height:66px}
-  .emblem svg{width:40px;height:40px}
-  .hdr-text h1{font-size:1.48rem}
+  html{font-size:17px}
 }
 
-/* — Standard desktop (1440–1599) — */
-@media(min-width:1440px) and (max-width:1599px){
-  :root{--container:1360px}
-}
-
-/* — Laptop (1024–1439) — */
-@media(min-width:1024px) and (max-width:1439px){
-  :root{--container:1180px;--gutter:20px}
-  .welcome-grid{grid-template-columns:1.3fr 1fr;gap:18px}
-  .doc-layout{grid-template-columns:260px minmax(0,1fr);gap:16px}
-  .chat-grid{grid-template-columns:minmax(0,1fr) 290px;gap:18px}
-  .hero-panel .panel-body{padding:28px 26px}
-}
-
-/* — Small laptop / large tablet (900–1023) — */
-@media(min-width:900px) and (max-width:1023px){
-  :root{--container:100%;--gutter:18px}
-  .welcome-grid{grid-template-columns:1fr;gap:16px}
-  .sym-grid{grid-template-columns:280px minmax(0,1fr);gap:16px}
-  .scan-grid{grid-template-columns:1fr 1fr;gap:16px}
-  .token-wrap{grid-template-columns:1.2fr 1fr;gap:16px}
-  .chat-grid{grid-template-columns:1fr;gap:16px}
-  .draft-rail{position:static}
-  .doc-layout{grid-template-columns:1fr;gap:16px}
-  .doc-queue{position:static}
-  .q-list{
-    display:flex;overflow-x:auto;overflow-y:hidden;
-    max-height:none;-webkit-overflow-scrolling:touch;
-    scroll-snap-type:x mandatory;
-  }
-  .q-item{
-    min-width:210px;flex:0 0 auto;border-right:1px solid var(--line);
-    border-bottom:none;scroll-snap-align:start;
-  }
-  .vitals-strip{grid-template-columns:repeat(3,1fr)}
-  .vital:nth-child(3n){border-right:none}
-  .vital:nth-child(n+4){border-top:1px solid var(--line)}
-  .badge-row{display:none}
-}
-
-/* — Tablet portrait (768–899) — */
-@media(min-width:768px) and (max-width:899px){
-  :root{--container:100%;--gutter:16px}
-  .welcome-grid,.sym-grid,.scan-grid,.token-wrap,.chat-grid{
-    grid-template-columns:1fr;gap:16px;
-  }
-  .doc-layout{grid-template-columns:1fr;gap:16px}
-  .doc-queue,.draft-rail{position:static}
-  .q-list{
-    display:flex;overflow-x:auto;overflow-y:hidden;
-    max-height:none;-webkit-overflow-scrolling:touch;
-  }
-  .q-item{min-width:210px;flex:0 0 auto;border-right:1px solid var(--line);border-bottom:none}
-  .feat-list{grid-template-columns:1fr 1fr}
-  .vitals-strip{grid-template-columns:repeat(3,1fr)}
-  .vital:nth-child(3n){border-right:none}
-  .vital:nth-child(n+4){border-top:1px solid var(--line)}
-  .doc-cols{grid-template-columns:1fr}
-  .dcard.span2{grid-column:span 1}
-  .sum-grid{grid-template-columns:1fr}
-  .sum-card.span2,.flags{grid-column:span 1}
-  .badge-row{display:none}
-  .foot-grid{grid-template-columns:1fr 1fr;gap:22px}
-}
-
-/* ═════════════ MOBILE (≤767px) ═════════════ */
-@media(max-width:767px){
-  :root{--gutter:12px;--container:100%}
+/* ═══════════ MOBILE ≤639px ═══════════ */
+@media(max-width:639px){
+  :root{--gutter:12px}
   html{font-size:15px}
-  body{font-size:.9rem}
+  body{font-size:.94rem;line-height:1.5}
 
-  /* — Top strip — */
-  .gov-strip .wrap{min-height:auto;padding:8px 12px;gap:8px;justify-content:center}
-  .gs-left{font-size:.68rem;text-align:center;line-height:1.4;flex:1 1 100%}
+  /* Gov strip: compact */
+  .gov-strip .wrap{padding-top:6px;padding-bottom:6px;gap:6px;justify-content:center;min-height:auto}
+  .gs-left{font-size:.67rem;text-align:center;flex:1 1 100%;justify-content:center;line-height:1.3}
   .gs-left .gs-sep{display:none}
-  .gs-right{gap:5px;justify-content:center;flex-wrap:wrap;flex:1 1 100%}
-  .gs-link{font-size:.68rem;padding:5px 9px}
-  .fs-ctrl button{padding:4px 8px;font-size:.66rem}
+  .gs-left span:not(.gs-flag):not(:first-of-type){display:none}
+  .gs-right{flex:1 1 100%;justify-content:center;gap:4px}
+  .gs-link{font-size:.66rem;padding:5px 8px}
+  .fs-ctrl button{padding:4px 8px;font-size:.65rem}
 
-  /* — Header — */
-  .hdr-inner{padding:12px 0;gap:11px;flex-wrap:nowrap}
+  /* Header: no badges, no helpline, tighter */
+  .hdr-inner{padding:10px 0;gap:10px;flex-wrap:nowrap}
   .emblem{width:42px;height:42px}
   .emblem svg{width:24px;height:24px}
-  .hdr-text h1{font-size:1.04rem;gap:7px}
-  .hdr-text h1 .hdr-hi{font-size:.78rem}
-  .hdr-text p{
-    font-size:.66rem;line-height:1.4;margin-top:2px;
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-    overflow:hidden;
-  }
+  .hdr-text h1{font-size:1.02rem;gap:6px;line-height:1.2}
+  .hdr-text h1 .hdr-hi{font-size:.75rem}
+  .hdr-text p{font-size:.63rem;line-height:1.35;margin-top:1px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .hdr-right{display:none}
 
-  /* — Nav — */
-  .nav-item{padding:12px 16px;font-size:.78rem}
-  .gov-nav .wrap{padding:0 8px}
+  /* Nav: horizontal scroll */
+  .gov-nav .wrap{padding:0 6px}
+  .nav-item{padding:11px 14px;font-size:.76rem}
 
-  /* — Stepper: compact — */
-  .stepper{padding:10px 0}
+  /* Stepper: dots only */
+  .stepper{padding:9px 0;gap:0}
   .step{min-width:auto;flex:1;padding-right:0;justify-content:center}
-  .step .num{width:24px;height:24px;font-size:.68rem}
+  .step .num{width:24px;height:24px;font-size:.67rem}
   .step .lbl{display:none}
   .step .line{flex:1;margin:0 3px;min-width:6px}
 
-  /* — Breadcrumb — */
-  .crumb{font-size:.71rem;padding:10px 0 0}
+  /* Breadcrumb: smaller, hide on phones */
+  .crumb{display:none}
 
-  /* — Panels — */
-  .panel-head{padding:13px 15px;gap:9px}
-  .panel-title{font-size:.87rem}
-  .panel-title::before{height:14px}
-  .panel-body{padding:18px 15px}
-  .step-chip{font-size:.62rem;padding:4px 10px}
+  /* Panels */
+  .panel-head{padding:12px 14px;gap:8px}
+  .panel-title{font-size:.85rem}
+  .panel-title::before{height:14px;width:3px}
+  .panel-body{padding:14px 14px}
+  .step-chip{font-size:.6rem;padding:4px 9px}
+  .count-chip{font-size:.66rem;padding:3px 9px}
 
-  /* — Notice — */
-  .notice{padding:12px 14px;gap:10px;margin:14px 0 16px}
-  .notice-ico{font-size:1rem}
-  .notice p{font-size:.75rem;line-height:1.6}
+  /* Notice */
+  .notice{padding:11px 13px;gap:9px;margin:13px 0 15px}
+  .notice-ico{font-size:.95rem}
+  .notice p{font-size:.74rem;line-height:1.55}
 
-  /* — Welcome — */
-  .hero-panel .panel-body{padding:22px 17px}
-  .hero-h{font-size:1.5rem;margin:14px 0 10px}
-  .hero-p{font-size:.83rem;line-height:1.68}
-  .stat-row{grid-template-columns:1fr;margin:20px 0}
-  .stat{padding:13px 15px;border-right:none;border-bottom:1px solid var(--line)}
-  .stat:last-child{border-bottom:none}
-  .stat b{font-size:1.2rem}
-  .feat-list{grid-template-columns:1fr;gap:10px}
-  .feat-list li{padding:11px 12px}
-  .feat-list b{font-size:.79rem}
-  .feat-list span{font-size:.69rem}
-  .lang-list{gap:10px;margin:14px 0 18px}
-  .lang-card{padding:14px 14px;gap:12px}
-  .lc-flag{width:38px;height:38px;font-size:.98rem}
+  /* Buttons */
+  .btn{padding:13px 18px;font-size:.86rem;min-height:48px}
+  .btn.wide{width:100%}
+  .row-end{flex-direction:column-reverse;gap:9px;margin-top:16px}
+  .row-end .btn{width:100%}
+
+  /* Welcome */
+  .welcome-grid{grid-template-columns:1fr;gap:14px}
+  .hero-panel .panel-body{padding:18px 15px}
+  .tag-chip{font-size:.64rem;padding:5px 11px}
+  .hero-h{font-size:1.4rem;margin:12px 0 10px}
+  .hero-p{font-size:.82rem;line-height:1.65}
+  .stat-row{grid-template-columns:repeat(3,1fr);margin:16px 0}
+  .stat{padding:11px 6px;border-right:1px solid var(--line);border-bottom:none}
+  .stat:last-child{border-right:none}
+  .stat b{font-size:1.05rem}
+  .stat span{font-size:.6rem;line-height:1.25}
+  .feat-list{grid-template-columns:1fr;gap:9px}
+  .feat-list li{padding:10px 11px;gap:10px}
+  .feat-list i{font-size:1.05rem}
+  .feat-list b{font-size:.78rem}
+  .feat-list span{font-size:.68rem}
+  .lang-list{gap:9px;margin:12px 0 16px}
+  .lang-card{padding:13px 14px;gap:11px;min-height:60px}
+  .lc-flag{width:38px;height:38px;font-size:1rem;border-radius:8px}
   .lc-main b{font-size:.94rem}
-  .lc-main small{font-size:.69rem}
-  .mic-cta{padding:14px 17px;gap:12px}
+  .lc-main small{font-size:.68rem}
+  .mic-cta{padding:14px 16px;gap:12px;min-height:60px}
   .mic-ico{font-size:1.4rem}
   .mic-cta b{font-size:.88rem}
-  .mic-cta small{font-size:.69rem}
+  .mic-cta small{font-size:.68rem}
   .trust-row{gap:5px;margin-top:14px;padding-top:14px}
-  .trust-row span{font-size:.61rem;padding:4px 9px}
+  .trust-row span{font-size:.6rem;padding:4px 8px}
 
-  /* — Check-in tiles: horizontal layout — */
-  .tiles3{grid-template-columns:1fr;gap:11px}
+  /* Check-in tiles: horizontal layout (icon left, text right) */
+  .tiles3{grid-template-columns:1fr;gap:10px}
   .tile{
     display:grid;grid-template-columns:auto 1fr;
-    grid-template-rows:auto auto;
-    column-gap:15px;row-gap:2px;align-items:center;
-    padding:17px;text-align:left;
+    grid-template-rows:auto auto;column-gap:14px;row-gap:2px;
+    align-items:center;padding:16px;text-align:left;min-height:76px;
   }
   .tile .ico{grid-row:1 / span 2;font-size:1.9rem;line-height:1}
-  .tile .tt{grid-column:2;font-size:.92rem;text-align:left;align-self:end}
-  .tile .ts{grid-column:2;font-size:.69rem;text-align:left;align-self:start}
+  .tile .tt{grid-column:2;font-size:.9rem;text-align:left;align-self:end}
+  .tile .ts{grid-column:2;font-size:.68rem;text-align:left;align-self:start}
   .tile::before{height:2px}
 
-  /* — Symptoms — */
-  .sym-grid{grid-template-columns:1fr;gap:14px}
+  /* Symptoms */
+  .sym-grid{grid-template-columns:1fr;gap:13px}
   .body-card{padding:11px}
-  .body{max-height:310px}
-  .sub-card{padding:15px 14px}
-  .sub-card h4{font-size:.66rem;margin-bottom:12px;gap:7px}
-  .chip{font-size:.75rem;padding:9px 13px;gap:5px}
+  .body{max-height:300px}
+  .body-card .hint-badge{font-size:.6rem;padding:3px 8px}
+  .panel-stack{gap:12px}
+  .sub-card{padding:14px 13px}
+  .sub-card h4{font-size:.65rem;margin-bottom:11px;gap:6px}
+  .chip{font-size:.74rem;padding:9px 12px;gap:5px;min-height:40px}
   .voice-box{flex-direction:column;gap:10px}
   .mic-btn{
-    width:100%;min-height:50px;border-radius:var(--r-sm);
-    padding:14px;font-size:.83rem;font-weight:800;
-    gap:8px;
+    width:100%;min-height:52px;border-radius:var(--r-sm);
+    padding:13px;font-size:.83rem;font-weight:800;gap:8px;
   }
-  .mic-btn::after{content:"Tap to speak · बोलें";font-size:.83rem;font-weight:800}
-  .transcript{min-height:58px;font-size:.81rem;padding:12px 14px;width:100%}
-  .row-end{flex-direction:column-reverse;gap:10px;margin-top:18px}
-  .row-end .btn{width:100%;padding:14px 20px;font-size:.87rem}
+  .mic-btn::after{content:" 🎙️";font-size:1rem;margin-left:4px}
+  .transcript{min-height:60px;font-size:.81rem;padding:12px 14px;width:100%}
 
-  /* — Chat — */
-  .chat-stage{padding:22px 15px;min-height:340px}
-  .bot{width:78px;height:78px;margin-bottom:11px}
+  /* Chat */
+  .chat-grid{grid-template-columns:1fr;gap:13px}
+  .chat-stage{padding:22px 14px;min-height:auto}
+  .bot{width:78px;height:78px;margin-bottom:12px}
   .bot-core{width:64px;height:64px;font-size:1.6rem}
-  .q-count{font-size:.62rem;margin-bottom:10px}
-  .q-text{font-size:1.18rem;line-height:1.4}
-  .q-voice{font-size:.71rem;margin-top:12px}
-  .answers{gap:10px;margin-top:24px;width:100%}
-  .ans{
-    flex:1 1 45%;min-width:0;padding:15px 13px;
-    font-size:.83rem;border-radius:var(--r-sm);
-  }
-  .ans.big{padding:17px 15px;font-size:.87rem;min-width:0;flex:1 1 45%}
-  .ans small{font-size:.63rem}
-  .thinking{font-size:.73rem;margin-top:20px}
+  .q-count{font-size:.61rem;margin-bottom:10px}
+  .q-text{font-size:1.16rem;line-height:1.38;max-width:100%}
+  .q-voice{font-size:.7rem;margin-top:12px}
+  .answers{gap:9px;margin-top:22px}
+  .ans{flex:1 1 calc(50% - 5px);min-width:0;padding:14px 10px;font-size:.83rem;border-radius:var(--r-sm);min-height:56px}
+  .ans.big{padding:16px 12px;font-size:.87rem;min-width:0;flex:1 1 calc(50% - 5px)}
+  .ans small{font-size:.62rem}
+  .thinking{font-size:.73rem;margin-top:20px;flex-wrap:wrap}
+  .draft-rail{position:static}
   .draft-rail .panel-body{padding:6px 15px 15px}
-  .draft-item{font-size:.77rem;padding:10px 0;gap:9px}
+  .draft-item{font-size:.76rem;padding:10px 0;gap:9px}
   .draft-item .v{max-width:56%}
 
-  /* — Scanner — */
-  .scan-grid{grid-template-columns:1fr;gap:14px}
+  /* Scanner */
+  .scan-grid{grid-template-columns:1fr;gap:13px}
   .scan-frame{aspect-ratio:4/3}
-  .scan-frame .doc{font-size:3.3rem}
-  .scan-frame .hint{font-size:.6rem;bottom:13px;letter-spacing:.11em}
+  .scan-frame .doc{font-size:3rem}
+  .scan-frame .hint{font-size:.6rem;bottom:12px}
   .corner{width:22px;height:22px;border-width:2.5px}
   .corner.tl{top:10px;left:10px}.corner.tr{top:10px;right:10px}
   .corner.bl{bottom:10px;left:10px}.corner.br{bottom:10px;right:10px}
   #scanBtn,#skipScan{width:100%}
 
-  /* — Summary — */
-  .sum-grid{grid-template-columns:1fr;gap:13px}
+  /* Summary */
+  .sum-grid{grid-template-columns:1fr;gap:12px}
   .sum-card.span2,.flags{grid-column:span 1}
-  .sum-card{padding:16px 15px}
-  .sum-card h4{font-size:.65rem;margin-bottom:10px;gap:7px}
+  .sum-card{padding:15px 14px}
+  .sum-card h4{font-size:.63rem;margin-bottom:9px;gap:6px}
   .big-val{font-size:1.15rem}
-  .kv{font-size:.75rem}
-  .tag{font-size:.71rem;padding:7px 12px}
-  .flags{padding:14px 15px;gap:12px}
-  .flags .fi{font-size:1.4rem}
-  .flags b{font-size:.75rem}
-  .flags p{font-size:.73rem;line-height:1.55}
-  .confidence{flex-wrap:wrap;gap:9px}
+  .kv{font-size:.74rem}
+  .tag{font-size:.7rem;padding:7px 12px}
+  .flags{padding:13px 14px;gap:12px}
+  .flags .fi{font-size:1.35rem}
+  .flags b{font-size:.74rem}
+  .flags p{font-size:.72rem;line-height:1.55}
+  .confidence{flex-wrap:wrap;gap:8px}
   .confidence .bar{flex:1 1 100%;order:2}
   .confidence b{order:1;font-size:.75rem}
 
-  /* — Token — */
-  .token-wrap{grid-template-columns:1fr;gap:15px}
+  /* Token */
+  .token-wrap{grid-template-columns:1fr;gap:14px}
   .token-card{padding:26px 18px;border-radius:var(--r)}
-  .token-no{font-size:3.7rem}
+  .token-no{font-size:3.6rem}
   .check{width:54px;height:54px;font-size:1.55rem}
-  .token-label{font-size:.63rem}
-  .token-meta{font-size:.79rem}
-  .token-note{font-size:.71rem;padding:9px 15px;margin-top:13px}
-  .qr{width:105px;height:105px;margin-top:15px}
-  .info-row{font-size:.77rem;padding:10px 0;gap:9px}
-  .info-row .v{max-width:56%}
+  .token-label{font-size:.62rem}
+  .token-meta{font-size:.78rem}
+  .token-note{font-size:.7rem;padding:9px 15px;margin-top:12px}
+  .qr{width:100px;height:100px;margin-top:14px}
+  .info-row{font-size:.76rem;padding:10px 0;gap:9px}
+  .info-row .v{max-width:58%}
 
-  /* — Doctor dashboard — */
-  .doc-layout{grid-template-columns:1fr;gap:13px}
+  /* Doctor */
+  .doc-layout{grid-template-columns:1fr;gap:12px}
   .doc-queue{position:static;border-radius:var(--r)}
   .q-search{padding:11px 13px}
   .q-search input{font-size:.77rem;padding:9px 12px}
   .q-list{
-    display:flex;overflow-x:auto;overflow-y:hidden;
-    max-height:none;-webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
+    display:flex;overflow-x:auto;overflow-y:hidden;max-height:none;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-snap-type:x mandatory;
   }
   .q-list::-webkit-scrollbar{display:none}
-  .q-item{
-    min-width:190px;flex:0 0 auto;
-    border-right:1px solid var(--line);border-bottom:none;
-    padding:12px 14px;
-  }
+  .q-item{min-width:180px;flex:0 0 auto;border-right:1px solid var(--line);border-bottom:none;padding:12px 14px;scroll-snap-align:start}
   .q-item .nm{font-size:.81rem}
-  .q-item .sub{font-size:.67rem}
-  .q-item .tk{font-size:.71rem;padding:3px 9px}
-
-  .doc-head{padding:17px 15px;flex-direction:column;align-items:flex-start;gap:14px}
-  .doc-id{width:100%;gap:12px}
+  .q-item .sub{font-size:.66rem}
+  .q-item .tk{font-size:.7rem;padding:3px 9px}
+  .doc-head{padding:16px 14px;flex-direction:column;align-items:flex-start;gap:12px}
+  .doc-id{width:100%;gap:11px}
   .avatar{width:46px;height:46px;font-size:1rem}
   .doc-id h2{font-size:1.18rem}
-  .doc-id .meta{font-size:.71rem;gap:6px}
+  .doc-id .meta{font-size:.7rem;gap:6px}
   .doc-id .meta i{display:none}
-  .doc-token-box{
-    width:100%;flex-direction:row;justify-content:space-between;
-    align-items:center;gap:10px;
-  }
+  .doc-token-box{width:100%;flex-direction:row;justify-content:space-between;align-items:center;gap:10px}
   .doc-token{font-size:1.25rem;padding:7px 17px}
-  .status-pill{font-size:.61rem;padding:4px 10px}
-
+  .status-pill{font-size:.6rem;padding:4px 10px}
   .vitals-strip{grid-template-columns:repeat(2,1fr)}
   .vital{padding:12px 10px}
   .vital:nth-child(2n){border-right:none}
   .vital:nth-child(2n+1){border-right:1px solid var(--line)}
   .vital:nth-child(n+3){border-top:1px solid var(--line)}
   .vital b{font-size:.88rem}
-  .vital span{font-size:.61rem}
+  .vital span{font-size:.6rem}
   .vital:last-child{grid-column:span 2;border-right:none}
-
-  .alert-banner{padding:13px 15px;gap:12px}
+  .alert-banner{padding:13px 14px;gap:11px}
   .alert-banner .fi{font-size:1.35rem}
-  .alert-banner b{font-size:.73rem}
-  .alert-banner p{font-size:.73rem;line-height:1.55}
-
-  .doc-cols{grid-template-columns:1fr;gap:12px}
+  .alert-banner b{font-size:.72rem}
+  .alert-banner p{font-size:.72rem;line-height:1.55}
+  .doc-cols{grid-template-columns:1fr;gap:11px}
   .dcard.span2{grid-column:span 1}
-  .dcard{padding:15px}
-  .dcard h4{font-size:.63rem;gap:7px}
+  .dcard{padding:15px 14px}
+  .dcard h4{font-size:.62rem;gap:6px}
   .dcard .val{font-size:.81rem;line-height:1.65}
   .dcard li{font-size:.77rem;gap:8px}
-
-  /* — Doctor table → stacked cards — */
+  /* Doctor table → stacked */
   .tbl thead{display:none}
   .tbl,.tbl tbody,.tbl tr,.tbl td{display:block;width:100%}
-  .tbl tr{
-    background:var(--surface-2);border:1px solid var(--line);
-    border-radius:var(--r-sm);padding:11px 13px;margin-bottom:9px;
-  }
+  .tbl tr{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-sm);padding:11px 12px;margin-bottom:8px}
   .tbl tr:last-child{margin-bottom:0}
-  .tbl td{
-    border:none;padding:4px 0;font-size:.77rem;
-    display:flex;justify-content:space-between;gap:12px;
-    align-items:baseline;
-  }
-  .tbl td::before{
-    color:var(--muted);font-weight:700;font-size:.63rem;
-    text-transform:uppercase;letter-spacing:.05em;flex:0 0 auto;
-  }
-  .tbl td:nth-child(1)::before{content:"Medicine"}
-  .tbl td:nth-child(2)::before{content:"Dose"}
-  .tbl td:nth-child(3)::before{content:"Source"}
-  .tbl td:nth-child(4)::before{content:"Confidence"}
-  .tbl td b{font-size:.83rem}
-
-  .action-bar{flex-direction:column;padding:13px;gap:10px}
+  .tbl td{border:none;padding:4px 0;font-size:.76rem;display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+  .tbl td::before{color:var(--muted);font-weight:700;font-size:.62rem;text-transform:uppercase;letter-spacing:.05em;flex:0 0 auto}
+  .tbl td:nth-child(1)::before{content:attr(data-th)}
+  .tbl td b{font-size:.82rem}
+  .action-bar{flex-direction:column;padding:12px;gap:9px}
   .action-bar .btn{width:100%;padding:13px 18px;font-size:.83rem}
 
-  /* — Footer — */
-  .gov-footer{margin-top:26px}
-  .foot-grid{grid-template-columns:1fr;gap:20px;padding:24px 15px 20px}
-  .foot-col h5{font-size:.69rem;margin-bottom:11px}
-  .foot-col p{font-size:.73rem;max-width:none}
-  .foot-col a{font-size:.73rem}
-  .foot-bottom{
-    padding:13px 15px;flex-direction:column;gap:8px;
-    font-size:.65rem;text-align:center;
-  }
+  /* Footer */
+  .gov-footer{margin-top:24px}
+  .foot-grid{grid-template-columns:1fr;gap:18px;padding:22px 14px 18px}
+  .foot-col h5{font-size:.68rem;margin-bottom:10px}
+  .foot-col p{font-size:.72rem;max-width:none}
+  .foot-col a{font-size:.72rem}
+  .foot-bottom{padding:12px 14px;flex-direction:column;gap:7px;font-size:.64rem;text-align:center}
 
-  /* — Toast — */
-  .toast{
-    font-size:.77rem;padding:12px 20px;bottom:16px;
-    border-radius:6px;max-width:calc(100vw - 24px);
-  }
+  /* Toast */
+  .toast{font-size:.76rem;padding:11px 18px;bottom:14px;border-radius:6px}
 }
 
-/* — Very small mobile (≤400px) — */
-@media(max-width:400px){
+/* Very small ≤380px */
+@media(max-width:380px){
   html{font-size:14.5px}
   :root{--gutter:10px}
-  .hdr-text h1{font-size:.95rem}
-  .hdr-text h1 .hdr-hi{font-size:.72rem}
-  .hdr-text p{font-size:.62rem;-webkit-line-clamp:1}
+  .hdr-text h1{font-size:.94rem}
+  .hdr-text h1 .hdr-hi{font-size:.7rem}
+  .hdr-text p{font-size:.6rem;-webkit-line-clamp:1}
   .emblem{width:38px;height:38px}
   .emblem svg{width:22px;height:22px}
-  .hero-h{font-size:1.3rem}
-  .q-text{font-size:1.06rem}
-  .token-no{font-size:3.05rem}
-  .ans{padding:12px 10px;font-size:.79rem}
-  .panel-body{padding:15px 13px}
-  .hero-panel .panel-body{padding:17px 15px}
-  .doc-head{padding:15px 13px}
-  .nav-item{padding:11px 12px;font-size:.73rem}
+  .hero-h{font-size:1.25rem}
+  .q-text{font-size:1.05rem}
+  .token-no{font-size:3rem}
+  .ans{flex:1 1 100%}
+  .ans.big{flex:1 1 100%}
+  .panel-body{padding:12px 12px}
+  .hero-panel .panel-body{padding:16px 14px}
+  .doc-head{padding:14px 12px}
+  .nav-item{padding:10px 12px;font-size:.72rem}
 }
 
-/* — Foldables / ultra-narrow (≤320px) — */
+/* Foldables ≤320px */
 @media(max-width:320px){
   :root{--gutter:8px}
   .hdr-text p{display:none}
-  .ans,.ans.big{flex:1 1 100%}
-  .tile{grid-template-columns:1fr;row-gap:4px}
+  .tile{grid-template-columns:1fr;row-gap:4px;text-align:center;place-items:center}
   .tile .ico{grid-row:auto}
-  .tile .tt,.tile .ts{grid-column:1}
+  .tile .tt,.tile .ts{grid-column:1;text-align:center}
 }
 
-/* — Landscape phones — */
-@media(max-height:540px) and (orientation:landscape){
-  .hdr-inner{padding:9px 0}
-  .emblem{width:38px;height:38px}
+/* Landscape phones */
+@media(max-height:520px) and (orientation:landscape){
+  .hdr-inner{padding:8px 0}
+  .emblem{width:36px;height:36px}
   .emblem svg{width:20px;height:20px}
-  .hdr-text h1{font-size:.98rem}
+  .hdr-text h1{font-size:.95rem}
   .hdr-text p{display:none}
-  .nav-item{padding:10px 16px}
-  .stepper{padding:8px 0}
-  .chat-stage{min-height:250px;padding:16px}
-  .bot{width:62px;height:62px;margin-bottom:7px}
-  .bot-core{width:50px;height:50px;font-size:1.35rem}
-  .q-text{font-size:1.05rem}
-  .answers{margin-top:18px}
+  .nav-item{padding:10px 14px}
+  .stepper{padding:7px 0}
+  .chat-stage{min-height:220px;padding:14px}
+  .bot{width:60px;height:60px;margin-bottom:6px}
+  .bot-core{width:48px;height:48px;font-size:1.3rem}
+  .q-text{font-size:1rem}
+  .answers{margin-top:16px}
   .scan-frame{aspect-ratio:2/1}
-  .token-no{font-size:2.9rem}
-  .qr{width:84px;height:84px}
+  .token-no{font-size:2.8rem}
+  .qr{width:80px;height:80px}
 }
 
-/* — Touch device hit areas — */
+/* Touch devices */
 @media(hover:none) and (pointer:coarse){
-  .chip{min-height:42px;padding:11px 16px;display:inline-flex;align-items:center}
-  .ans{min-height:54px}
+  .chip{min-height:42px}
+  .ans{min-height:56px}
   .btn{min-height:48px}
   .nav-item{min-height:46px;display:inline-flex;align-items:center}
   .gs-link{min-height:34px;display:inline-flex;align-items:center}
   .q-item{min-height:54px}
   .mic-btn{min-height:54px}
-  .lang-card{min-height:62px}
-  .tile{min-height:72px}
+  .lang-card{min-height:64px}
+  .tile{min-height:76px}
 }
 
-/* — Reduced motion — */
+/* Reduced motion */
 @media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{
-    animation-duration:.01ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:.01ms !important;
-  }
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
   .scan-line,.mic-cta::after,.bot-ring,.tag-chip::before{display:none !important}
 }
 
-/* — Print — */
+/* Print */
 @media print{
-  .gov-strip,.gov-header,.gov-nav,.stepper-bar,.gov-footer,
-  .action-bar,.toast,.crumb,.tricolor,.panel-head .step-chip{display:none !important}
+  .gov-strip,.gov-header,.gov-nav,.stepper-bar,.gov-footer,.action-bar,.toast,.crumb,.tricolor,.panel-head .step-chip{display:none !important}
   .screen{display:none !important}
   #s-token.active{display:block !important}
   body{background:#fff;color:#000}
@@ -1392,32 +785,31 @@ html{font-size:clamp(14.5px, 0.25vw + 13.8px, 16.5px)}
 </head>
 <body class="lang-en">
 
-<!-- ═══ TRICOLOR BAR ═══ -->
 <div class="tricolor"></div>
 
-<!-- ═══ GOV STRIP ═══ -->
+<!-- ═══════════ GOV STRIP ═══════════ -->
 <div class="gov-strip">
   <div class="wrap">
     <div class="gs-left">
       <span class="gs-flag">🇮🇳</span>
-      <span>भारत सरकार | Government of India</span>
+      <span data-i18n="govIndia">Government of India</span>
       <span class="gs-sep"></span>
-      <span>Ministry of Health &amp; Family Welfare</span>
+      <span data-i18n="ministry">Ministry of Health &amp; Family Welfare</span>
     </div>
     <div class="gs-right">
-      <button class="gs-link" id="skipBtn">Skip to content</button>
+      <button class="gs-link" id="skipBtn" data-i18n="skip">Skip to content</button>
       <div class="fs-ctrl" role="group" aria-label="Font size">
-        <button data-fs="-1" title="Decrease text size">A−</button>
-        <button data-fs="0" title="Reset text size">A</button>
-        <button data-fs="1" title="Increase text size">A+</button>
+        <button data-fs="-1" title="Smaller">A−</button>
+        <button data-fs="0" title="Reset">A</button>
+        <button data-fs="1" title="Larger">A+</button>
       </div>
-      <button class="gs-link" id="hcBtn" title="High contrast">◐ Contrast</button>
-      <button class="gs-link" id="langTop" title="Switch language"><b>EN</b> / हिं</button>
+      <button class="gs-link" id="hcBtn" data-i18n="contrast">Contrast</button>
+      <button class="gs-link" id="langTop" title="Switch language">EN / हिं</button>
     </div>
   </div>
 </div>
 
-<!-- ═══ HEADER ═══ -->
+<!-- ═══════════ HEADER ═══════════ -->
 <header class="gov-header">
   <div class="wrap hdr-inner">
     <div class="emblem" aria-hidden="true">
@@ -1430,174 +822,188 @@ html{font-size:clamp(14.5px, 0.25vw + 13.8px, 16.5px)}
       </svg>
     </div>
     <div class="hdr-text">
-      <h1>MediKiosk <span class="hdr-hi">मेडीकियोस्क</span></h1>
-      <p>AI-Assisted OPD Registration &amp; Clinical History Capture · National Digital Health Mission · Prototype v0.9</p>
+      <h1>
+        <span data-i18n="brand">MediKiosk</span>
+        <span class="hdr-hi" id="brandHi">मेडीकियोस्क</span>
+      </h1>
+      <p data-i18n="brandSub">AI-Assisted OPD Registration &amp; Clinical History Capture · National Digital Health Mission · Prototype v0.9</p>
     </div>
     <div class="hdr-right">
       <div class="badge-row">
-        <span class="ver-badge ok">● ABDM Ready</span>
-        <span class="ver-badge info">Ayushman Bharat</span>
+        <span class="ver-badge ok">● <span data-i18n="abdm">ABDM Ready</span></span>
+        <span class="ver-badge info" data-i18n="ayushman">Ayushman Bharat</span>
         <span class="ver-badge">ISO 27001</span>
       </div>
       <div class="helpline">
         <b>1800-11-4000</b>
-        <span>Health Helpline · 24×7</span>
+        <span data-i18n="helpline">Health Helpline · 24×7</span>
       </div>
     </div>
   </div>
 </header>
 
-<!-- ═══ NAV ═══ -->
+<!-- ═══════════ NAV ═══════════ -->
 <nav class="gov-nav">
   <div class="wrap">
-    <button class="nav-item active" data-nav="welcome">Patient Kiosk</button>
-    <button class="nav-item" data-nav="doctor">Doctor Console</button>
-    <button class="nav-item" data-nav="summary">Clinical Summary</button>
-    <button class="nav-item" data-nav="scan">Documents</button>
+    <button class="nav-item active" data-nav="welcome" data-i18n="navKiosk">Patient Kiosk</button>
+    <button class="nav-item" data-nav="doctor" data-i18n="navDoctor">Doctor Console</button>
+    <button class="nav-item" data-nav="summary" data-i18n="navSummary">Clinical Summary</button>
+    <button class="nav-item" data-nav="scan" data-i18n="navDocs">Documents</button>
   </div>
 </nav>
 
-<!-- ═══ STEPPER ═══ -->
+<!-- ═══════════ STEPPER ═══════════ -->
 <div class="stepper-bar" id="stepperBar">
   <div class="wrap">
     <ol class="stepper" id="stepper">
-      <li class="step" data-step="1"><span class="num">1</span><span class="lbl">Language</span><span class="line"></span></li>
-      <li class="step" data-step="2"><span class="num">2</span><span class="lbl">Check-in</span><span class="line"></span></li>
-      <li class="step" data-step="3"><span class="num">3</span><span class="lbl">Symptoms</span><span class="line"></span></li>
-      <li class="step" data-step="4"><span class="num">4</span><span class="lbl">AI History</span><span class="line"></span></li>
-      <li class="step" data-step="5"><span class="num">5</span><span class="lbl">Prescription</span><span class="line"></span></li>
-      <li class="step" data-step="6"><span class="num">6</span><span class="lbl">Summary</span><span class="line"></span></li>
-      <li class="step" data-step="7"><span class="num">7</span><span class="lbl">Token</span><span class="line"></span></li>
-      <li class="step" data-step="8"><span class="num">8</span><span class="lbl">Doctor Review</span></li>
+      <li class="step" data-step="1"><span class="num">1</span><span class="lbl" data-i18n="s1">Language</span><span class="line"></span></li>
+      <li class="step" data-step="2"><span class="num">2</span><span class="lbl" data-i18n="s2">Check-in</span><span class="line"></span></li>
+      <li class="step" data-step="3"><span class="num">3</span><span class="lbl" data-i18n="s3">Symptoms</span><span class="line"></span></li>
+      <li class="step" data-step="4"><span class="num">4</span><span class="lbl" data-i18n="s4">AI History</span><span class="line"></span></li>
+      <li class="step" data-step="5"><span class="num">5</span><span class="lbl" data-i18n="s5">Prescription</span><span class="line"></span></li>
+      <li class="step" data-step="6"><span class="num">6</span><span class="lbl" data-i18n="s6">Summary</span><span class="line"></span></li>
+      <li class="step" data-step="7"><span class="num">7</span><span class="lbl" data-i18n="s7">Token</span><span class="line"></span></li>
+      <li class="step" data-step="8"><span class="num">8</span><span class="lbl" data-i18n="s8">Doctor Review</span></li>
     </ol>
   </div>
 </div>
 
-<!-- ═══ BREADCRUMB ═══ -->
 <div class="wrap">
   <div class="crumb" id="crumb">
-    <span>Home</span><i>/</i><span>Patient Kiosk</span><i>/</i><b>Language</b>
+    <span data-i18n="home">Home</span><i>/</i><span data-i18n="navKiosk">Patient Kiosk</span><i>/</i><b data-i18n="s1">Language</b>
   </div>
 </div>
 
-<!-- ═══ STAGE ═══ -->
+<!-- ═══════════ STAGE ═══════════ -->
 <main class="stage wrap" id="stage">
 
-  <!-- ══════════ 1. WELCOME ══════════ -->
+  <!-- ══ 1. WELCOME ══ -->
   <section class="screen active" id="s-welcome">
     <div class="notice">
       <span class="notice-ico">ℹ️</span>
-      <p><b>Prototype Notice:</b> Demonstration build for evaluation only. No real patient data is stored or transmitted. All AI outputs are simulated.</p>
+      <p><b data-i18n="noticeTitle">Prototype Notice:</b> <span data-i18n="noticeBody">Demonstration build for evaluation only. No real patient data is stored or transmitted. All AI outputs are simulated.</span></p>
     </div>
 
     <div class="welcome-grid">
       <div class="panel hero-panel">
         <div class="panel-body">
-          <span class="tag-chip">Live Prototype · Hackathon Build</span>
-          <h2 class="hero-h">Speak once. Your doctor reads everything before you sit down.</h2>
-          <p class="hero-p">MediKiosk registers the patient, asks structured follow-up questions in Hindi or English, reads the old prescription, and delivers a clean clinical history to the doctor — so the consultation begins at the diagnosis, not at the paperwork.</p>
+          <span class="tag-chip" data-i18n="heroTag">Live Prototype · Hackathon Build</span>
+          <h2 class="hero-h" data-i18n="heroH">Speak once. Your doctor reads everything before you sit down.</h2>
+          <p class="hero-p" data-i18n="heroP">MediKiosk registers the patient, asks structured follow-up questions in Hindi or English, reads the old prescription, and delivers a clean clinical history to the doctor — so the consultation begins at the diagnosis, not at the paperwork.</p>
 
           <div class="stat-row">
-            <div class="stat"><b>~4 min</b><span>Avg. registration</span></div>
-            <div class="stat"><b>0 forms</b><span>Hand-filled by patient</span></div>
-            <div class="stat"><b>2 languages</b><span>Voice-first intake</span></div>
+            <div class="stat"><b>~4 min</b><span data-i18n="stat1">Avg. registration</span></div>
+            <div class="stat"><b>0 forms</b><span data-i18n="stat2">Hand-filled by patient</span></div>
+            <div class="stat"><b>2 lang</b><span data-i18n="stat3">Voice-first intake</span></div>
           </div>
 
           <ul class="feat-list">
-            <li><i>🎙️</i><div><b>Voice-first intake</b><span>Built for low-literacy users</span></div></li>
-            <li><i>🧍</i><div><b>Body-map symptom picker</b><span>Tap where it hurts</span></div></li>
-            <li><i>📄</i><div><b>Prescription OCR</b><span>Old medicines auto-detected</span></div></li>
-            <li><i>🩺</i><div><b>Doctor-reviewed, never auto-diagnosed</b><span>AI drafts · Doctor signs</span></div></li>
+            <li><i>🎙️</i><div><b data-i18n="f1t">Voice-first intake</b><span data-i18n="f1s">Built for low-literacy users</span></div></li>
+            <li><i>🧍</i><div><b data-i18n="f2t">Body-map symptom picker</b><span data-i18n="f2s">Tap where it hurts</span></div></li>
+            <li><i>📄</i><div><b data-i18n="f3t">Prescription OCR</b><span data-i18n="f3s">Old medicines auto-detected</span></div></li>
+            <li><i>🩺</i><div><b data-i18n="f4t">Doctor-reviewed</b><span data-i18n="f4s">AI drafts · Doctor signs</span></div></li>
           </ul>
         </div>
       </div>
 
       <div class="panel">
         <div class="panel-head">
-          <div class="panel-title">Select Language</div>
-          <span class="step-chip">Step 1 / 8</span>
+          <div class="panel-title" data-i18n="selectLang">Select Language</div>
+          <span class="step-chip" data-i18n="step1of8">Step 1 / 8</span>
         </div>
         <div class="panel-body">
-          <p class="muted-sm">Choose the language you are most comfortable speaking. You can change this at any time.</p>
+          <p class="muted-sm" data-i18n="langHelp">Choose the language you are most comfortable speaking. You can change this at any time.</p>
 
           <div class="lang-list">
             <button class="lang-card" data-lang="hi">
               <span class="lc-flag">अ</span>
-              <span class="lc-main"><b>हिंदी</b><small>Hindi — recommended for voice input</small></span>
+              <span class="lc-main">
+                <b data-i18n="langHindi">हिंदी</b>
+                <small data-i18n="langHindiNote">Hindi — recommended for voice input</small>
+              </span>
               <span class="lc-check">✓</span>
             </button>
             <button class="lang-card sel" data-lang="en">
               <span class="lc-flag">A</span>
-              <span class="lc-main"><b>English</b><small>अंग्रेज़ी</small></span>
+              <span class="lc-main">
+                <b data-i18n="langEnglish">English</b>
+                <small data-i18n="langEnglishNote">Continue in English</small>
+              </span>
               <span class="lc-check">✓</span>
             </button>
           </div>
 
           <button class="mic-cta" id="welcomeMic">
             <span class="mic-ico">🎙️</span>
-            <span><b>Tap to speak</b><small>बोलकर शुरू करें — हम भाषा पहचान लेंगे</small></span>
+            <span>
+              <b data-i18n="micTitle">Tap to speak</b>
+              <small data-i18n="micSub">We'll detect your language automatically</small>
+            </span>
           </button>
 
           <div class="trust-row">
-            <span>ABDM Ready</span><span>Ayushman Bharat</span><span>ISO 27001</span><span>DPDP Compliant</span>
+            <span data-i18n="abdm">ABDM Ready</span>
+            <span data-i18n="ayushman">Ayushman Bharat</span>
+            <span>ISO 27001</span>
+            <span data-i18n="dpdp">DPDP Compliant</span>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════ 2. CHECK-IN ══════════ -->
+  <!-- ══ 2. CHECK-IN ══ -->
   <section class="screen" id="s-checkin">
     <div class="panel">
       <div class="panel-head">
-        <div class="panel-title">Patient Check-in</div>
-        <span class="step-chip">Step 2 / 8</span>
+        <div class="panel-title" data-i18n="checkinTitle">Patient Check-in</div>
+        <span class="step-chip" data-i18n="step2of8">Step 2 / 8</span>
       </div>
       <div class="panel-body">
-        <p class="muted-sm" style="margin-bottom:18px">Select any one identification method. If you have an ABHA / Ayushman card, scanning it is fastest.</p>
+        <p class="muted-sm" style="margin-bottom:16px" data-i18n="checkinHelp">Select any one identification method. If you have an ABHA / Ayushman card, scanning it is fastest.</p>
 
         <div class="tiles3">
           <button class="tile" data-checkin="qr">
             <span class="ico">📷</span>
-            <span class="tt">Scan QR Code</span>
-            <span class="ts">ABHA / Ayushman / OPD card</span>
+            <span class="tt" data-i18n="tileQr">Scan QR Code</span>
+            <span class="ts" data-i18n="tileQrSub">ABHA / Ayushman / OPD card</span>
           </button>
           <button class="tile" data-checkin="mobile">
             <span class="ico">📱</span>
-            <span class="tt">Mobile Number</span>
-            <span class="ts">OTP verification</span>
+            <span class="tt" data-i18n="tileMobile">Mobile Number</span>
+            <span class="ts" data-i18n="tileMobileSub">OTP verification</span>
           </button>
           <button class="tile" data-checkin="voice">
             <span class="ico">🎙️</span>
-            <span class="tt">Speak Your Details</span>
-            <span class="ts">Name, age and village</span>
+            <span class="tt" data-i18n="tileVoice">Speak Your Details</span>
+            <span class="ts" data-i18n="tileVoiceSub">Name, age and village</span>
           </button>
         </div>
 
-        <div class="notice" style="margin-bottom:0;margin-top:20px">
+        <div class="notice" style="margin-bottom:0;margin-top:18px">
           <span class="notice-ico">🔒</span>
-          <p><b>Consent:</b> By continuing, the patient consents to their health information being recorded and shared with the treating doctor under the Digital Personal Data Protection Act, 2023.</p>
+          <p><b data-i18n="consentTitle">Consent:</b> <span data-i18n="consentBody">By continuing, the patient consents to their health information being recorded and shared with the treating doctor under the Digital Personal Data Protection Act, 2023.</span></p>
         </div>
 
         <div class="row-end">
-          <button class="btn ghost" onclick="go('welcome')">← Back</button>
+          <button class="btn ghost" onclick="go('welcome')" data-i18n="back">← Back</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════ 3. SYMPTOMS ══════════ -->
+  <!-- ══ 3. SYMPTOMS ══ -->
   <section class="screen" id="s-symptoms">
     <div class="panel">
       <div class="panel-head">
-        <div class="panel-title">Where does it hurt?</div>
-        <span class="step-chip">Step 3 / 8</span>
+        <div class="panel-title" data-i18n="symTitle">Where does it hurt?</div>
+        <span class="step-chip" data-i18n="step3of8">Step 3 / 8</span>
       </div>
       <div class="panel-body">
         <div class="sym-grid">
           <div class="body-card">
-            <span class="hint-badge">Tap the body</span>
-            <svg class="body" viewBox="0 0 220 400" aria-label="Interactive body map">
+            <span class="hint-badge" data-i18n="tapBody">Tap the body</span>
+            <svg class="body" viewBox="0 0 220 400" aria-label="Body map">
               <line class="region" data-region="joints" x1="76" y1="104" x2="42" y2="212"/>
               <line class="region" data-region="joints" x1="144" y1="104" x2="178" y2="212"/>
               <line class="region" data-region="joints" x1="93" y1="212" x2="82" y2="362"/>
@@ -1611,59 +1017,62 @@ html{font-size:clamp(14.5px, 0.25vw + 13.8px, 16.5px)}
 
           <div class="panel-stack">
             <div class="sub-card">
-              <h4>Body region <span class="muted-sm" id="regionEcho">None selected</span></h4>
+              <h4>
+                <span data-i18n="bodyRegion">Body region</span>
+                <span class="muted-sm" id="regionEcho" data-i18n="noneSelected">None selected</span>
+              </h4>
               <div class="chips" id="regionChips">
-                <button class="chip" data-region="head">🧠 Head · सिर</button>
-                <button class="chip" data-region="chest">🫁 Chest · छाती</button>
-                <button class="chip" data-region="stomach">🤢 Stomach · पेट</button>
-                <button class="chip" data-region="joints">🦴 Joints · जोड़</button>
+                <button class="chip" data-region="head">🧠 <span data-i18n="rHead">Head</span></button>
+                <button class="chip" data-region="chest">🫁 <span data-i18n="rChest">Chest</span></button>
+                <button class="chip" data-region="stomach">🤢 <span data-i18n="rStomach">Stomach</span></button>
+                <button class="chip" data-region="joints">🦴 <span data-i18n="rJoints">Joints</span></button>
               </div>
             </div>
 
             <div class="sub-card">
-              <h4>Other symptoms <span class="muted-sm">Optional · multiple allowed</span></h4>
+              <h4>
+                <span data-i18n="otherSym">Other symptoms</span>
+                <span class="muted-sm" data-i18n="optionalMulti">Optional · multiple allowed</span>
+              </h4>
               <div class="chips" id="symChips">
-                <button class="chip" data-sym="Fever">🌡️ Fever · बुखार</button>
-                <button class="chip" data-sym="Vomiting">🤮 Vomiting · उल्टी</button>
-                <button class="chip" data-sym="Cough">😷 Cough · खांसी</button>
-                <button class="chip" data-sym="Breathlessness">💨 Breathlessness · सांस</button>
-                <button class="chip" data-sym="Dizziness">💫 Dizziness · चक्कर</button>
-                <button class="chip" data-sym="Weakness">🥴 Weakness · कमजोरी</button>
+                <button class="chip" data-sym="Fever">🌡️ <span data-i18n="sFever">Fever</span></button>
+                <button class="chip" data-sym="Vomiting">🤮 <span data-i18n="sVomit">Vomiting</span></button>
+                <button class="chip" data-sym="Cough">😷 <span data-i18n="sCough">Cough</span></button>
+                <button class="chip" data-sym="Breathlessness">💨 <span data-i18n="sBreath">Breathlessness</span></button>
+                <button class="chip" data-sym="Dizziness">💫 <span data-i18n="sDizzy">Dizziness</span></button>
+                <button class="chip" data-sym="Weakness">🥴 <span data-i18n="sWeak">Weakness</span></button>
               </div>
             </div>
 
             <div class="sub-card">
-              <h4>Describe it in your own words</h4>
+              <h4 data-i18n="describeOwn">Describe it in your own words</h4>
               <div class="voice-box">
-                <button class="mic-btn" id="micBtn" title="Start voice input">🎙️</button>
-                <div class="transcript empty" id="transcript">
-                  <span class="hi">माइक दबाएँ, या नीचे “नमूना वाक्य” चुनें…</span>
-                  <span class="en">Press the mic, or load the sample sentence below…</span>
-                </div>
+                <button class="mic-btn" id="micBtn" title="Voice input">🎙️</button>
+                <div class="transcript empty" id="transcript" data-i18n="transcriptEmpty">Press the mic, or load the sample sentence below…</div>
               </div>
-              <div class="chips" style="margin-top:14px">
-                <button class="chip" id="sampleBtn">✨ Sample sentence</button>
-                <button class="chip" id="clearVoiceBtn">✕ Clear</button>
+              <div class="chips" style="margin-top:12px">
+                <button class="chip" id="sampleBtn">✨ <span data-i18n="sampleBtn">Sample sentence</span></button>
+                <button class="chip" id="clearVoiceBtn">✕ <span data-i18n="clearBtn">Clear</span></button>
               </div>
             </div>
           </div>
         </div>
 
         <div class="row-end">
-          <button class="btn ghost" onclick="go('checkin')">← Back</button>
-          <button class="btn" id="symNext" disabled>Continue to AI History →</button>
+          <button class="btn ghost" onclick="go('checkin')" data-i18n="back">← Back</button>
+          <button class="btn" id="symNext" disabled data-i18n="continueChat">Continue to AI History →</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════ 4. AI CHAT ══════════ -->
+  <!-- ══ 4. CHAT ══ -->
   <section class="screen" id="s-chat">
     <div class="chat-grid">
       <div class="panel">
         <div class="panel-head">
-          <div class="panel-title">AI Follow-up Interview</div>
-          <span class="step-chip">Step 4 / 8</span>
+          <div class="panel-title" data-i18n="chatTitle">AI Follow-up Interview</div>
+          <span class="step-chip" data-i18n="step4of8">Step 4 / 8</span>
         </div>
         <div class="chat-stage">
           <div class="bot">
@@ -1675,24 +1084,24 @@ html{font-size:clamp(14.5px, 0.25vw + 13.8px, 16.5px)}
           <div class="q-text" id="qText">…</div>
           <div class="q-voice" id="qVoice">
             <div class="wave"><span></span><span></span><span></span><span></span><span></span></div>
-            <span class="hi">बोल रहा है…</span><span class="en">Speaking…</span>
+            <span data-i18n="speaking">Speaking…</span>
           </div>
           <div class="answers" id="answers"></div>
           <div class="thinking" id="thinking" style="display:none">
             <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            <span class="hi">जानकारी दर्ज हो रही है…</span><span class="en">Recording your answer…</span>
+            <span data-i18n="recording">Recording your answer…</span>
           </div>
         </div>
       </div>
 
       <div class="panel draft-rail">
         <div class="panel-head">
-          <div class="panel-title">Live Draft</div>
+          <div class="panel-title" data-i18n="liveDraft">Live Draft</div>
           <span class="count-chip" id="draftCount">0/6</span>
         </div>
         <div class="panel-body" style="padding:8px 18px 18px">
           <div id="draftList"></div>
-          <p class="muted-sm" style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)">
+          <p class="muted-sm" style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)" data-i18n="draftNote">
             This draft updates in real time. The doctor will review and sign it before it enters the medical record.
           </p>
         </div>
@@ -1700,12 +1109,12 @@ html{font-size:clamp(14.5px, 0.25vw + 13.8px, 16.5px)}
     </div>
   </section>
 
-  <!-- ══════════ 5. SCANNER ══════════ -->
+  <!-- ══ 5. SCANNER ══ -->
   <section class="screen" id="s-scan">
     <div class="panel">
       <div class="panel-head">
-        <div class="panel-title">Scan Prescription / Old Reports</div>
-        <span class="step-chip">Step 5 / 8</span>
+        <div class="panel-title" data-i18n="scanTitle">Scan Prescription / Old Reports</div>
+        <span class="step-chip" data-i18n="step5of8">Step 5 / 8</span>
       </div>
       <div class="panel-body">
         <div class="scan-grid">
@@ -1715,36 +1124,41 @@ html{font-size:clamp(14.5px, 0.25vw + 13.8px, 16.5px)}
               <div class="corner bl"></div><div class="corner br"></div>
               <div class="scan-line" id="scanLine" style="display:none"></div>
               <div class="doc" id="scanDoc">📄</div>
-              <div class="hint" id="scanHint">Place document here</div>
+              <div class="hint" id="scanHint" data-i18n="placeDoc">Place document here</div>
             </div>
-
             <div class="row-end" style="justify-content:space-between">
-              <button class="btn ghost" id="skipScan">Skip →</button>
-              <button class="btn" id="scanBtn">📸 Scan Document</button>
+              <button class="btn ghost" id="skipScan" data-i18n="skipBtn">Skip →</button>
+              <button class="btn" id="scanBtn">📸 <span data-i18n="scanBtn">Scan Document</span></button>
             </div>
           </div>
 
           <div class="panel-stack">
             <div class="sub-card" id="ocrCard" style="display:none">
-              <h4>Extraction progress <span class="mono muted-sm" id="ocrPct">0%</span></h4>
+              <h4>
+                <span data-i18n="extractProgress">Extraction progress</span>
+                <span class="mono muted-sm" id="ocrPct">0%</span>
+              </h4>
               <div class="bar"><i id="ocrBar"></i></div>
               <div class="steps-log" id="ocrLog">
-                <div data-s="1">✅ Document scanned successfully</div>
-                <div data-s="2">✅ Extracting text (OCR engine)</div>
-                <div data-s="3">✅ Medicines detected &amp; normalised</div>
-                <div data-s="4">✅ Previous prescription matched</div>
+                <div data-s="1">✅ <span data-i18n="ocr1">Document scanned successfully</span></div>
+                <div data-s="2">✅ <span data-i18n="ocr2">Extracting text (OCR engine)</span></div>
+                <div data-s="3">✅ <span data-i18n="ocr3">Medicines detected &amp; normalised</span></div>
+                <div data-s="4">✅ <span data-i18n="ocr4">Previous prescription matched</span></div>
               </div>
             </div>
 
             <div class="sub-card" id="medsCard" style="display:none">
-              <h4>Detected medicines <span class="tag ok" style="padding:2px 10px;font-size:.62rem">2 found</span></h4>
+              <h4>
+                <span data-i18n="detectedMeds">Detected medicines</span>
+                <span class="tag ok" style="padding:2px 10px;font-size:.62rem" id="medsCount">2 <span data-i18n="found">found</span></span>
+              </h4>
               <div class="taglist" id="medsList"></div>
-              <p class="muted-sm" style="margin-top:12px">Dosage and frequency are read from the prescription. The doctor verifies before prescribing.</p>
+              <p class="muted-sm" style="margin-top:12px" data-i18n="medsNote">Dosage and frequency are read from the prescription. The doctor verifies before prescribing.</p>
             </div>
 
             <div class="sub-card" id="scanIdle">
-              <h4>Why we ask</h4>
-              <p class="muted-sm">Old prescriptions and lab reports help the doctor avoid duplicate medication and spot drug interactions. Nothing is prescribed automatically.</p>
+              <h4 data-i18n="whyAsk">Why we ask</h4>
+              <p class="muted-sm" data-i18n="whyAskBody">Old prescriptions and lab reports help the doctor avoid duplicate medication and spot drug interactions. Nothing is prescribed automatically.</p>
             </div>
           </div>
         </div>
@@ -1752,78 +1166,78 @@ html{font-size:clamp(14.5px, 0.25vw + 13.8px, 16.5px)}
     </div>
   </section>
 
-  <!-- ══════════ 6. SUMMARY ══════════ -->
+  <!-- ══ 6. SUMMARY ══ -->
   <section class="screen" id="s-summary">
     <div class="panel">
       <div class="panel-head">
-        <div class="panel-title">Clinical History — Draft</div>
-        <span class="step-chip">Step 6 / 8</span>
+        <div class="panel-title" data-i18n="sumTitle">Clinical History — Draft</div>
+        <span class="step-chip" data-i18n="step6of8">Step 6 / 8</span>
       </div>
       <div class="panel-body">
         <div class="sum-grid">
           <div class="sum-card span2">
-            <h4>Chief Complaint <span class="ai-badge">AI DRAFT</span></h4>
+            <h4><span data-i18n="chiefComplaint">Chief Complaint</span> <span class="ai-badge" data-i18n="aiDraft">AI DRAFT</span></h4>
             <div class="big-val" id="sumComplaint">—</div>
             <div class="kv" id="sumDuration">—</div>
           </div>
 
           <div class="sum-card">
-            <h4>Symptoms Reported</h4>
+            <h4 data-i18n="symptomsReported">Symptoms Reported</h4>
             <div class="taglist" id="sumSymptoms"></div>
           </div>
 
           <div class="sum-card">
-            <h4>Pain Score (patient-reported)</h4>
+            <h4 data-i18n="painScore">Pain Score (patient-reported)</h4>
             <div class="big-val" id="sumPainVal">—</div>
             <div class="bar red" style="margin-top:12px"><i id="sumPainBar"></i></div>
           </div>
 
           <div class="sum-card span2">
-            <h4>Previous Medicines (from OCR)</h4>
+            <h4 data-i18n="prevMeds">Previous Medicines (from OCR)</h4>
             <div class="taglist" id="sumMeds"></div>
           </div>
 
           <div class="sum-card span2">
-            <h4>Extraction Confidence</h4>
+            <h4 data-i18n="extractConf">Extraction Confidence</h4>
             <div class="confidence">
               <div class="bar green"><i id="sumConfBar" style="width:0"></i></div>
               <b id="sumConfVal">0%</b>
             </div>
-            <p class="muted-sm" style="margin-top:10px">Confidence reflects how clearly the kiosk captured each field. Low-confidence fields are highlighted for the doctor.</p>
+            <p class="muted-sm" style="margin-top:10px" data-i18n="confNote">Confidence reflects how clearly the kiosk captured each field. Low-confidence fields are highlighted for the doctor.</p>
           </div>
 
           <div class="flags" id="sumFlags" style="display:none">
             <div class="fi">⚠️</div>
             <div>
-              <b>Possible warning signs detected</b>
+              <b data-i18n="warnTitle">Possible warning signs detected</b>
               <p id="sumFlagText"></p>
             </div>
           </div>
         </div>
 
-        <div class="notice" style="margin-top:22px;margin-bottom:0">
+        <div class="notice" style="margin-top:20px;margin-bottom:0">
           <span class="notice-ico">🩺</span>
-          <p><b>No diagnosis is generated.</b> MediKiosk only collects and organises the patient's own account of their symptoms. All clinical judgement remains with the treating doctor.</p>
+          <p><b data-i18n="noDiagTitle">No diagnosis is generated.</b> <span data-i18n="noDiagBody">MediKiosk only collects and organises the patient's own account of their symptoms. All clinical judgement remains with the treating doctor.</span></p>
         </div>
 
         <div class="row-end">
-          <button class="btn" id="toToken">Generate Token →</button>
+          <button class="btn" id="toToken" data-i18n="genToken">Generate Token →</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════ 7. TOKEN ══════════ -->
+  <!-- ══ 7. TOKEN ══ -->
   <section class="screen" id="s-token">
     <div class="token-wrap">
       <div class="token-card">
         <div class="check">✓</div>
-        <div class="token-label">Registration Complete</div>
+        <div class="token-label" data-i18n="regComplete">Registration Complete</div>
         <div class="token-no">B-42</div>
-        <div class="token-label" style="margin-top:2px">Your Token Number</div>
-        <div class="token-meta" style="margin-top:8px">Dr. A.K. Sharma · OPD Room 104</div>
-        <div class="token-note">✓ Your history has been sent to the doctor</div>
-        <svg class="qr" viewBox="0 0 100 100" aria-label="Token QR code">
+        <div class="token-label" style="margin-top:2px" data-i18n="yourToken">Your Token Number</div>
+        <div class="token-meta" style="margin-top:8px" data-i18n="docMeta">Dr. A.K. Sharma · OPD Room 104</div>
+        <div class="token-note" data-i18n="historySent">✓ Your history has been sent to the doctor</div>
+        <svg class="qr" viewBox="0 0 100 100" aria-label="Token QR">
           <rect width="100" height="100" fill="#fff"/>
           <g fill="#0a2c52">
             <rect x="6" y="6" width="22" height="22"/><rect x="72" y="6" width="22" height="22"/><rect x="6" y="72" width="22" height="22"/>
@@ -1839,57 +1253,57 @@ html{font-size:clamp(14.5px, 0.25vw + 13.8px, 16.5px)}
       </div>
 
       <div class="panel">
-        <div class="panel-head"><div class="panel-title">Visit Details</div><span class="step-chip">Step 7 / 8</span></div>
+        <div class="panel-head"><div class="panel-title" data-i18n="visitDetails">Visit Details</div><span class="step-chip" data-i18n="step7of8">Step 7 / 8</span></div>
         <div class="panel-body">
-          <div class="info-row"><span class="k">Patient</span><span class="v">Ramesh Kumar · 52 / M</span></div>
-          <div class="info-row"><span class="k">Department</span><span class="v">General Medicine</span></div>
-          <div class="info-row"><span class="k">Doctor</span><span class="v">Dr. A.K. Sharma</span></div>
-          <div class="info-row"><span class="k">Room</span><span class="v">OPD 104 · Block B</span></div>
-          <div class="info-row"><span class="k">Queue position</span><span class="v">3rd in line</span></div>
-          <div class="info-row"><span class="k">Est. wait</span><span class="v">~12 minutes</span></div>
-          <div class="info-row"><span class="k">History status</span><span class="v" style="color:var(--green-600)">Sent to doctor ✓</span></div>
+          <div class="info-row"><span class="k" data-i18n="patient">Patient</span><span class="v">Ramesh Kumar · 52 / M</span></div>
+          <div class="info-row"><span class="k" data-i18n="department">Department</span><span class="v" data-i18n="genMed">General Medicine</span></div>
+          <div class="info-row"><span class="k" data-i18n="doctor">Doctor</span><span class="v">Dr. A.K. Sharma</span></div>
+          <div class="info-row"><span class="k" data-i18n="room">Room</span><span class="v">OPD 104 · Block B</span></div>
+          <div class="info-row"><span class="k" data-i18n="queuePos">Queue position</span><span class="v" data-i18n="thirdInLine">3rd in line</span></div>
+          <div class="info-row"><span class="k" data-i18n="estWait">Est. wait</span><span class="v" data-i18n="twelveMin">~12 minutes</span></div>
+          <div class="info-row"><span class="k" data-i18n="histStatus">History status</span><span class="v" style="color:var(--green-600)" data-i18n="sentCheck">Sent to doctor ✓</span></div>
 
-          <div class="row-end" style="justify-content:stretch;margin-top:18px">
-            <button class="btn ghost wide" onclick="window.print()">🖨 Print Slip</button>
+          <div class="row-end" style="justify-content:stretch;margin-top:16px">
+            <button class="btn ghost wide" onclick="window.print()" data-i18n="printSlip">🖨 Print Slip</button>
           </div>
         </div>
       </div>
     </div>
 
     <div class="row-end" style="justify-content:center">
-      <button class="btn" id="toDoctor">Open Doctor Console →</button>
+      <button class="btn" id="toDoctor" data-i18n="openDoc">Open Doctor Console →</button>
     </div>
   </section>
 
-  <!-- ══════════ 8. DOCTOR DASHBOARD ══════════ -->
+  <!-- ══ 8. DOCTOR ══ -->
   <section class="screen" id="s-doctor">
     <div class="doc-layout">
       <aside class="panel doc-queue">
         <div class="panel-head">
-          <div class="panel-title">OPD Queue</div>
+          <div class="panel-title" data-i18n="opdQueue">OPD Queue</div>
           <span class="count-chip">4</span>
         </div>
         <div class="q-search">
-          <input type="text" id="qSearch" placeholder="Search token or patient…" autocomplete="off"/>
+          <input type="text" id="qSearch" data-i18n-ph="searchPh" placeholder="Search token or patient…" autocomplete="off"/>
         </div>
         <div class="q-list" id="qList">
           <button class="q-item active" data-name="ramesh kumar">
-            <div><div class="nm">Ramesh Kumar</div><div class="sub">52 y · Male · 3 days</div></div>
+            <div><div class="nm">Ramesh Kumar</div><div class="sub" data-i18n="q1sub">52 y · Male · 3 days</div></div>
             <div class="tk">B-42</div>
           </button>
           <button class="q-item" data-name="sunita devi">
-            <div><div class="nm">Sunita Devi</div><div class="sub">38 y · Female · 1 day</div></div>
+            <div><div class="nm">Sunita Devi</div><div class="sub" data-i18n="q2sub">38 y · Female · 1 day</div></div>
             <div class="tk">B-43</div>
           </button>
           <button class="q-item" data-name="arif khan">
-            <div><div class="nm">Arif Khan</div><div class="sub">61 y · Male · 1 week</div></div>
+            <div><div class="nm">Arif Khan</div><div class="sub" data-i18n="q3sub">61 y · Male · 1 week</div></div>
             <div class="tk">B-44</div>
           </button>
           <button class="q-item" data-name="meena bai">
-            <div><div class="nm">Meena Bai</div><div class="sub">27 y · Female · 2 days</div></div>
+            <div><div class="nm">Meena Bai</div><div class="sub" data-i18n="q4sub">27 y · Female · 2 days</div></div>
             <div class="tk">B-45</div>
           </button>
-          <div class="q-empty" id="qEmpty" style="display:none">No matching patients in queue.</div>
+          <div class="q-empty" id="qEmpty" style="display:none" data-i18n="noMatch">No matching patients in queue.</div>
         </div>
       </aside>
 
@@ -1901,75 +1315,80 @@ html{font-size:clamp(14.5px, 0.25vw + 13.8px, 16.5px)}
               <div>
                 <h2>Ramesh Kumar</h2>
                 <div class="meta">
-                  <span>52 years</span><i>·</i>
-                  <span>Male</span><i>·</i>
+                  <span data-i18n="age52">52 years</span><i>·</i>
+                  <span data-i18n="male">Male</span><i>·</i>
                   <span>ABHA 12-3456-7890</span><i>·</i>
-                  <span>Voice Kiosk</span>
+                  <span data-i18n="voiceKiosk">Voice Kiosk</span>
                 </div>
               </div>
             </div>
             <div class="doc-token-box">
               <div class="doc-token">B-42</div>
-              <span class="status-pill" id="statusPill">Awaiting review</span>
+              <span class="status-pill" id="statusPill" data-i18n="awaitingReview">Awaiting review</span>
             </div>
           </div>
 
           <div class="vitals-strip">
-            <div class="vital abn"><b>148/92</b><span>BP mmHg</span></div>
-            <div class="vital abn"><b>104</b><span>Pulse /min</span></div>
-            <div class="vital abn"><b>38.4°</b><span>Temp °C</span></div>
-            <div class="vital"><b>97%</b><span>SpO₂</span></div>
-            <div class="vital"><b>71 kg</b><span>Weight</span></div>
+            <div class="vital abn"><b>148/92</b><span data-i18n="bp">BP mmHg</span></div>
+            <div class="vital abn"><b>104</b><span data-i18n="pulse">Pulse /min</span></div>
+            <div class="vital abn"><b>38.4°</b><span data-i18n="temp">Temp °C</span></div>
+            <div class="vital"><b>97%</b><span data-i18n="spo2">SpO₂</span></div>
+            <div class="vital"><b>71 kg</b><span data-i18n="weight">Weight</span></div>
           </div>
         </div>
 
         <div class="alert-banner">
           <div class="fi">⚠️</div>
           <div>
-            <b>Red flags — review before consult</b>
+            <b data-i18n="redFlagTitle">Red flags — review before consult</b>
             <p id="docFlagText">—</p>
           </div>
         </div>
 
         <div class="approved-banner" id="approvedBanner">
-          ✅ History reviewed &amp; signed by Dr. A.K. Sharma · Draft committed to EMR
+          ✅ <span data-i18n="approvedMsg">History reviewed &amp; signed by Dr. A.K. Sharma · Draft committed to EMR</span>
         </div>
 
         <div class="doc-cols">
           <div class="dcard">
-            <h4>Chief Complaint <span class="ai-badge">AI DRAFT</span></h4>
+            <h4><span data-i18n="chiefComplaint">Chief Complaint</span> <span class="ai-badge" data-i18n="aiDraft">AI DRAFT</span></h4>
             <div class="val" id="docComplaint">—</div>
           </div>
 
           <div class="dcard">
-            <h4>Pain Score <span class="ai-badge">AI DRAFT</span></h4>
+            <h4><span data-i18n="painScoreShort">Pain Score</span> <span class="ai-badge" data-i18n="aiDraft">AI DRAFT</span></h4>
             <div class="val" id="docPain">—</div>
           </div>
 
           <div class="dcard span2">
-            <h4>History of Present Illness <span class="ai-badge">AI DRAFT</span></h4>
+            <h4><span data-i18n="hpi">History of Present Illness</span> <span class="ai-badge" data-i18n="aiDraft">AI DRAFT</span></h4>
             <div class="val" id="docHpi">—</div>
           </div>
 
           <div class="dcard">
-            <h4>Symptoms Reported</h4>
+            <h4 data-i18n="symptomsReported">Symptoms Reported</h4>
             <ul id="docSymptoms"></ul>
           </div>
 
           <div class="dcard">
-            <h4>Allergies &amp; Alerts</h4>
+            <h4 data-i18n="allergiesAlerts">Allergies &amp; Alerts</h4>
             <ul>
-              <li>No known drug allergies</li>
-              <li>Hypertensive — on treatment</li>
-              <li>Last visit: 14 Feb 2026</li>
+              <li data-i18n="allergy1">No known drug allergies</li>
+              <li data-i18n="allergy2">Hypertensive — on treatment</li>
+              <li data-i18n="allergy3">Last visit: 14 Feb 2026</li>
             </ul>
           </div>
 
           <div class="dcard span2">
-            <h4>Previous Medicines — OCR Extraction</h4>
+            <h4 data-i18n="prevMedsTable">Previous Medicines — OCR Extraction</h4>
             <table class="tbl">
               <thead>
-                <tr><th>Medicine</th><th>Dose</th><th>Source</th><th>Confidence</th></tr>
+                <tr>
+                  <th data-i18n="thMed">Medicine</th>
+                  <th data-i18n="thDose">Dose</th>
+                  <th data-i18n="thSource">Source</th>
+                  <th data-i18n="thConf">Confidence</th>
+                </tr>
               </thead>
               <tbody id="docMeds"></tbody>
             </table>
@@ -1977,10 +1396,10 @@ html{font-size:clamp(14.5px, 0.25vw + 13.8px, 16.5px)}
         </div>
 
         <div class="action-bar">
-          <button class="btn ghost" id="editBtn">✏️ Edit Draft</button>
-          <button class="btn ghost" id="noteBtn">📝 Add Notes</button>
-          <button class="btn ghost" id="referBtn">↗ Refer</button>
-          <button class="btn green" id="approveBtn">✔ Approve &amp; Sign</button>
+          <button class="btn ghost" id="editBtn" data-i18n="editDraft">✏️ Edit Draft</button>
+          <button class="btn ghost" id="noteBtn" data-i18n="addNotes">📝 Add Notes</button>
+          <button class="btn ghost" id="referBtn" data-i18n="refer">↗ Refer</button>
+          <button class="btn green" id="approveBtn" data-i18n="approveSign">✔ Approve &amp; Sign</button>
         </div>
       </div>
     </div>
@@ -1988,50 +1407,354 @@ html{font-size:clamp(14.5px, 0.25vw + 13.8px, 16.5px)}
 
 </main>
 
-<!-- ═══ FOOTER ═══ -->
+<!-- ═══════════ FOOTER ═══════════ -->
 <footer class="gov-footer">
   <div class="wrap foot-grid">
     <div class="foot-col">
-      <h5>MediKiosk</h5>
-      <p>An AI-assisted OPD registration and clinical history capture system designed for high-volume public health facilities. Prototype build for evaluation — not for clinical use.</p>
+      <h5 data-i18n="brand">MediKiosk</h5>
+      <p data-i18n="footAbout">An AI-assisted OPD registration and clinical history capture system designed for high-volume public health facilities. Prototype build for evaluation — not for clinical use.</p>
     </div>
     <div class="foot-col">
-      <h5>Quick Links</h5>
+      <h5 data-i18n="footLinks">Quick Links</h5>
       <ul>
-        <li><a href="#">Patient Kiosk</a></li>
-        <li><a href="#">Doctor Console</a></li>
-        <li><a href="#">Clinical Summary</a></li>
-        <li><a href="#">Document Upload</a></li>
+        <li><a href="#" data-i18n="navKiosk">Patient Kiosk</a></li>
+        <li><a href="#" data-i18n="navDoctor">Doctor Console</a></li>
+        <li><a href="#" data-i18n="navSummary">Clinical Summary</a></li>
+        <li><a href="#" data-i18n="navDocs">Documents</a></li>
       </ul>
     </div>
     <div class="foot-col">
-      <h5>Resources</h5>
+      <h5 data-i18n="footRes">Resources</h5>
       <ul>
-        <li><a href="#">ABDM Sandbox</a></li>
-        <li><a href="#">FHIR R4 Profiles</a></li>
-        <li><a href="#">Accessibility Statement</a></li>
-        <li><a href="#">Data Protection Policy</a></li>
+        <li><a href="#" data-i18n="res1">ABDM Sandbox</a></li>
+        <li><a href="#" data-i18n="res2">FHIR R4 Profiles</a></li>
+        <li><a href="#" data-i18n="res3">Accessibility Statement</a></li>
+        <li><a href="#" data-i18n="res4">Data Protection Policy</a></li>
       </ul>
     </div>
     <div class="foot-col">
-      <h5>Support</h5>
+      <h5 data-i18n="footSupport">Support</h5>
       <ul>
-        <li><a href="#">Health Helpline 104</a></li>
+        <li><a href="#" data-i18n="sup1">Health Helpline 104</a></li>
         <li><a href="#">1800-11-4000</a></li>
-        <li><a href="#">Report an Issue</a></li>
-        <li><a href="#">Feedback</a></li>
+        <li><a href="#" data-i18n="sup3">Report an Issue</a></li>
+        <li><a href="#" data-i18n="sup4">Feedback</a></li>
       </ul>
     </div>
   </div>
   <div class="wrap foot-bottom">
-    <span>© 2026 <b>MediKiosk Prototype</b> · Built for hackathon evaluation. Not an official Government of India portal.</span>
-    <span><b>Last updated:</b> 22 Sep 2026 · <b>Build:</b> v0.9.3-prototype</span>
+    <span>© 2026 <b>MediKiosk Prototype</b> · <span data-i18n="footNote">Built for hackathon evaluation. Not an official Government of India portal.</span></span>
+    <span><b data-i18n="lastUpd">Last updated:</b> 22 Sep 2026 · <b>Build:</b> v0.9.3</span>
   </div>
 </footer>
 
 <div class="toast" id="toast">Saved</div>
 
 <script>
+/* ══════════════════════════════════════════════════════════════
+   TRANSLATIONS
+   ══════════════════════════════════════════════════════════════ */
+const T = {
+  en: {
+    // gov strip
+    govIndia:'Government of India', ministry:'Ministry of Health & Family Welfare',
+    skip:'Skip to content', contrast:'Contrast',
+    // header
+    brand:'MediKiosk',
+    brandSub:'AI-Assisted OPD Registration & Clinical History Capture · National Digital Health Mission · Prototype v0.9',
+    abdm:'ABDM Ready', ayushman:'Ayushman Bharat', helpline:'Health Helpline · 24×7',
+    // nav
+    navKiosk:'Patient Kiosk', navDoctor:'Doctor Console', navSummary:'Clinical Summary', navDocs:'Documents',
+    // stepper
+    s1:'Language', s2:'Check-in', s3:'Symptoms', s4:'AI History', s5:'Prescription', s6:'Summary', s7:'Token', s8:'Doctor Review',
+    home:'Home',
+    // welcome
+    noticeTitle:'Prototype Notice:',
+    noticeBody:'Demonstration build for evaluation only. No real patient data is stored or transmitted. All AI outputs are simulated.',
+    heroTag:'Live Prototype · Hackathon Build',
+    heroH:'Speak once. Your doctor reads everything before you sit down.',
+    heroP:'MediKiosk registers the patient, asks structured follow-up questions in Hindi or English, reads the old prescription, and delivers a clean clinical history to the doctor — so the consultation begins at the diagnosis, not at the paperwork.',
+    stat1:'Avg. registration', stat2:'Hand-filled by patient', stat3:'Voice-first intake',
+    f1t:'Voice-first intake', f1s:'Built for low-literacy users',
+    f2t:'Body-map symptom picker', f2s:'Tap where it hurts',
+    f3t:'Prescription OCR', f3s:'Old medicines auto-detected',
+    f4t:'Doctor-reviewed', f4s:'AI drafts · Doctor signs',
+    selectLang:'Select Language', step1of8:'Step 1 / 8',
+    langHelp:'Choose the language you are most comfortable speaking. You can change this at any time.',
+    langHindi:'हिंदी', langHindiNote:'Hindi — recommended for voice input',
+    langEnglish:'English', langEnglishNote:'Continue in English',
+    micTitle:'Tap to speak', micSub:"We'll detect your language automatically",
+    dpdp:'DPDP Compliant',
+    // checkin
+    checkinTitle:'Patient Check-in', step2of8:'Step 2 / 8',
+    checkinHelp:'Select any one identification method. If you have an ABHA / Ayushman card, scanning it is fastest.',
+    tileQr:'Scan QR Code', tileQrSub:'ABHA / Ayushman / OPD card',
+    tileMobile:'Mobile Number', tileMobileSub:'OTP verification',
+    tileVoice:'Speak Your Details', tileVoiceSub:'Name, age and village',
+    consentTitle:'Consent:',
+    consentBody:'By continuing, the patient consents to their health information being recorded and shared with the treating doctor under the Digital Personal Data Protection Act, 2023.',
+    back:'← Back',
+    // symptoms
+    symTitle:'Where does it hurt?', step3of8:'Step 3 / 8',
+    tapBody:'Tap the body', bodyRegion:'Body region', noneSelected:'None selected',
+    rHead:'Head', rChest:'Chest', rStomach:'Stomach', rJoints:'Joints',
+    otherSym:'Other symptoms', optionalMulti:'Optional · multiple allowed',
+    sFever:'Fever', sVomit:'Vomiting', sCough:'Cough', sBreath:'Breathlessness', sDizzy:'Dizziness', sWeak:'Weakness',
+    describeOwn:'Describe it in your own words',
+    transcriptEmpty:'Press the mic, or load the sample sentence below…',
+    sampleBtn:'Sample sentence', clearBtn:'Clear',
+    continueChat:'Continue to AI History →',
+    // chat
+    chatTitle:'AI Follow-up Interview', step4of8:'Step 4 / 8',
+    speaking:'Speaking…', recording:'Recording your answer…',
+    liveDraft:'Live Draft',
+    draftNote:'This draft updates in real time. The doctor will review and sign it before it enters the medical record.',
+    q1:'Do you also have fever or vomiting?',
+    q2:'How severe is your pain right now?',
+    q3:'Since when have you had this pain?',
+    q4:'Are you already taking any medicines?',
+    ansYes:'YES', ansNo:'NO', ansYesSmall:'Yes', ansNoSmall:'No',
+    ansMild:'Mild', ansMod:'Moderate', ansSev:'Severe',
+    dur1:'1 day', dur2:'2 days', dur3:'3 days', durWeek:'More than a week',
+    // scanner
+    scanTitle:'Scan Prescription / Old Reports', step5of8:'Step 5 / 8',
+    placeDoc:'Place document here', skipBtn:'Skip →', scanBtn:'Scan Document',
+    extractProgress:'Extraction progress',
+    ocr1:'Document scanned successfully', ocr2:'Extracting text (OCR engine)',
+    ocr3:'Medicines detected & normalised', ocr4:'Previous prescription matched',
+    detectedMeds:'Detected medicines', found:'found',
+    medsNote:'Dosage and frequency are read from the prescription. The doctor verifies before prescribing.',
+    whyAsk:'Why we ask',
+    whyAskBody:'Old prescriptions and lab reports help the doctor avoid duplicate medication and spot drug interactions. Nothing is prescribed automatically.',
+    // summary
+    sumTitle:'Clinical History — Draft', step6of8:'Step 6 / 8',
+    chiefComplaint:'Chief Complaint', aiDraft:'AI DRAFT',
+    symptomsReported:'Symptoms Reported', painScore:'Pain Score (patient-reported)',
+    prevMeds:'Previous Medicines (from OCR)', extractConf:'Extraction Confidence',
+    confNote:'Confidence reflects how clearly the kiosk captured each field. Low-confidence fields are highlighted for the doctor.',
+    warnTitle:'Possible warning signs detected',
+    noDiagTitle:'No diagnosis is generated.',
+    noDiagBody:"MediKiosk only collects and organises the patient's own account of their symptoms. All clinical judgement remains with the treating doctor.",
+    genToken:'Generate Token →',
+    durationLabel:'Duration',
+    reportedAtKiosk:'Reported at OPD self-service kiosk',
+    notSpecified:'Not specified',
+    noSymptoms:'No symptoms recorded',
+    noPrevRx:'No previous prescription uploaded',
+    painSuffix:'pain',
+    sevMild:'Mild', sevMod:'Moderate', sevSev:'Severe',
+    flagPain:'high pain score (8/10)', flagVomit:'persistent vomiting', flagBreath:'breathlessness', flagDuration:'symptom duration ≥ 3 days',
+    flagSuffix:'— possible acute abdomen. Priority review advised. (AI-generated flag, not a diagnosis.)',
+    medOnTreatment:'On medication', medNone:'None',
+    // token
+    regComplete:'Registration Complete', yourToken:'Your Token Number',
+    docMeta:'Dr. A.K. Sharma · OPD Room 104',
+    historySent:'✓ Your history has been sent to the doctor',
+    visitDetails:'Visit Details', step7of8:'Step 7 / 8',
+    patient:'Patient', department:'Department', genMed:'General Medicine',
+    doctor:'Doctor', room:'Room', queuePos:'Queue position',
+    thirdInLine:'3rd in line', estWait:'Est. wait', twelveMin:'~12 minutes',
+    histStatus:'History status', sentCheck:'Sent to doctor ✓',
+    printSlip:'🖨 Print Slip', openDoc:'Open Doctor Console →',
+    // doctor
+    opdQueue:'OPD Queue', searchPh:'Search token or patient…',
+    q1sub:'52 y · Male · 3 days', q2sub:'38 y · Female · 1 day',
+    q3sub:'61 y · Male · 1 week', q4sub:'27 y · Female · 2 days',
+    noMatch:'No matching patients in queue.',
+    age52:'52 years', male:'Male', voiceKiosk:'Voice Kiosk',
+    awaitingReview:'Awaiting review', signedCommitted:'Signed & committed',
+    bp:'BP mmHg', pulse:'Pulse /min', temp:'Temp °C', spo2:'SpO₂', weight:'Weight',
+    redFlagTitle:'Red flags — review before consult',
+    approvedMsg:'History reviewed & signed by Dr. A.K. Sharma · Draft committed to EMR',
+    painScoreShort:'Pain Score', hpi:'History of Present Illness',
+    allergiesAlerts:'Allergies & Alerts',
+    allergy1:'No known drug allergies', allergy2:'Hypertensive — on treatment', allergy3:'Last visit: 14 Feb 2026',
+    prevMedsTable:'Previous Medicines — OCR Extraction',
+    thMed:'Medicine', thDose:'Dose', thSource:'Source', thConf:'Confidence',
+    editDraft:'✏️ Edit Draft', addNotes:'📝 Add Notes', refer:'↗ Refer', approveSign:'✔ Approve & Sign',
+    saveDraft:'💾 Save Draft',
+    // footer
+    footAbout:'An AI-assisted OPD registration and clinical history capture system designed for high-volume public health facilities. Prototype build for evaluation — not for clinical use.',
+    footLinks:'Quick Links', footRes:'Resources', footSupport:'Support',
+    res1:'ABDM Sandbox', res2:'FHIR R4 Profiles', res3:'Accessibility Statement', res4:'Data Protection Policy',
+    sup1:'Health Helpline 104', sup3:'Report an Issue', sup4:'Feedback',
+    footNote:'Built for hackathon evaluation. Not an official Government of India portal.',
+    lastUpd:'Last updated:',
+    // toasts
+    tLang:'Language changed to English',
+    tScanning:'📷 Scanning…',
+    tScanQr:'📷 Scanning QR code…', tScanMobile:'📱 Sending OTP…', tScanVoice:'🎙️ Recognising voice…',
+    tListening:'🎙️ Listening…',
+    tSampleLoaded:'Sample sentence loaded',
+    tCleared:'Cleared',
+    tTextSize:'Text size: ',
+    tContrastOn:'High contrast enabled', tContrastOff:'High contrast disabled',
+    tDraftUnlock:'Draft unlocked — click any field to edit', tDraftSave:'Draft saved',
+    tNotes:'Add clinical notes, then press Approve & Sign',
+    tRefer:'↗ Referral form opened (demo)',
+    tApproved:'✅ History approved & signed → pushed to EMR',
+    tLoaded:'Loaded: ',
+    tReset:'Prototype reset',
+    tDemoDone:'✅ Demo complete — patient → doctor → signed history',
+    tScanDone:'✓ Document captured',
+    // dynamic strings
+    qOf:'Question {n} of {total}',
+    queued:'Queued',
+    pending:'Pending',
+    reported:'Reported',
+    denied:'Denied'
+  },
+  hi: {
+    // gov strip
+    govIndia:'भारत सरकार', ministry:'स्वास्थ्य एवं परिवार कल्याण मंत्रालय',
+    skip:'मुख्य सामग्री पर जाएँ', contrast:'कॉन्ट्रास्ट',
+    // header
+    brand:'मेडीकियोस्क',
+    brandSub:'एआई-सहायता प्राप्त ओपीडी पंजीकरण एवं क्लिनिकल इतिहास संग्रह · राष्ट्रीय डिजिटल स्वास्थ्य मिशन · प्रोटोटाइप v0.9',
+    abdm:'एबीडीएम तैयार', ayushman:'आयुष्मान भारत', helpline:'स्वास्थ्य हेल्पलाइन · 24×7',
+    // nav
+    navKiosk:'मरीज़ कियोस्क', navDoctor:'डॉक्टर कंसोल', navSummary:'क्लिनिकल सारांश', navDocs:'दस्तावेज़',
+    // stepper
+    s1:'भाषा', s2:'चेक-इन', s3:'लक्षण', s4:'एआई इतिहास', s5:'पर्ची', s6:'सारांश', s7:'टोकन', s8:'डॉक्टर समीक्षा',
+    home:'होम',
+    // welcome
+    noticeTitle:'प्रोटोटाइप सूचना:',
+    noticeBody:'यह केवल मूल्यांकन हेतु डेमो बिल्ड है। कोई वास्तविक रोगी डेटा संग्रहित या प्रसारित नहीं होता। सभी एआई आउटपुट अनुकरणित हैं।',
+    heroTag:'लाइव प्रोटोटाइप · हैकाथॉन बिल्ड',
+    heroH:'एक बार बोलिए। डॉक्टर बैठने से पहले सब कुछ पढ़ लेंगे।',
+    heroP:'मेडीकियोस्क रोगी का पंजीकरण करता है, हिंदी या अंग्रेज़ी में संरचित अनुवर्ती प्रश्न पूछता है, पुरानी पर्ची पढ़ता है, और डॉक्टर तक साफ़ क्लिनिकल इतिहास पहुँचाता है — ताकि परामर्श कागज़ी कार्रवाई से नहीं, निदान से शुरू हो।',
+    stat1:'औसत पंजीकरण', stat2:'मरीज़ द्वारा भरा फॉर्म', stat3:'आवाज़-प्रथम इनटेक',
+    f1t:'आवाज़-प्रथम इनटेक', f1s:'कम साक्षरता उपयोगकर्ताओं के लिए',
+    f2t:'बॉडी-मैप लक्षण चयन', f2s:'जहाँ दर्द है वहाँ टैप करें',
+    f3t:'पर्ची OCR', f3s:'पुरानी दवाएँ स्वतः पहचानी जाती हैं',
+    f4t:'डॉक्टर-समीक्षित', f4s:'एआई ड्राफ़्ट · डॉक्टर हस्ताक्षर',
+    selectLang:'भाषा चुनें', step1of8:'चरण 1 / 8',
+    langHelp:'वह भाषा चुनें जिसमें आप सबसे सहज हैं। आप इसे कभी भी बदल सकते हैं।',
+    langHindi:'हिंदी', langHindiNote:'हिंदी — आवाज़ इनपुट के लिए अनुशंसित',
+    langEnglish:'English', langEnglishNote:'अंग्रेज़ी में जारी रखें',
+    micTitle:'बोलने के लिए टैप करें', micSub:'हम आपकी भाषा स्वतः पहचान लेंगे',
+    dpdp:'डीपीडीपी अनुरूप',
+    // checkin
+    checkinTitle:'मरीज़ चेक-इन', step2of8:'चरण 2 / 8',
+    checkinHelp:'कोई एक पहचान विधि चुनें। यदि आपके पास आभा / आयुष्मान कार्ड है तो स्कैन सबसे तेज़ है।',
+    tileQr:'QR कोड स्कैन करें', tileQrSub:'आभा / आयुष्मान / ओपीडी कार्ड',
+    tileMobile:'मोबाइल नंबर', tileMobileSub:'ओटीपी सत्यापन',
+    tileVoice:'अपनी जानकारी बोलें', tileVoiceSub:'नाम, उम्र और गाँव',
+    consentTitle:'सहमति:',
+    consentBody:'जारी रखकर, रोगी अपनी स्वास्थ्य जानकारी को डिजिटल व्यक्तिगत डेटा संरक्षण अधिनियम, 2023 के अंतर्गत उपचार करने वाले डॉक्टर के साथ साझा करने की सहमति देता है।',
+    back:'← वापस',
+    // symptoms
+    symTitle:'कहाँ तकलीफ़ है?', step3of8:'चरण 3 / 8',
+    tapBody:'शरीर पर टैप करें', bodyRegion:'शरीर का हिस्सा', noneSelected:'कुछ नहीं चुना',
+    rHead:'सिर', rChest:'छाती', rStomach:'पेट', rJoints:'जोड़',
+    otherSym:'अन्य लक्षण', optionalMulti:'वैकल्पिक · कई चुन सकते हैं',
+    sFever:'बुखार', sVomit:'उल्टी', sCough:'खांसी', sBreath:'सांस फूलना', sDizzy:'चक्कर', sWeak:'कमजोरी',
+    describeOwn:'अपनी बात अपने शब्दों में बताएं',
+    transcriptEmpty:'माइक दबाएँ, या नीचे नमूना वाक्य चुनें…',
+    sampleBtn:'नमूना वाक्य', clearBtn:'साफ़ करें',
+    continueChat:'एआई इतिहास पर जाएँ →',
+    // chat
+    chatTitle:'एआई अनुवर्ती साक्षात्कार', step4of8:'चरण 4 / 8',
+    speaking:'बोल रहा है…', recording:'आपका उत्तर दर्ज हो रहा है…',
+    liveDraft:'लाइव ड्राफ़्ट',
+    draftNote:'यह ड्राफ़्ट वास्तविक समय में अपडेट होता है। डॉक्टर इसे चिकित्सा रिकॉर्ड में दर्ज करने से पहले समीक्षा व हस्ताक्षर करेंगे।',
+    q1:'क्या आपको बुखार या उल्टी भी है?',
+    q2:'दर्द अभी कितना तेज़ है?',
+    q3:'यह दर्द कब से है?',
+    q4:'क्या आप पहले से कोई दवा ले रहे हैं?',
+    ansYes:'हाँ', ansNo:'नहीं', ansYesSmall:'Yes', ansNoSmall:'No',
+    ansMild:'हल्का', ansMod:'मध्यम', ansSev:'तेज़',
+    dur1:'1 दिन', dur2:'2 दिन', dur3:'3 दिन', durWeek:'एक हफ्ते से ज़्यादा',
+    // scanner
+    scanTitle:'पर्ची / पुरानी रिपोर्ट स्कैन करें', step5of8:'चरण 5 / 8',
+    placeDoc:'दस्तावेज़ यहाँ रखें', skipBtn:'छोड़ें →', scanBtn:'दस्तावेज़ स्कैन करें',
+    extractProgress:'निष्कर्षण प्रगति',
+    ocr1:'दस्तावेज़ सफलतापूर्वक स्कैन हुआ', ocr2:'टेक्स्ट निकाला जा रहा है (OCR)',
+    ocr3:'दवाइयाँ पहचानी व सामान्यीकृत की गईं', ocr4:'पुरानी पर्ची मिली',
+    detectedMeds:'पाई गई दवाइयाँ', found:'मिलीं',
+    medsNote:'खुराक और आवृत्ति पर्ची से पढ़ी जाती है। डॉक्टर लिखने से पहले सत्यापित करते हैं।',
+    whyAsk:'हम क्यों पूछते हैं',
+    whyAskBody:'पुरानी पर्चियाँ और लैब रिपोर्ट डॉक्टर को दोहरी दवा और दवा अंतःक्रियाओं से बचने में मदद करती हैं। कुछ भी स्वतः नहीं लिखा जाता।',
+    // summary
+    sumTitle:'क्लिनिकल इतिहास — ड्राफ़्ट', step6of8:'चरण 6 / 8',
+    chiefComplaint:'मुख्य शिकायत', aiDraft:'एआई ड्राफ़्ट',
+    symptomsReported:'रिपोर्ट किए गए लक्षण', painScore:'दर्द स्कोर (रोगी-रिपोर्टेड)',
+    prevMeds:'पिछली दवाइयाँ (OCR से)', extractConf:'निष्कर्षण विश्वास',
+    confNote:'विश्वास दर्शाता है कि कियोस्क ने प्रत्येक फ़ील्ड कितनी स्पष्टता से कैप्चर किया। कम-विश्वास फ़ील्ड डॉक्टर के लिए हाइलाइट किए जाते हैं।',
+    warnTitle:'संभावित चेतावनी संकेत मिले',
+    noDiagTitle:'कोई निदान उत्पन्न नहीं होता।',
+    noDiagBody:'मेडीकियोस्क केवल रोगी के अपने लक्षण विवरण को एकत्र व व्यवस्थित करता है। सभी क्लिनिकल निर्णय उपचार करने वाले डॉक्टर के पास रहते हैं।',
+    genToken:'टोकन बनाएँ →',
+    durationLabel:'अवधि',
+    reportedAtKiosk:'ओपीडी स्व-सेवा कियोस्क पर रिपोर्ट किया',
+    notSpecified:'निर्दिष्ट नहीं',
+    noSymptoms:'कोई लक्षण दर्ज नहीं',
+    noPrevRx:'कोई पुरानी पर्ची अपलोड नहीं',
+    painSuffix:'दर्द',
+    sevMild:'हल्का', sevMod:'मध्यम', sevSev:'तेज़',
+    flagPain:'उच्च दर्द स्कोर (8/10)', flagVomit:'लगातार उल्टी', flagBreath:'सांस फूलना', flagDuration:'लक्षण अवधि ≥ 3 दिन',
+    flagSuffix:'— संभावित तीव्र उदर। प्राथमिकता समीक्षा की सलाह। (एआई-जनित फ़्लैग, निदान नहीं।)',
+    medOnTreatment:'दवा पर', medNone:'कोई नहीं',
+    // token
+    regComplete:'पंजीकरण पूर्ण', yourToken:'आपका टोकन नंबर',
+    docMeta:'डॉ. ए.के. शर्मा · ओपीडी कक्ष 104',
+    historySent:'✓ आपका इतिहास डॉक्टर तक भेज दिया गया है',
+    visitDetails:'विज़िट विवरण', step7of8:'चरण 7 / 8',
+    patient:'रोगी', department:'विभाग', genMed:'सामान्य चिकित्सा',
+    doctor:'डॉक्टर', room:'कक्ष', queuePos:'कतार स्थान',
+    thirdInLine:'तीसरे स्थान पर', estWait:'अनुमानित प्रतीक्षा', twelveMin:'~12 मिनट',
+    histStatus:'इतिहास स्थिति', sentCheck:'डॉक्टर को भेजा ✓',
+    printSlip:'🖨 पर्ची प्रिंट करें', openDoc:'डॉक्टर कंसोल खोलें →',
+    // doctor
+    opdQueue:'ओपीडी कतार', searchPh:'टोकन या रोगी खोजें…',
+    q1sub:'52 वर्ष · पुरुष · 3 दिन', q2sub:'38 वर्ष · महिला · 1 दिन',
+    q3sub:'61 वर्ष · पुरुष · 1 हफ्ता', q4sub:'27 वर्ष · महिला · 2 दिन',
+    noMatch:'कतार में कोई मेल खाता रोगी नहीं।',
+    age52:'52 वर्ष', male:'पुरुष', voiceKiosk:'वॉइस कियोस्क',
+    awaitingReview:'समीक्षा प्रतीक्षित', signedCommitted:'हस्ताक्षरित व दर्ज',
+    bp:'बीपी mmHg', pulse:'नाड़ी /min', temp:'तापमान °C', spo2:'SpO₂', weight:'वज़न',
+    redFlagTitle:'रेड फ़्लैग — परामर्श से पहले समीक्षा करें',
+    approvedMsg:'इतिहास की समीक्षा व हस्ताक्षर डॉ. ए.के. शर्मा द्वारा · ड्राफ़्ट ईएमआर में दर्ज',
+    painScoreShort:'दर्द स्कोर', hpi:'वर्तमान बीमारी का इतिहास',
+    allergiesAlerts:'एलर्जी व अलर्ट',
+    allergy1:'कोई ज्ञात औषधि एलर्जी नहीं', allergy2:'उच्च रक्तचाप — उपचार पर', allergy3:'अंतिम विज़िट: 14 फ़रवरी 2026',
+    prevMedsTable:'पिछली दवाइयाँ — OCR निष्कर्षण',
+    thMed:'दवा', thDose:'खुराक', thSource:'स्रोत', thConf:'विश्वास',
+    editDraft:'✏️ ड्राफ़्ट संपादित करें', addNotes:'📝 नोट्स जोड़ें', refer:'↗ रेफ़र करें', approveSign:'✔ स्वीकृत व हस्ताक्षर',
+    saveDraft:'💾 ड्राफ़्ट सहेजें',
+    // footer
+    footAbout:'उच्च-मात्रा सार्वजनिक स्वास्थ्य सुविधाओं के लिए डिज़ाइन किया गया एआई-सहायता प्राप्त ओपीडी पंजीकरण एवं क्लिनिकल इतिहास संग्रह प्रणाली। मूल्यांकन हेतु प्रोटोटाइप बिल्ड — क्लिनिकल उपयोग हेतु नहीं।',
+    footLinks:'त्वरित लिंक', footRes:'संसाधन', footSupport:'सहायता',
+    res1:'एबीडीएम सैंडबॉक्स', res2:'FHIR R4 प्रोफ़ाइल', res3:'सुगम्यता कथन', res4:'डेटा संरक्षण नीति',
+    sup1:'स्वास्थ्य हेल्पलाइन 104', sup3:'समस्या रिपोर्ट करें', sup4:'प्रतिक्रिया',
+    footNote:'हैकाथॉन मूल्यांकन हेतु बनाया गया। भारत सरकार का आधिकारिक पोर्टल नहीं।',
+    lastUpd:'अंतिम अपडेट:',
+    // toasts
+    tLang:'भाषा हिंदी में बदली गई',
+    tScanning:'📷 स्कैन हो रहा है…',
+    tScanQr:'📷 QR कोड स्कैन हो रहा है…', tScanMobile:'📱 ओटीपी भेजा जा रहा है…', tScanVoice:'🎙️ आवाज़ पहचानी जा रही है…',
+    tListening:'🎙️ सुन रहा हूँ…',
+    tSampleLoaded:'नमूना वाक्य भरा गया',
+    tCleared:'साफ़ किया गया',
+    tTextSize:'पाठ आकार: ',
+    tContrastOn:'उच्च कॉन्ट्रास्ट चालू', tContrastOff:'उच्च कॉन्ट्रास्ट बंद',
+    tDraftUnlock:'ड्राफ़्ट खुला — संपादन हेतु किसी फ़ील्ड पर क्लिक करें', tDraftSave:'ड्राफ़्ट सहेजा गया',
+    tNotes:'क्लिनिकल नोट्स जोड़ें, फिर स्वीकृत व हस्ताक्षर दबाएँ',
+    tRefer:'↗ रेफ़रल फ़ॉर्म खुला (डेमो)',
+    tApproved:'✅ इतिहास स्वीकृत व हस्ताक्षरित → ईएमआर में भेजा गया',
+    tLoaded:'लोड किया: ',
+    tReset:'प्रोटोटाइप रीसेट',
+    tDemoDone:'✅ डेमो पूर्ण — रोगी → डॉक्टर → हस्ताक्षरित इतिहास',
+    tScanDone:'✓ दस्तावेज़ कैप्चर हुआ',
+    // dynamic
+    qOf:'प्रश्न {n} / {total}',
+    queued:'कतार में',
+    pending:'लंबित',
+    reported:'रिपोर्टेड',
+    denied:'नहीं'
+  }
+};
+
 /* ══════════════════════════════════════════════════════════════
    STATE
    ══════════════════════════════════════════════════════════════ */
@@ -2048,24 +1771,75 @@ const state = {
   approved:false
 };
 
-const REGIONS = {
-  head:{en:'Head',hi:'सिर'},
-  chest:{en:'Chest',hi:'छाती'},
-  stomach:{en:'Stomach',hi:'पेट'},
-  joints:{en:'Joints',hi:'जोड़'}
-};
-
 const ORDER = ['welcome','checkin','symptoms','chat','scan','summary','token','doctor'];
-const CRUMBS = {
-  welcome:['Home','Patient Kiosk','Language'],
-  checkin:['Home','Patient Kiosk','Check-in'],
-  symptoms:['Home','Patient Kiosk','Symptoms'],
-  chat:['Home','Patient Kiosk','AI History'],
-  scan:['Home','Patient Kiosk','Documents'],
-  summary:['Home','Patient Kiosk','Clinical Summary'],
-  token:['Home','Patient Kiosk','Token'],
-  doctor:['Home','Doctor Console','Patient Review']
-};
+let currentScreen = 'welcome';
+
+/* ══════════════════════════════════════════════════════════════
+   i18n HELPER
+   ══════════════════════════════════════════════════════════════ */
+function t(key){
+  const lang = state.lang;
+  if(T[lang] && T[lang][key] !== undefined) return T[lang][key];
+  if(T.en[key] !== undefined) return T.en[key];
+  return key;
+}
+
+function applyLang(){
+  document.documentElement.lang = state.lang;
+  document.body.classList.toggle('lang-hi', state.lang === 'hi');
+  document.body.classList.toggle('lang-en', state.lang === 'en');
+
+  // swap all data-i18n textContent
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    el.textContent = t(key);
+  });
+
+  // swap placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    el.placeholder = t(el.dataset.i18nPh);
+  });
+
+  // swap aria-labels
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    el.setAttribute('aria-label', t(el.dataset.i18nAria));
+  });
+
+  // update brand-hi visibility (it's decorative)
+  const bh = document.getElementById('brandHi');
+  if(bh) bh.style.display = state.lang === 'hi' ? 'none' : 'inline';
+
+  // update top language button text
+  const lt = document.getElementById('langTop');
+  if(lt) lt.innerHTML = state.lang === 'en' ? '<b>EN</b> / हिं' : 'EN / <b>हिं</b>';
+
+  // update the language card selection
+  document.querySelectorAll('.lang-card').forEach(c => {
+    c.classList.toggle('sel', c.dataset.lang === state.lang);
+  });
+
+  // re-render dynamic content on current screen
+  if(currentScreen === 'chat') renderQuestion();
+  if(currentScreen === 'summary') buildSummary();
+  if(currentScreen === 'doctor') buildDoctor();
+  if(currentScreen === 'symptoms') updateRegionEcho();
+  if(currentScreen === 'welcome' || currentScreen === 'checkin' || currentScreen === 'symptoms'){
+    // static content already updated
+  }
+
+  // update document title
+  document.title = state.lang === 'hi'
+    ? 'मेडीकियोस्क | एआई ओपीडी पंजीकरण — प्रोटोटाइप'
+    : 'MediKiosk | AI OPD Registration — Prototype';
+}
+
+function setLang(l){
+  if(state.lang === l) return;
+  state.lang = l;
+  applyLang();
+  toast(t('tLang'));
+}
+document.getElementById('langTop').onclick = () => setLang(state.lang === 'en' ? 'hi' : 'en');
 
 /* ══════════════════════════════════════════════════════════════
    NAVIGATION
@@ -2078,6 +1852,7 @@ function go(name){
   el.style.animation = 'none';
   void el.offsetWidth;
   el.style.animation = '';
+  currentScreen = name;
 
   const idx = ORDER.indexOf(name) + 1;
   document.querySelectorAll('.step').forEach(st => {
@@ -2086,20 +1861,14 @@ function go(name){
     st.classList.toggle('now', n === idx);
   });
 
-  const c = CRUMBS[name] || [];
-  const crumb = document.getElementById('crumb');
-  if(c.length === 3){
-    crumb.innerHTML = `<span>${c[0]}</span><i>/</i><span>${c[1]}</span><i>/</i><b>${c[2]}</b>`;
-  }
-
+  // nav highlight
   document.querySelectorAll('.nav-item').forEach(n => {
-    const t = n.dataset.nav;
+    const key = n.dataset.nav;
     const isPatient = ['welcome','checkin','symptoms','chat','scan','token'].includes(name);
-    n.classList.toggle('active',
-      (t === 'welcome' && isPatient) || t === name
-    );
+    n.classList.toggle('active', (key === 'welcome' && isPatient) || key === name);
   });
 
+  // hide stepper on doctor
   document.getElementById('stepperBar').classList.toggle('hide', name === 'doctor');
 
   window.scrollTo({top:0, behavior:'smooth'});
@@ -2107,20 +1876,8 @@ function go(name){
   if(name === 'chat'){ qIndex = 0; renderQuestion(); }
   if(name === 'summary') buildSummary();
   if(name === 'doctor') buildDoctor();
+  if(name === 'symptoms') updateRegionEcho();
 }
-
-/* ══════════════════════════════════════════════════════════════
-   LANGUAGE
-   ══════════════════════════════════════════════════════════════ */
-function setLang(l){
-  state.lang = l;
-  document.body.classList.toggle('lang-hi', l === 'hi');
-  document.body.classList.toggle('lang-en', l === 'en');
-  document.querySelectorAll('.lang-card').forEach(c => c.classList.toggle('sel', c.dataset.lang === l));
-  document.getElementById('langTop').innerHTML =
-    l === 'en' ? '<b>EN</b> / हिं' : 'EN / <b>हिं</b>';
-}
-document.getElementById('langTop').onclick = () => setLang(state.lang === 'en' ? 'hi' : 'en');
 
 /* ══════════════════════════════════════════════════════════════
    FONT SIZE + CONTRAST
@@ -2131,14 +1888,13 @@ document.querySelectorAll('[data-fs]').forEach(b => {
     const d = parseInt(b.dataset.fs, 10);
     fsLevel = d === 0 ? 0 : Math.max(-2, Math.min(3, fsLevel + d));
     document.documentElement.style.fontSize = (16 + fsLevel) + 'px';
-    toast('Text size: ' + (16 + fsLevel) + 'px');
+    toast(t('tTextSize') + (16 + fsLevel) + 'px');
   };
 });
 document.getElementById('hcBtn').onclick = function(){
   document.body.classList.toggle('hc');
   const on = document.body.classList.contains('hc');
-  this.innerHTML = on ? '◑ Normal' : '◐ Contrast';
-  toast(on ? 'High contrast enabled' : 'High contrast disabled');
+  toast(on ? t('tContrastOn') : t('tContrastOff'));
 };
 document.getElementById('skipBtn').onclick = () => {
   const s = document.getElementById('stage');
@@ -2152,58 +1908,65 @@ document.getElementById('skipBtn').onclick = () => {
    ══════════════════════════════════════════════════════════════ */
 let toastT;
 function toast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('on');
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('on');
   clearTimeout(toastT);
-  toastT = setTimeout(() => t.classList.remove('on'), 2400);
+  toastT = setTimeout(() => el.classList.remove('on'), 2400);
 }
 
 /* ══════════════════════════════════════════════════════════════
-   1. WELCOME
+   WELCOME
    ══════════════════════════════════════════════════════════════ */
 document.querySelectorAll('.lang-card').forEach(c => {
   c.onclick = () => {
     setLang(c.dataset.lang);
-    setTimeout(() => go('checkin'), 380);
+    setTimeout(() => go('checkin'), 420);
   };
 });
 document.getElementById('welcomeMic').onclick = () => {
   setLang('hi');
-  toast('🎙️ भाषा पहचानी गई: हिंदी');
-  setTimeout(() => go('checkin'), 620);
+  setTimeout(() => go('checkin'), 640);
 };
 
 /* ══════════════════════════════════════════════════════════════
-   2. CHECK-IN
+   CHECK-IN
    ══════════════════════════════════════════════════════════════ */
-document.querySelectorAll('[data-checkin]').forEach(t => {
-  t.onclick = () => {
-    const kind = t.dataset.checkin;
-    t.classList.add('busy');
-    const msgs = {
-      qr:['📷 QR स्कैन हो रहा है…','📷 Scanning QR code…'],
-      mobile:['📱 OTP भेजा जा रहा है…','📱 Sending OTP…'],
-      voice:['🎙️ आवाज़ पहचानी जा रही है…','🎙️ Recognising voice…']
-    };
-    toast(state.lang === 'hi' ? msgs[kind][0] : msgs[kind][1]);
-    setTimeout(() => { t.classList.remove('busy'); go('symptoms'); }, 1250);
+document.querySelectorAll('[data-checkin]').forEach(tile => {
+  tile.onclick = () => {
+    const kind = tile.dataset.checkin;
+    tile.classList.add('busy');
+    const key = kind === 'qr' ? 'tScanQr' : kind === 'mobile' ? 'tScanMobile' : 'tScanVoice';
+    toast(t(key));
+    setTimeout(() => { tile.classList.remove('busy'); go('symptoms'); }, 1250);
   };
 });
 
 /* ══════════════════════════════════════════════════════════════
-   3. SYMPTOMS
+   SYMPTOMS
    ══════════════════════════════════════════════════════════════ */
+function updateRegionEcho(){
+  const echo = document.getElementById('regionEcho');
+  if(!echo) return;
+  if(!state.region){
+    echo.textContent = t('noneSelected');
+    echo.style.color = '';
+    echo.style.fontWeight = '';
+  } else {
+    const key = 'r' + state.region.charAt(0).toUpperCase() + state.region.slice(1);
+    echo.textContent = t(key) + ' · ✓';
+    echo.style.color = 'var(--green-600)';
+    echo.style.fontWeight = '800';
+  }
+}
+
 function selectRegion(r){
   state.region = r;
   document.querySelectorAll('.body .region').forEach(el =>
     el.classList.toggle('on', el.dataset.region === r));
   document.querySelectorAll('#regionChips .chip').forEach(c =>
     c.classList.toggle('on', c.dataset.region === r));
-  const echo = document.getElementById('regionEcho');
-  echo.textContent = REGIONS[r].en + ' selected';
-  echo.style.color = 'var(--green-600)';
-  echo.style.fontWeight = '800';
+  updateRegionEcho();
   document.getElementById('symNext').disabled = false;
 }
 document.querySelectorAll('.body .region').forEach(el => {
@@ -2237,21 +2000,23 @@ document.getElementById('sampleBtn').onclick = () => {
   const text = state.lang === 'hi' ? SAMPLE_HI : SAMPLE_EN;
   state.transcript = text;
   typeInto(document.getElementById('transcript'), text, 24);
+  toast(t('tSampleLoaded'));
 };
 document.getElementById('clearVoiceBtn').onclick = () => {
   state.transcript = '';
   const el = document.getElementById('transcript');
   el.className = 'transcript empty';
-  el.innerHTML = '<span class="hi">माइक दबाएँ, या नीचे “नमूना वाक्य” चुनें…</span><span class="en">Press the mic, or load the sample sentence below…</span>';
+  el.textContent = t('transcriptEmpty');
+  toast(t('tCleared'));
 };
 document.getElementById('micBtn').onclick = function(){
-  const btn = this;
-  if(btn.classList.contains('rec')) return;
-  btn.classList.add('rec');
+  if(this.classList.contains('rec')) return;
+  this.classList.add('rec');
   const el = document.getElementById('transcript');
   el.classList.remove('empty');
   el.innerHTML = '<div class="wave"><span></span><span></span><span></span><span></span><span></span></div>';
-  toast(state.lang === 'hi' ? '🎙️ सुन रहा हूँ…' : '🎙️ Listening…');
+  toast(t('tListening'));
+  const btn = this;
   setTimeout(() => {
     btn.classList.remove('rec');
     const text = state.lang === 'hi' ? SAMPLE_HI : SAMPLE_EN;
@@ -2262,27 +2027,19 @@ document.getElementById('micBtn').onclick = function(){
 document.getElementById('symNext').onclick = () => go('chat');
 
 /* ══════════════════════════════════════════════════════════════
-   4. AI CHAT
+   CHAT
    ══════════════════════════════════════════════════════════════ */
 const QUESTIONS = [
-  { id:'fever', type:'yesno',
-    en:'Do you also have fever or vomiting?',
-    hi:'क्या आपको बुखार या उल्टी भी है?' },
-  { id:'pain', type:'scale',
-    en:'How severe is your pain right now?',
-    hi:'दर्द अभी कितना तेज़ है?' },
-  { id:'duration', type:'chips',
-    en:'Since when have you had this pain?',
-    hi:'यह दर्द कब से है?',
+  { id:'fever', type:'yesno', qKey:'q1' },
+  { id:'pain', type:'scale', qKey:'q2' },
+  { id:'duration', type:'chips', qKey:'q3',
     options:[
-      {v:'1 day', en:'1 day', hi:'1 दिन'},
-      {v:'2 days', en:'2 days', hi:'2 दिन'},
-      {v:'3 days', en:'3 days', hi:'3 दिन'},
-      {v:'More than a week', en:'More than a week', hi:'एक हफ्ते से ज़्यादा'}
+      {v:'1 day', k:'dur1'},
+      {v:'2 days', k:'dur2'},
+      {v:'3 days', k:'dur3'},
+      {v:'More than a week', k:'durWeek'}
     ]},
-  { id:'meds', type:'yesno',
-    en:'Are you already taking any medicines?',
-    hi:'क्या आप पहले से कोई दवा ले रहे हैं?' }
+  { id:'meds', type:'yesno', qKey:'q4' }
 ];
 
 let qIndex = 0;
@@ -2291,9 +2048,9 @@ function renderQuestion(){
   const q = QUESTIONS[qIndex];
   if(!q){ go('scan'); return; }
 
-  document.getElementById('qCount').textContent = `Question ${qIndex + 1} of ${QUESTIONS.length}`;
-  document.getElementById('qText').innerHTML =
-    `<span class="en">${q.en}</span><span class="hi">${q.hi}</span>`;
+  document.getElementById('qCount').textContent =
+    t('qOf').replace('{n}', qIndex + 1).replace('{total}', QUESTIONS.length);
+  document.getElementById('qText').textContent = t(q.qKey);
 
   const bot = document.getElementById('botCore');
   bot.classList.add('speaking');
@@ -2305,18 +2062,16 @@ function renderQuestion(){
 
   if(q.type === 'yesno'){
     box.innerHTML = `
-      <button class="ans big" data-v="yes">😊 <span>YES</span><small>हाँ</small></button>
-      <button class="ans big no" data-v="no">❌ <span>NO</span><small>नहीं</small></button>`;
+      <button class="ans big" data-v="yes">😊 <span>${t('ansYes')}</span><small>${t('ansYesSmall')}</small></button>
+      <button class="ans big no" data-v="no">❌ <span>${t('ansNo')}</span><small>${t('ansNoSmall')}</small></button>`;
   } else if(q.type === 'scale'){
     box.innerHTML = `
-      <button class="ans" data-v="3">😊 <span>Mild</span><small>3 / 10</small></button>
-      <button class="ans" data-v="6">😐 <span>Moderate</span><small>6 / 10</small></button>
-      <button class="ans" data-v="8">😫 <span>Severe</span><small>8 / 10</small></button>`;
+      <button class="ans" data-v="3">😊 <span>${t('ansMild')}</span><small>3 / 10</small></button>
+      <button class="ans" data-v="6">😐 <span>${t('ansMod')}</span><small>6 / 10</small></button>
+      <button class="ans" data-v="8">😫 <span>${t('ansSev')}</span><small>8 / 10</small></button>`;
   } else {
     box.innerHTML = q.options.map(o =>
-      `<button class="ans" data-v="${o.v}">
-         <span class="en">${o.en}</span><span class="hi">${o.hi}</span>
-       </button>`).join('');
+      `<button class="ans" data-v="${o.v}">${t(o.k)}</button>`).join('');
   }
 
   box.querySelectorAll('.ans').forEach(b => {
@@ -2343,12 +2098,12 @@ function answerQuestion(value){
 function updateDraftRail(){
   const a = state.answers;
   const items = [
-    { k:'Body region', v: state.region ? REGIONS[state.region].en : '' },
-    { k:'Duration',    v: a.duration || '' },
-    { k:'Pain score',  v: a.pain ? a.pain + ' / 10' : '' },
-    { k:'Fever',       v: a.fever ? (a.fever === 'yes' ? 'Reported' : 'Denied') : '' },
-    { k:'Vomiting',    v: state.symptoms.has('Vomiting') ? 'Reported' : '' },
-    { k:'Medication',  v: a.meds ? (a.meds === 'yes' ? 'On treatment' : 'None') : '' }
+    { k:t('bodyRegion'), v: state.region ? t('r' + state.region.charAt(0).toUpperCase() + state.region.slice(1)) : '' },
+    { k:t('durationLabel'), v: a.duration || '' },
+    { k:t('painScoreShort'), v: a.pain ? a.pain + ' / 10' : '' },
+    { k:t('sFever'), v: a.fever ? (a.fever === 'yes' ? t('reported') : t('denied')) : '' },
+    { k:t('sVomit'), v: state.symptoms.has('Vomiting') ? t('reported') : '' },
+    { k:t('medOnTreatment').split(' ')[0], v: a.meds ? (a.meds === 'yes' ? t('medOnTreatment') : t('medNone')) : '' }
   ];
 
   const filled = items.filter(i => i.v).length;
@@ -2357,13 +2112,13 @@ function updateDraftRail(){
   document.getElementById('draftList').innerHTML = items.map(i =>
     `<div class="draft-item">
        <span class="k">${i.k}</span>
-       <span class="v ${i.v ? 'filled' : 'empty'}">${i.v || 'Pending'}</span>
+       <span class="v ${i.v ? 'filled' : 'empty'}">${i.v || t('pending')}</span>
      </div>`
   ).join('');
 }
 
 /* ══════════════════════════════════════════════════════════════
-   5. SCANNER
+   SCANNER
    ══════════════════════════════════════════════════════════════ */
 const scanBtn = document.getElementById('scanBtn');
 const scanLine = document.getElementById('scanLine');
@@ -2372,7 +2127,7 @@ scanBtn.onclick = () => {
   scanBtn.disabled = true;
   scanLine.style.display = 'block';
   document.getElementById('scanDoc').textContent = '📄';
-  document.getElementById('scanHint').textContent = 'Scanning…';
+  document.getElementById('scanHint').textContent = t('tScanning');
   document.getElementById('ocrCard').style.display = 'block';
   document.getElementById('scanIdle').style.display = 'none';
 
@@ -2396,11 +2151,11 @@ scanBtn.onclick = () => {
     if(p === 100){
       clearInterval(iv);
       scanLine.style.display = 'none';
-      document.getElementById('scanHint').textContent = '✓ Scan complete';
+      document.getElementById('scanHint').textContent = '✓ ' + t('tScanDone').replace('✓ ', '');
       document.getElementById('medsCard').style.display = 'block';
       document.getElementById('medsList').innerHTML =
         state.medicines.map(m => `<span class="tag">💊 ${m.name} ${m.dose}</span>`).join('');
-      scanBtn.textContent = '✓ Document captured';
+      scanBtn.innerHTML = '✓ ' + t('tScanDone');
       setTimeout(() => go('summary'), 1250);
     }
   }, 250);
@@ -2412,55 +2167,79 @@ document.getElementById('skipScan').onclick = () => {
 };
 
 /* ══════════════════════════════════════════════════════════════
-   6. SUMMARY
+   SUMMARY
    ══════════════════════════════════════════════════════════════ */
 function buildSummary(){
   const a = state.answers;
-  const region = state.region ? REGIONS[state.region] : null;
+  const region = state.region;
   const pain = a.pain || 0;
-  const severity = pain >= 8 ? 'Severe' : pain >= 5 ? 'Moderate' : 'Mild';
+  const sevKey = pain >= 8 ? 'sevSev' : pain >= 5 ? 'sevMod' : 'sevMild';
+  const sevTxt = t(sevKey);
+  const regionTxt = region ? t('r' + region.charAt(0).toUpperCase() + region.slice(1)) : null;
 
-  document.getElementById('sumComplaint').textContent =
-    region ? `${severity} ${region.en.toLowerCase()} pain` : 'Generalised pain';
+  // Build complaint string respecting word order
+  let complaint;
+  if(state.lang === 'hi'){
+    complaint = regionTxt
+      ? `${regionTxt} में ${sevTxt} ${t('painSuffix')}`
+      : `${sevTxt} ${t('painSuffix')}`;
+  } else {
+    complaint = regionTxt
+      ? `${sevTxt} ${regionTxt.toLowerCase()} ${t('painSuffix')}`
+      : `${sevTxt} ${t('painSuffix')}`;
+  }
+  document.getElementById('sumComplaint').textContent = complaint;
+
+  const durTxt = a.duration ? t('dur' + (
+    a.duration === '1 day' ? '1' :
+    a.duration === '2 days' ? '2' :
+    a.duration === '3 days' ? '3' : 'Week'
+  )) : t('notSpecified');
 
   document.getElementById('sumDuration').textContent =
-    'Duration: ' + (a.duration || 'Not specified') + ' · Reported at OPD self-service kiosk';
+    t('durationLabel') + ': ' + durTxt + ' · ' + t('reportedAtKiosk');
 
+  // symptoms
   const syms = [];
-  if(region) syms.push(region.en + ' pain');
-  state.symptoms.forEach(s => syms.push(s));
-  if(a.fever === 'yes' && !state.symptoms.has('Fever')) syms.push('Fever');
-  if(a.meds === 'yes') syms.push('On medication');
+  if(regionTxt) syms.push(regionTxt + ' ' + t('painSuffix'));
+  state.symptoms.forEach(s => {
+    const key = 's' + (s === 'Vomiting' ? 'Vomit' : s === 'Breathlessness' ? 'Breath' : s === 'Dizziness' ? 'Dizzy' : s === 'Weakness' ? 'Weak' : s);
+    syms.push(t(key));
+  });
+  if(a.fever === 'yes' && !state.symptoms.has('Fever')) syms.push(t('sFever'));
+  if(a.meds === 'yes') syms.push(t('medOnTreatment'));
 
-  document.getElementById('sumSymptoms').innerHTML =
-    syms.length
-      ? syms.map(s => `<span class="tag">${s}</span>`).join('')
-      : '<span class="tag warn">No symptoms recorded</span>';
+  document.getElementById('sumSymptoms').innerHTML = syms.length
+    ? syms.map(s => `<span class="tag">${s}</span>`).join('')
+    : `<span class="tag warn">${t('noSymptoms')}</span>`;
 
+  // pain
   document.getElementById('sumPainVal').textContent = pain ? `${pain} / 10` : '—';
   document.getElementById('sumPainBar').style.width = (pain * 10) + '%';
 
+  // meds
   document.getElementById('sumMeds').innerHTML = state.medicines.length
     ? state.medicines.map(m => `<span class="tag">💊 ${m.name} ${m.dose}</span>`).join('')
-    : '<span class="tag warn">No previous prescription uploaded</span>';
+    : `<span class="tag warn">${t('noPrevRx')}</span>`;
 
+  // confidence
   const conf = state.medicines.length ? 94 : 72;
   setTimeout(() => {
     document.getElementById('sumConfBar').style.width = conf + '%';
     document.getElementById('sumConfVal').textContent = conf + '%';
   }, 180);
 
+  // red flags
   const flags = [];
-  if(pain >= 8) flags.push('high pain score (8/10)');
-  if(state.symptoms.has('Vomiting')) flags.push('persistent vomiting');
-  if(state.symptoms.has('Breathlessness')) flags.push('breathlessness');
-  if(a.duration === '3 days') flags.push('symptom duration ≥ 3 days');
+  if(pain >= 8) flags.push(t('flagPain'));
+  if(state.symptoms.has('Vomiting')) flags.push(t('flagVomit'));
+  if(state.symptoms.has('Breathlessness')) flags.push(t('flagBreath'));
+  if(a.duration === '3 days') flags.push(t('flagDuration'));
 
   const flagBox = document.getElementById('sumFlags');
   if(flags.length){
     flagBox.style.display = 'flex';
-    document.getElementById('sumFlagText').textContent =
-      flags.join(' + ') + ' — possible acute abdomen. Priority review advised. (AI-generated flag, not a diagnosis.)';
+    document.getElementById('sumFlagText').textContent = flags.join(' + ') + ' ' + t('flagSuffix');
   } else {
     flagBox.style.display = 'none';
   }
@@ -2468,60 +2247,94 @@ function buildSummary(){
 document.getElementById('toToken').onclick = () => go('token');
 
 /* ══════════════════════════════════════════════════════════════
-   7. TOKEN
+   TOKEN
    ══════════════════════════════════════════════════════════════ */
 document.getElementById('toDoctor').onclick = () => go('doctor');
 
 /* ══════════════════════════════════════════════════════════════
-   8. DOCTOR DASHBOARD
+   DOCTOR
    ══════════════════════════════════════════════════════════════ */
 function buildDoctor(){
   const a = state.answers;
-  const region = state.region ? REGIONS[state.region] : {en:'Abdomen'};
+  const region = state.region;
+  const regionTxt = region ? t('r' + region.charAt(0).toUpperCase() + region.slice(1)) : null;
   const pain = a.pain || 8;
+  const sevKey = pain >= 8 ? 'sevSev' : pain >= 5 ? 'sevMod' : 'sevMild';
+  const sevTxt = t(sevKey);
+
+  let complaint;
+  if(state.lang === 'hi'){
+    complaint = regionTxt ? `${regionTxt} में ${sevTxt} ${t('painSuffix')}` : `${sevTxt} ${t('painSuffix')}`;
+  } else {
+    complaint = regionTxt ? `${sevTxt} ${regionTxt.toLowerCase()} ${t('painSuffix')}` : `${sevTxt} ${t('painSuffix')}`;
+  }
+  const durTxt = a.duration ? t('dur' + (
+    a.duration === '1 day' ? '1' :
+    a.duration === '2 days' ? '2' :
+    a.duration === '3 days' ? '3' : 'Week'
+  )) : t('notSpecified');
 
   document.getElementById('docComplaint').textContent =
-    `Severe ${region.en.toLowerCase()} pain · ${a.duration || '3 days'}`;
+    `${complaint} · ${durTxt}`;
 
   document.getElementById('docPain').textContent =
-    `${pain} / 10 (patient-reported at kiosk)`;
+    state.lang === 'hi'
+      ? `${pain} / 10 (रोगी-रिपोर्टेड)`
+      : `${pain} / 10 (patient-reported)`;
 
-  document.getElementById('docHpi').textContent =
-    `Onset ${a.duration || '3 days'} ago. Continuous, non-radiating. ` +
-    (a.fever === 'yes' ? 'Associated with fever. ' : '') +
-    (state.symptoms.has('Vomiting') ? 'Associated with vomiting. ' : '') +
-    (a.meds === 'yes' ? 'Patient is already on medication (see table below). ' : '') +
-    `Kiosk transcript: "${state.transcript || '—'}"`;
+  // HPI
+  let hpi = '';
+  if(state.lang === 'hi'){
+    hpi = `शुरुआत ${durTxt} पहले। लगातार, बिना फैलाव। `;
+    if(a.fever === 'yes') hpi += 'बुखार के साथ। ';
+    if(state.symptoms.has('Vomiting')) hpi += 'उल्टी के साथ। ';
+    if(a.meds === 'yes') hpi += 'रोगी पहले से दवा पर है (नीचे तालिका देखें)। ';
+    hpi += `कियोस्क ट्रांसक्रिप्ट: "${state.transcript || '—'}"`;
+  } else {
+    hpi = `Onset ${durTxt} ago. Continuous, non-radiating. `;
+    if(a.fever === 'yes') hpi += 'Associated with fever. ';
+    if(state.symptoms.has('Vomiting')) hpi += 'Associated with vomiting. ';
+    if(a.meds === 'yes') hpi += 'Patient is already on medication (see table below). ';
+    hpi += `Kiosk transcript: "${state.transcript || '—'}"`;
+  }
+  document.getElementById('docHpi').textContent = hpi;
 
-  const syms = [region.en + ' pain'];
-  state.symptoms.forEach(s => syms.push(s));
-  if(a.fever === 'yes') syms.push('Fever');
-  document.getElementById('docSymptoms').innerHTML =
-    syms.map(s => `<li>${s}</li>`).join('');
+  // symptoms list
+  const syms = [];
+  if(regionTxt) syms.push(regionTxt + ' ' + t('painSuffix'));
+  state.symptoms.forEach(s => {
+    const key = 's' + (s === 'Vomiting' ? 'Vomit' : s === 'Breathlessness' ? 'Breath' : s === 'Dizziness' ? 'Dizzy' : s === 'Weakness' ? 'Weak' : s);
+    syms.push(t(key));
+  });
+  if(a.fever === 'yes') syms.push(t('sFever'));
+  document.getElementById('docSymptoms').innerHTML = syms.map(s => `<li>${s}</li>`).join('');
 
+  // meds table
   document.getElementById('docMeds').innerHTML = state.medicines.length
     ? state.medicines.map(m =>
         `<tr>
-           <td><b>${m.name}</b></td>
-           <td>${m.dose}</td>
-           <td>Prescription scan</td>
-           <td class="conf">${m.conf}%</td>
+           <td data-th="${t('thMed')}"><b>${m.name}</b></td>
+           <td data-th="${t('thDose')}">${m.dose}</td>
+           <td data-th="${t('thSource')}">${state.lang === 'hi' ? 'पर्ची स्कैन' : 'Prescription scan'}</td>
+           <td data-th="${t('thConf')}" class="conf">${m.conf}%</td>
          </tr>`).join('')
-    : '<tr><td colspan="4" style="color:var(--muted)">No prescription uploaded — nothing extracted.</td></tr>';
+    : `<tr><td colspan="4" style="color:var(--muted)">${state.lang === 'hi' ? 'कोई पर्ची अपलोड नहीं — कुछ नहीं निकाला गया।' : 'No prescription uploaded — nothing extracted.'}</td></tr>`;
 
+  // red flags
   const flags = [];
-  if(pain >= 8) flags.push('High pain 8/10');
-  if(state.symptoms.has('Vomiting')) flags.push('Vomiting');
-  if(a.duration) flags.push(a.duration);
-  document.getElementById('docFlagText').textContent =
-    flags.join(' · ') + ' — consider urgent workup before routine consult.';
+  if(pain >= 8) flags.push(state.lang === 'hi' ? 'उच्च दर्द 8/10' : 'High pain 8/10');
+  if(state.symptoms.has('Vomiting')) flags.push(t('sVomit'));
+  if(a.duration) flags.push(durTxt);
+  document.getElementById('docFlagText').textContent = flags.join(' · ') +
+    (state.lang === 'hi' ? ' — नियमित परामर्श से पहले तत्काल जाँच पर विचार करें।' : ' — consider urgent workup before routine consult.');
 
+  // reset approval
   document.getElementById('approvedBanner').classList.remove('on');
   const ab = document.getElementById('approveBtn');
   ab.disabled = false;
-  ab.textContent = '✔ Approve & Sign';
+  ab.textContent = t('approveSign');
   const pill = document.getElementById('statusPill');
-  pill.textContent = 'Awaiting review';
+  pill.textContent = t('awaitingReview');
   pill.style.background = 'var(--amber-soft)';
   pill.style.color = 'var(--amber)';
   pill.style.borderColor = 'var(--amber-line)';
@@ -2533,18 +2346,18 @@ document.getElementById('editBtn').onclick = () => {
   document.querySelectorAll('#docComplaint, #docHpi, #docPain').forEach(el => {
     el.contentEditable = editing ? 'true' : 'false';
   });
-  document.getElementById('editBtn').textContent = editing ? '💾 Save Draft' : '✏️ Edit Draft';
-  toast(editing ? 'Draft unlocked — click any field to edit' : 'Draft saved');
+  document.getElementById('editBtn').textContent = editing ? t('saveDraft') : t('editDraft');
+  toast(editing ? t('tDraftUnlock') : t('tDraftSave'));
 };
 
 document.getElementById('noteBtn').onclick = () => {
   const box = document.getElementById('docHpi');
   box.contentEditable = 'true';
   box.focus();
-  toast('Add clinical notes, then press Approve & Sign');
+  toast(t('tNotes'));
 };
 
-document.getElementById('referBtn').onclick = () => toast('↗ Referral form opened (demo)');
+document.getElementById('referBtn').onclick = () => toast(t('tRefer'));
 
 document.getElementById('approveBtn').onclick = function(){
   state.approved = true;
@@ -2554,15 +2367,15 @@ document.getElementById('approveBtn').onclick = function(){
   });
   document.getElementById('approvedBanner').classList.add('on');
   this.disabled = true;
-  this.textContent = '✔ Approved';
+  this.textContent = '✔ ' + t('approveSign').replace('✔ ', '').trim();
 
   const pill = document.getElementById('statusPill');
-  pill.textContent = 'Signed & committed';
+  pill.textContent = t('signedCommitted');
   pill.style.background = 'var(--green-soft)';
   pill.style.color = 'var(--green-600)';
   pill.style.borderColor = 'var(--green-line)';
 
-  toast('✅ History approved & signed → pushed to EMR');
+  toast(t('tApproved'));
 };
 
 document.getElementById('qSearch').addEventListener('input', function(){
@@ -2580,7 +2393,7 @@ document.querySelectorAll('.q-item').forEach(it => {
   it.onclick = () => {
     document.querySelectorAll('.q-item').forEach(x => x.classList.remove('active'));
     it.classList.add('active');
-    toast('Loaded: ' + it.querySelector('.nm').textContent);
+    toast(t('tLoaded') + it.querySelector('.nm').textContent);
   };
 });
 
@@ -2607,15 +2420,11 @@ function resetAll(){
   document.querySelectorAll('.body .region').forEach(e => e.classList.remove('on'));
   document.querySelectorAll('#regionChips .chip, #symChips .chip').forEach(c => c.classList.remove('on'));
   document.getElementById('symNext').disabled = true;
-
-  const echo = document.getElementById('regionEcho');
-  echo.textContent = 'None selected';
-  echo.style.color = '';
-  echo.style.fontWeight = '';
+  updateRegionEcho();
 
   const tr = document.getElementById('transcript');
   tr.className = 'transcript empty';
-  tr.innerHTML = '<span class="hi">माइक दबाएँ, या नीचे “नमूना वाक्य” चुनें…</span><span class="en">Press the mic, or load the sample sentence below…</span>';
+  tr.textContent = t('transcriptEmpty');
 
   document.getElementById('ocrCard').style.display = 'none';
   document.getElementById('medsCard').style.display = 'none';
@@ -2624,17 +2433,17 @@ function resetAll(){
   document.getElementById('ocrPct').textContent = '0%';
   document.querySelectorAll('#ocrLog div').forEach(d => d.classList.remove('on'));
   document.getElementById('scanLine').style.display = 'none';
-  document.getElementById('scanHint').textContent = 'Place document here';
+  document.getElementById('scanHint').textContent = t('placeDoc');
   scanBtn.disabled = false;
-  scanBtn.innerHTML = '📸 Scan Document';
+  scanBtn.innerHTML = '📸 <span>' + t('scanBtn') + '</span>';
 
   document.getElementById('sumConfBar').style.width = '0%';
   document.getElementById('sumConfVal').textContent = '0%';
 
   document.getElementById('approvedBanner').classList.remove('on');
   document.getElementById('approveBtn').disabled = false;
-  document.getElementById('approveBtn').textContent = '✔ Approve & Sign';
-  document.getElementById('editBtn').textContent = '✏️ Edit Draft';
+  document.getElementById('approveBtn').textContent = t('approveSign');
+  document.getElementById('editBtn').textContent = t('editDraft');
 
   document.getElementById('qSearch').value = '';
   document.querySelectorAll('.q-item').forEach(i => i.style.display = '');
@@ -2652,70 +2461,69 @@ let demoRunning = false;
 function stopDemo(){
   demoRunning = false;
   const b = document.getElementById('demoBtn');
-  if(b){ b.classList.remove('on'); b.innerHTML = '▶ Auto Demo'; }
+  if(b){ b.classList.remove('on'); b.textContent = '▶ Auto Demo'; }
 }
 
 async function runDemo(){
   demoRunning = true;
   const b = document.getElementById('demoBtn');
   b.classList.add('on');
-  b.innerHTML = '⏹ Stop Demo';
+  b.textContent = '⏹ Stop Demo';
 
   resetAll();
-  setLang('en');
   go('welcome');
-  await sleep(1700); if(!demoRunning) return;
+  await sleep(1600); if(!demoRunning) return;
 
-  document.querySelector('.lang-card[data-lang="en"]').click();
-  await sleep(1500); if(!demoRunning) return;
+  document.querySelector('.lang-card[data-lang="' + state.lang + '"]').click();
+  await sleep(1400); if(!demoRunning) return;
 
   document.querySelector('[data-checkin="voice"]').click();
-  await sleep(1800); if(!demoRunning) return;
+  await sleep(1700); if(!demoRunning) return;
 
   selectRegion('stomach');
   document.querySelector('[data-sym="Vomiting"]').click();
-  await sleep(650); if(!demoRunning) return;
+  await sleep(600); if(!demoRunning) return;
   document.getElementById('sampleBtn').click();
-  await sleep(2500); if(!demoRunning) return;
+  await sleep(2400); if(!demoRunning) return;
   document.getElementById('symNext').click();
-  await sleep(550); if(!demoRunning) return;
+  await sleep(500); if(!demoRunning) return;
 
   const auto = ['yes', '8', '3 days', 'yes'];
   for(let i = 0; i < QUESTIONS.length; i++){
-    await sleep(2300); if(!demoRunning) return;
+    await sleep(2200); if(!demoRunning) return;
     const btn = document.querySelector(`#answers .ans[data-v="${auto[i]}"]`);
     if(btn) btn.click();
   }
-  await sleep(1700); if(!demoRunning) return;
+  await sleep(1600); if(!demoRunning) return;
 
   scanBtn.click();
-  await sleep(4200); if(!demoRunning) return;
+  await sleep(4000); if(!demoRunning) return;
+  await sleep(1100); if(!demoRunning) return;
 
-  await sleep(1200); if(!demoRunning) return;
   document.getElementById('toToken').click();
-  await sleep(2500); if(!demoRunning) return;
+  await sleep(2400); if(!demoRunning) return;
   document.getElementById('toDoctor').click();
-  await sleep(2600); if(!demoRunning) return;
+  await sleep(2400); if(!demoRunning) return;
 
   document.getElementById('approveBtn').click();
   stopDemo();
-  toast('✅ Demo complete — patient → doctor → signed history');
+  toast(t('tDemoDone'));
 }
 
-/* inject controls into gov strip */
 (function injectControls(){
   const right = document.querySelector('.gs-right');
   const demo = document.createElement('button');
   demo.className = 'gs-link primary';
   demo.id = 'demoBtn';
-  demo.innerHTML = '▶ Auto Demo';
+  demo.textContent = '▶ Auto Demo';
   demo.onclick = () => demoRunning ? stopDemo() : runDemo();
 
   const reset = document.createElement('button');
   reset.className = 'gs-link';
   reset.id = 'resetBtn';
-  reset.textContent = '↺ Reset';
-  reset.onclick = () => { stopDemo(); resetAll(); go('welcome'); toast('Prototype reset'); };
+  reset.textContent = '↺';
+  reset.title = 'Reset';
+  reset.onclick = () => { stopDemo(); resetAll(); go('welcome'); toast(t('tReset')); };
 
   right.insertBefore(demo, right.firstChild);
   right.insertBefore(reset, demo.nextSibling);
@@ -2724,7 +2532,8 @@ async function runDemo(){
 /* ══════════════════════════════════════════════════════════════
    INIT
    ══════════════════════════════════════════════════════════════ */
-setLang('en');
+state.lang = 'en';
+applyLang();
 updateDraftRail();
 document.querySelector('.step[data-step="1"]').classList.add('now');
 </script>
